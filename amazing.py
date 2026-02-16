@@ -19,14 +19,16 @@ class Image:
 
 mlx = Mlx()
 mlx_ptr = Mlx.mlx_init(mlx)
-mlx_wind = Mlx.mlx_new_window(mlx, mlx_ptr, 1200, 1000, "kary00s")
-mlx.mlx_key_hook(mlx_wind, kill_it, None)
+mlx_wind = Mlx.mlx_new_window(mlx, mlx_ptr, 1440, 1440, "kary00s")
 
-def generator():    
-    img1 = Image(mlx, mlx_ptr, 720, 720)
-    for y in range(img1.height):
-        for x in range(img1.width):
-            img1.put_pixel(x, y, 0xFF432595)
+def generator(x:int , y:int, color):    
+    mg1 = Image(mlx, mlx_ptr, x, y)
+    i += 720 // 30
+    for i in range(img1.height):
+        j = 0
+        for j in range(img1.width):
+            j +=720 // 30 
+            img1.put_pixel(i, j, color)
     return img1
 
 class Cell(Image):
@@ -34,14 +36,29 @@ class Cell(Image):
         self.height = height / 5
         self.width = width / 5
 
+
+
     def north_wall(self):
         for y in range(self.height):
             for x in range(self.width):
                 self.put_pixel(x, y, 0xFF035476)        
 
+def display():
+    i = 720 // 10
+    while i < 720:
+        j = 720 // 10
+        while j < 720:
+            img1 = generator(i - 5 ,j - 5 , 0xFFFFFFFF)
+            mlx.mlx_put_image_to_window(mlx_ptr, mlx_wind, img1.ptr, i - 5, j - 5) 
+           # img1 = generator(i , j, 0xFFFF0000)
+           # mlx.mlx_put_image_to_window(mlx_ptr, mlx_wind, img1.ptr, i, j)
+            j += 720 // 10
+        
+        i += 720 // 10
 
-img1 = generator()
+display()
 
-mlx.mlx_put_image_to_window(mlx_ptr, mlx_wind, img1.ptr, 250, 150)
+mlx.mlx_key_hook(mlx_wind, kill_it, None)
+
 
 mlx.mlx_loop(mlx_ptr)
