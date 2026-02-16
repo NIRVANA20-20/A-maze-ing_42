@@ -19,8 +19,8 @@ class Cell:
         bit_map = ['W', 'S', 'E', 'N']
         print(list(enumerate(bit_map)))
         value = 0
-        for i, dir in enumerate(bit_map):
-            if self.walls[dir] == True:
+        for i, direction in enumerate(bit_map):
+            if self.walls[direction] == True:
                 value |= (1 << i)
         return value
 
@@ -112,9 +112,6 @@ class MazeGenerator:
             column += '\n'
             file.write(column)
         file.close()
-
-
-
 
 
 if __name__ == "__main__":
