@@ -32,8 +32,8 @@ class Maze:
         self.width = width
         self.height = height
         self.grid: List[List[Cell]] = [
-            [Cell(x, y) for y in range(height)]
-            for x in range(width)]
+            Cell(x, y) for x in range(height)
+            for y in range(width)]
         self.entry = entry
         self.exit = exit_m
 

@@ -1,6 +1,10 @@
 from mlx.mlx import Mlx
 
+from cell import Cell, Maze
+
 import sys
+
+import time
 
 def kill_it(key, _):
     if key == 65507:
@@ -27,18 +31,76 @@ mlx_wind = Mlx.mlx_new_window(mlx, mlx_ptr, 1440, 1440, "kary00s")
 img1 = Image(mlx, mlx_ptr, int(1200), int(1200))
 for y in range(1200):
     for x in range(1200):
-        img1.put_pixel(x, y, 0xFFFFFFFF)
+        img1.put_pixel(x, y, 0xbfbfbfff)
+
+
+def put_north(cell_border: int, cell_width: int, start_h: int, start_w: int):
+    
+    print(start_w, cell_width)
+    for y in range(start_h, cell_border + start_h):
+        for x in range(start_w, cell_width + 60 + cell_border ):
+            img1.put_pixel(x, y, 0xFADDD4FF)
+
+def put_west(cell_border: int, cell_height: int, start_h: int, start_w: int):
+
+    for x in range(start_w, cell_border + start_w):
+        for y in range(start_h, cell_height + cell_border):
+            img1.put_pixel(x, y, 0xFADDD4FF)
+
+def put_south(cell_border: int, cell_height: int, cell_width: int, start_h: int, start_w: int):
+
+    for y in range(start_h + cell_height - cell_border, cell_height + cell_border):
+        for x in range(start_w ,cell_width):
+            img1.put_pixel(x, y,  0xFADDD4FF)
+
+def put_east(cell_width: int, cell_height: int, cell_border: int, start_h: int, start_w: int):
+    
+    for x in range(start_w + cell_width, cell_width + cell_border):
+        for y in range(start_h, cell_height + cell_border):
+            img1.put_pixel(x, y,  0xFADDD4FF)
+   
 
 # north border
 
-cell_height = 70
-cell_width = 70
-cell_border = 10
-cell_dim = cell_height + 2 * cell_border
-# draw cell 1
+
+maze = Maze(20, 20, (0,0), (29,29))
+
+grids =  maze.grid
+
+print(grids)
+
+
+cell_h = 1200 // 20
+
+cell_w = 1200 // 20
+
+cell_border = 5
+start_h = 0
+start_w = 0
+
+#put_north(cell_border, cell_width, start)
+#put_south(cell_border, cell_height, cell_width, start)
+#put_east(cell_width, cell_height, cell_border, start)
+
+
+cell_height = cell_h
+cell_width = cell_w
+"""
+for cells in grids: 
+    for cell in cells:
+        x, y 
+        """
+
+
+
+
+
+mlx.mlx_put_image_to_window(mlx_ptr, mlx_wind, img1.ptr, 40, 40)
+
+"""
 for y in range(cell_border):
     for x in range(cell_width + cell_border):
-        img1.put_pixel(x, y, 0x0FFFFFFF)
+            img1.put_pixel(x, y, 0x0FFFFFFF)
 
 for x in range(cell_border):
     for y in range(cell_height + cell_border):
@@ -51,11 +113,7 @@ for y in range(cell_height, cell_height + cell_border):
 for x in range(cell_width, cell_width + cell_border):
     for y in range(cell_height + cell_border):
         img1.put_pixel(x, y,  0x0FFFFFFF)
-
-
-
-
-mlx.mlx_put_image_to_window(mlx_ptr, mlx_wind, img1.ptr, 0, 0)
+"""
 
 """
 
