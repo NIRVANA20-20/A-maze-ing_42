@@ -35,10 +35,9 @@ for y in range(1200):
 
 
 def put_north(cell_border: int, cell_width: int, start_h: int, start_w: int):
-    
-    print(start_w, cell_width)
+    print(cell_width, start_h, start_w)
     for y in range(start_h, cell_border + start_h):
-        for x in range(start_w, cell_width + 60 + cell_border ):
+        for x in range(start_w, cell_width + cell_border ):
             img1.put_pixel(x, y, 0xFADDD4FF)
 
 def put_west(cell_border: int, cell_height: int, start_h: int, start_w: int):
@@ -63,16 +62,15 @@ def put_east(cell_width: int, cell_height: int, cell_border: int, start_h: int, 
 # north border
 
 
-maze = Maze(20, 20, (0,0), (29,29))
+maze = Maze(5, 5, (0,0), (29,29))
 
 grids =  maze.grid
 
 print(grids)
 
+cell_h = 1200 // 5
 
-cell_h = 1200 // 20
-
-cell_w = 1200 // 20
+cell_w = 1200 // 5
 
 cell_border = 5
 start_h = 0
@@ -82,20 +80,28 @@ start_w = 0
 #put_south(cell_border, cell_height, cell_width, start)
 #put_east(cell_width, cell_height, cell_border, start)
 
-
 cell_height = cell_h
 cell_width = cell_w
-"""
-for cells in grids: 
+tmp = 0
+for cells in grids:
     for cell in cells:
-        x, y 
-        """
+        x, y = cell.x, cell.y
+        if y == tmp + 1:
+            put_north(cell_border, cell_width, start_h, start_w) 
+            start_h += cell_h  
+            start_w = 0
+            tmp += 1
+        put_north(cell_border, cell_width, start_h, start_w)         
+        start_w = cell_width
+
+        cell_width = cell_w * (x + 1) 
+        cell_height = cell_h * (y + 1)
+    
+        print("hgvsdf",cell_height)
 
 
 
-
-
-mlx.mlx_put_image_to_window(mlx_ptr, mlx_wind, img1.ptr, 40, 40)
+mlx.mlx_put_image_to_window(mlx_ptr, mlx_wind, img1.ptr, 0, 0)
 
 """
 for y in range(cell_border):
