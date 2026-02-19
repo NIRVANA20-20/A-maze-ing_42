@@ -16,7 +16,7 @@ class Cell:
             self.walls[derection] = False
 
     def to_hex(self) :
-        bit_map = ['W', 'S', 'E', 'N']
+        bit_map = ['N', 'E', 'S', 'W']
         print(list(enumerate(bit_map)))
         value = 0
         for i, direction in enumerate(bit_map):
