@@ -27,9 +27,9 @@ mlx = Mlx()
 mlx_ptr = Mlx.mlx_init(mlx)
 mlx_wind = Mlx.mlx_new_window(mlx, mlx_ptr, 1440, 1440, "kary00s")
 
-img1 = Image(mlx, mlx_ptr, int(1200), int(1200))
-for y in range(1200):
-    for x in range(1200):
+img1 = Image(mlx, mlx_ptr, int(1220), int(1220))
+for y in range(1220):
+    for x in range(1220):
         img1.put_pixel(x, y, 0xbfbfbfff)
 
 
@@ -41,34 +41,34 @@ def put_north(cell_border: int, cell_width: int, start_h: int, start_w: int):
 
 def put_west(cell_border: int, cell_height: int, start_h: int, start_w: int):
 
-    for x in range(start_w, cell_border + start_w):
+    for x in range(start_w , start_w + cell_border):
         for y in range(start_h, cell_height):
             img1.put_pixel(x, y, 0xFADDD4FF)
 
 def put_south(cell_border: int, cell_height: int, cell_width: int, start_h: int, start_w: int):
 
-    for y in range(start_h + cell_height - cell_border, cell_height + cell_border):
+    print(start_w, cell_width)
+    for y in range(start_h, start_h + cell_border):
         for x in range(start_w ,cell_width):
             img1.put_pixel(x, y,  0xFADDD4FF)
 
-def put_east(cell_width: int, cell_height: int, cell_border: int, start_h: int, start_w: int):
-    for x in range(start_w - cell_border, start_w ):
-        for y in range(start_h, cell_height):
+def put_east(cell_height: int, cell_border: int, start_h: int, start_w: int):
+    for x in range(start_w, start_w + cell_border):
+        for y in range(start_h, cell_height + cell_border):
             img1.put_pixel(x, y,  0xFADDD4FF)
    
 
 # north border
 
 
-maze = Maze(5, 5, (0,0), (29,29))
+maze = Maze(50, 50, (0,0), (29,29))
 
 grids =  maze.grid
-print(grids)
 
 
-cell_h = 1200 // 5
+cell_h = 1200 // 50
 
-cell_w = 1200 // 5
+cell_w = 1200 // 50
 
 cell_border = 5
 start_h = 0
@@ -80,34 +80,43 @@ cell_width = cell_w
 for cells in grids:
     for cell in cells:
         x, y = cell.x, cell.y
-        start_h = y * cell_h
-        start_w = x * cell_w
-        cell_width = cell_w * (x + 1)
+        start_h = y * cell_h + 10
+        start_w = x * cell_w + 10
+        cell_width = cell_w * (x + 1) + 10
         put_north(cell_border, cell_width, start_h, start_w)
 
 for cells in grids:
     for cell in cells:
         x, y = cell.x, cell.y
-        start_h = y * cell_h
-        start_w = x * cell_w
-        cell_height = cell_h * (y + 1)
+        start_h = y * cell_h + 10
+        start_w = x * cell_w + 10
+        cell_height = cell_h * (y + 1) + 10
         put_west(cell_border, cell_height, start_h, start_w)
 
 for cells in grids:
     for cell in cells:
         x, y = cell.x, cell.y
-        start_h = y * cell_h
-        start_w = cell_w * (x + 1)
-        print(start_h, start_w)
-        cell_height = cell_h * (y + 1)
-        cell_width = cell_w * (x + 1)
-            
-        put_east(cell_width, cell_height, cell_border, start_h, start_w)
+        start_h = y * cell_h + 10
+        start_w = cell_w * (x + 1) + 10
+        cell_height = cell_h * (y + 1) + 10
+        cell_width = cell_w * (x + 1) + 10 
+        put_east(cell_height, cell_border, start_h, start_w)
+for cells in grids:
+    for cell in cells:
+        x, y = cell.x, cell.y
+        start_h = ( 1 + y) * cell_h + 10
+        start_w = cell_w * x + 10
+        cell_height = cell_h * y + 10
+        cell_width = cell_w * (x + 1) + 10 
+        put_south(cell_border, cell_height, cell_width, start_h, start_w)
 
 
 
 
-mlx.mlx_put_image_to_window(mlx_ptr, mlx_wind, img1.ptr, 0, 0)
+
+
+
+mlx.mlx_put_image_to_window(mlx_ptr, mlx_wind, img1.ptr, 10, 10)
 
 
 """
