@@ -32,31 +32,55 @@ for y in range(1220):
     for x in range(1220):
         img1.put_pixel(x, y, 0xbfbfbfff)
 
+class Generator_maze:
+    
+    
+    def __init__(self, cell_h: int, cell_w: int, cell_border: int):
+        self.cell_h = cell_h
+        self.cell_w = cell_w       
+        self.cell_border = cell_border
+        self.cell_height = cell_h
+        self.cell_width = cell_w
+        self.start_h = 0 ###
+        self.start_w = 0 ###
+        
+    
+    def put_north( x, y):
 
-def put_north(cell_border: int, cell_width: int, start_h: int, start_w: int):
+        start_h = y * cell_h + 10
+        start_w = x * cell_w + 10
+        cell_width = cell_w * (x + 1) + 10
+        for y in range(start_h, cell_border + start_h):
+            for x in range(start_w, cell_width + cell_border ):
+                img1.put_pixel(x, y, 0xFADDD4FF)
 
-    for y in range(start_h, cell_border + start_h):
-        for x in range(start_w, cell_width + cell_border ):
-            img1.put_pixel(x, y, 0xFADDD4FF)
+    def put_west(x, y):
 
-def put_west(cell_border: int, cell_height: int, start_h: int, start_w: int):
+        start_h = y * cell_h + 10
+        start_w = x * cell_w + 10
+        cell_height = cell_h * (y + 1) + 10
+        for x in range(start_w , start_w + cell_border):
+            for y in range(start_h, cell_height):
+                img1.put_pixel(x, y, 0xFADDD4FF)
 
-    for x in range(start_w , start_w + cell_border):
-        for y in range(start_h, cell_height):
-            img1.put_pixel(x, y, 0xFADDD4FF)
-
-def put_south(cell_border: int, cell_height: int, cell_width: int, start_h: int, start_w: int):
-
-    print(start_w, cell_width)
-    for y in range(start_h, start_h + cell_border):
+    def put_south(x, y):
+        start_h = y * cell_h + 10
+        start_w = cell_w * x + 10
+        cell_width = cell_w * (x + 1) +10   
         for x in range(start_w ,cell_width):
-            img1.put_pixel(x, y,  0xFADDD4FF)
+            for y in range(start_h + cell_h, cell_border +cell_h+ start_h): #########
+                img1.put_pixel(x, y,  0xFADDD4FF)
 
-def put_east(cell_height: int, cell_border: int, start_h: int, start_w: int):
-    for x in range(start_w, start_w + cell_border):
-        for y in range(start_h, cell_height + cell_border):
-            img1.put_pixel(x, y,  0xFADDD4FF)
-   
+    def put_east(x, y):
+        
+
+        start_h = y * cell_h + 10
+        start_w = cell_w * (x + 1) + 10
+        cell_height = cell_h * (y + 1) + 10
+        for x in range(start_w, start_w + cell_border):
+            for y in range(start_h, cell_height + cell_border):
+                img1.put_pixel(x, y,  0xFADDD4FF)
+    
 
 # north border
 
@@ -75,40 +99,13 @@ start_h = 0
 start_w = 0
 
 
-cell_height = cell_h
-cell_width = cell_w
 for cells in grids:
     for cell in cells:
         x, y = cell.x, cell.y
-        start_h = y * cell_h + 10
-        start_w = x * cell_w + 10
-        cell_width = cell_w * (x + 1) + 10
-        put_north(cell_border, cell_width, start_h, start_w)
-
-for cells in grids:
-    for cell in cells:
-        x, y = cell.x, cell.y
-        start_h = y * cell_h + 10
-        start_w = x * cell_w + 10
-        cell_height = cell_h * (y + 1) + 10
-        put_west(cell_border, cell_height, start_h, start_w)
-
-for cells in grids:
-    for cell in cells:
-        x, y = cell.x, cell.y
-        start_h = y * cell_h + 10
-        start_w = cell_w * (x + 1) + 10
-        cell_height = cell_h * (y + 1) + 10
-        cell_width = cell_w * (x + 1) + 10 
-        put_east(cell_height, cell_border, start_h, start_w)
-for cells in grids:
-    for cell in cells:
-        x, y = cell.x, cell.y
-        start_h = ( 1 + y) * cell_h + 10
-        start_w = cell_w * x + 10
-        cell_height = cell_h * y + 10
-        cell_width = cell_w * (x + 1) + 10 
-        put_south(cell_border, cell_height, cell_width, start_h, start_w)
+        Generator_maze.put_north(x, y)
+        Generator_maze.put_west(x, y)
+        Generator_maze.put_east(x, y)
+        Generator_maze.put_south(x, y)
 
 
 
