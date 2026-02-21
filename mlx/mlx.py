@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    mlx.py                                             :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: olaizi <marvin@42.fr>                      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2026/02/21 02:24:41 by olaizi            #+#    #+#              #
+#    Updated: 2026/02/21 03:11:02 by olaizi           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 # MLX python wrapper for Mlx C library
 # See mlx manuals and mlx.h from C library for function usage
 # C Functions that require addresses to pass back info are converted to

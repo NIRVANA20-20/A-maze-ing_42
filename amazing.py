@@ -1,9 +1,10 @@
+
 from mlx.mlx import Mlx
 
 from cell import Cell, Maze
 
 import sys
-
+import math
 import time
 
 def kill_it(key, _):
@@ -11,10 +12,12 @@ def kill_it(key, _):
         mlx.mlx_loop_exit(mlx_ptr) 
 
 
+
 class Image:
     def __init__(self, mlx: Mlx, mlx_ptr, width, height):
         self.width = width
         self.height = height
+        self.mlx_ptr = mlx_ptr
         self.ptr = mlx.mlx_new_image(mlx_ptr, width, height)
         self.buffer, self.bpp, self.sl, self.format = mlx.mlx_get_data_addr(self.ptr)
 
@@ -23,89 +26,85 @@ class Image:
         self.buffer[offset: offset + 4] = color.to_bytes(4, "little")
         
 
+class Generator_maze: 
+    def __init__(self, img, maze, mlx):
+        self.img = img
+        self.maze = maze
+        self.cell_b = 5
+   
+    @staticmethod
+    def put_north(x, y, cell_dim, cell_b, img):
+        start_h = y * cell_dim
+        start_w = x * cell_dim
+        cell_width = cell_dim * (x + 1)
+        for y in range(start_h, cell_b + start_h):
+            for x in range(start_w, cell_width + cell_b):
+                img.put_pixel(x, y, 0xFADDD4FF)
+
+    @staticmethod
+    def put_west(x, y, cell_dim, cell_b, img):
+        start_h = y * cell_dim
+        start_w = x * cell_dim 
+        cell_height = cell_dim * (y + 1)
+        for x in range(start_w , start_w + cell_b):
+            for y in range(start_h, cell_height):
+                img.put_pixel(x, y, 0xFADDD4FF)
+
+    @staticmethod
+    def put_south(x, y, cell_dim, cell_b, img):
+        start_h = y * cell_dim
+        start_w = cell_dim * x
+        cell_width = cell_dim * (x + 1)
+        for x in range(start_w ,cell_width):
+            for y in range(start_h + cell_dim, cell_b + cell_dim + start_h): #########
+                img.put_pixel(x, y,  0xFADDD4FF)
+
+    @staticmethod
+    def put_east(x, y, cell_dim, cell_b, img):
+        start_h = y * cell_dim
+        start_w = cell_dim * (x + 1)
+        cell_height = cell_dim * (y + 1)
+        for x in range(start_w, start_w + cell_b):
+            for y in range(start_h, cell_height + cell_b):
+                img.put_pixel(x, y,  0xFADDD4FF)
+    
+    def creat_cells(self):
+        img = self.img
+        cell_b = self.cell_b
+        val, screen_w, screen_h = mlx.mlx_get_screen_size(img.mlx_ptr)
+        min_screen = min(img.width, img.height)
+        max_cell = max(self.maze.width, self.maze.height)
+        cell_dim = min_screen // max_cell
+        print(cell_dim)
+        grid = self.maze.grid
+        for cells in grid:
+            for cell in cells:
+                x, y = cell.x, cell.y
+                Generator_maze.put_north(x, y, cell_dim, cell_b, img)
+                Generator_maze.put_west(x, y, cell_dim, cell_b, img)
+                Generator_maze.put_east(x, y, cell_dim, cell_b, img)
+                Generator_maze.put_south(x, y, cell_dim, cell_b, img)
+
+
+# north border
+
 mlx = Mlx()
 mlx_ptr = Mlx.mlx_init(mlx)
 mlx_wind = Mlx.mlx_new_window(mlx, mlx_ptr, 1440, 1440, "kary00s")
 
-img1 = Image(mlx, mlx_ptr, int(1220), int(1220))
-for y in range(1220):
-    for x in range(1220):
+img1 = Image(mlx, mlx_ptr, 1440, 1440)
+for y in range(1440):
+    for x in range(1440):
         img1.put_pixel(x, y, 0xbfbfbfff)
 
-class Generator_maze:
-    
-    
-    def __init__(self, cell_h: int, cell_w: int, cell_border: int):
-        self.cell_h = cell_h
-        self.cell_w = cell_w       
-        self.cell_border = cell_border
-        self.cell_height = cell_h
-        self.cell_width = cell_w
-        self.start_h = 0 ###
-        self.start_w = 0 ###
-        
-    
-    def put_north( x, y):
-
-        start_h = y * cell_h + 10
-        start_w = x * cell_w + 10
-        cell_width = cell_w * (x + 1) + 10
-        for y in range(start_h, cell_border + start_h):
-            for x in range(start_w, cell_width + cell_border ):
-                img1.put_pixel(x, y, 0xFADDD4FF)
-
-    def put_west(x, y):
-
-        start_h = y * cell_h + 10
-        start_w = x * cell_w + 10
-        cell_height = cell_h * (y + 1) + 10
-        for x in range(start_w , start_w + cell_border):
-            for y in range(start_h, cell_height):
-                img1.put_pixel(x, y, 0xFADDD4FF)
-
-    def put_south(x, y):
-        start_h = y * cell_h + 10
-        start_w = cell_w * x + 10
-        cell_width = cell_w * (x + 1) +10   
-        for x in range(start_w ,cell_width):
-            for y in range(start_h + cell_h, cell_border +cell_h+ start_h): #########
-                img1.put_pixel(x, y,  0xFADDD4FF)
-
-    def put_east(x, y):
-        
-
-        start_h = y * cell_h + 10
-        start_w = cell_w * (x + 1) + 10
-        cell_height = cell_h * (y + 1) + 10
-        for x in range(start_w, start_w + cell_border):
-            for y in range(start_h, cell_height + cell_border):
-                img1.put_pixel(x, y,  0xFADDD4FF)
-    
-
-# north border
 
 
-maze = Maze(50, 50, (0,0), (29,29))
-
-grids =  maze.grid
-
-
-cell_h = 1200 // 50
-
-cell_w = 1200 // 50
-
-cell_border = 5
-start_h = 0
-start_w = 0
+maze = Maze(10, 20, (0,0), (29,29))
+border = Generator_maze(img1, maze, mlx)
+border.creat_cells()
 
 
-for cells in grids:
-    for cell in cells:
-        x, y = cell.x, cell.y
-        Generator_maze.put_north(x, y)
-        Generator_maze.put_west(x, y)
-        Generator_maze.put_east(x, y)
-        Generator_maze.put_south(x, y)
+
 
 
 
