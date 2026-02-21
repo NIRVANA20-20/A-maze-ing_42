@@ -8,7 +8,7 @@ import math
 import time
 
 def kill_it(key, _):
-    if key == 65507:
+    if key == 65507 or key == 65307:
         mlx.mlx_loop_exit(mlx_ptr) 
 
 
@@ -76,6 +76,7 @@ class Generator_maze:
 
     
     def creat_cells(self):
+
         cell_b = self.cell_b
         val, screen_w, screen_h = mlx.mlx_get_screen_size(mlx_ptr)
 
@@ -92,10 +93,10 @@ class Generator_maze:
 
         Generator_maze.put_img(img)
         grid = self.maze.grid
+
         for cells in grid:
             for cell in cells:
                 x, y = cell.x, cell.y
-                print(x,y)
                 Generator_maze.put_north(x, y, cell_dim, cell_b, img)
                 Generator_maze.put_west(x, y, cell_dim, cell_b, img)
                 Generator_maze.put_east(x, y, cell_dim, cell_b, img)
@@ -105,7 +106,6 @@ class Generator_maze:
 
 
 
-# north border
 
 mlx = Mlx()
 mlx_ptr = Mlx.mlx_init(mlx)
@@ -120,76 +120,6 @@ border = Generator_maze(maze, mlx, mlx_ptr)
 
 border.creat_cells()
 
-
-
-
-
-
-
-
-
-
-
-
-"""
-
-def generator(x, y, color):    
-    img1 = Image(mlx, mlx_ptr, int(x), int(y))
-    if (x - 5) % 72 == 0:
-        print(f"lolo{x,y}")
-    else:
-        print(f" diiis {x,y}")
-    for y in range(img1.height):
-        x = 0
-        for x in range(img1.width):
-            img1.put_pixel(x, y, color)
-    return img1
-
-class Cell(Image):
-    def __init__(self, height, width):
-        self.height = height / 5
-        self.width = width / 5
-
-
-
-    def north_wall(self):
-        for y in range(self.height):
-            for x in range(self.width):
-                self.put_pixel(x, y, 0xFF035476)        
-
-def draw_square(x, y,size,color):
-
-    i = 0;
-    while i < size:
-        j = 0;
-        while j < size:
-            put_pixel(x + i, y + j, color);
-            j += 1;
-        i += 1;
-
-def display():
-    i = 720 // 10
-    while i <= 720:
-        j = 720 // 10
-        while j <= 720:
-            img1 = generator(i ,j , 0xFFFFFFFF)
-            mlx.mlx_put_image_to_window(mlx_ptr, mlx_wind, img1.ptr, i, j) 
-            img1 = generator(i + 5 , j + 5, 0xFFFF0000)
-            j += 720 // 10 
-        i += 720 // 10
-    mlx.mlx_put_image_to_window(mlx_ptr, mlx_wind, img1.ptr, i + 5, j + 5)
-
-
-display()
-
-
-#draw_square(50, 50, 30, 0xFF0000);
-
-
-
-
-
-"""
 
 mlx.mlx_key_hook(mlx_wind, kill_it, None)
 mlx.mlx_loop(mlx_ptr)
