@@ -1,4 +1,3 @@
-
 import random
 
 import curses
@@ -16,11 +15,10 @@ class Cell:
             self.walls[derection] = False
 
     def to_hex(self) :
-        bit_map = ['N', 'E', 'S', 'W']
-        print(list(enumerate(bit_map)))
+        bit_map = ['W', 'S', 'E', 'N']
         value = 0
-        for i, direction in enumerate(bit_map):
-            if self.walls[direction] == True:
+        for i, dir in enumerate(bit_map):
+            if self.walls[dir] == True:
                 value |= (1 << i)
         return value
 
@@ -32,15 +30,53 @@ class Maze:
         self.width = width
         self.height = height
         self.grid: List[List[Cell]] = [
-        [Cell(x, y) for x in range(width)]
-        for y in range(height)]
+            [Cell(x, y) for y in range(height)]
+            for x in range(width)]
         self.entry = entry
         self.exit = exit_m
+        self.is_42_map()
 
     def get_cell(self, x, y):
         if 0 <= x < self.width and  0 <= y < self.height:
             return self.grid[x][y]
         return 0
+    def is_42_map(self):
+
+            if self.width >= 9 and self.height >= 7:
+                c_x, c_y = int(self.width / 2), int(self.height / 2)
+                map_42 = [
+                        (c_x - 1, c_y),
+                        (c_x - 2, c_y),
+                        (c_x - 3, c_y),
+
+                        (c_x + 1, c_y),
+                        (c_x + 2, c_y),
+                        (c_x + 3, c_y),
+
+                        (c_x - 1, c_y + 1),
+                        (c_x - 1, c_y + 2),
+
+                        (c_x + 1, c_y + 1),
+                        (c_x + 1, c_y + 2),
+
+                        (c_x + 2, c_y + 2),
+                        (c_x + 3, c_y + 2),
+
+                        (c_x - 3, c_y - 1),
+                        (c_x - 3, c_y - 2),
+
+                        (c_x + 3, c_y - 1),
+                        (c_x + 3, c_y - 2),
+
+                        (c_x + 1, c_y - 2),
+                        (c_x + 2, c_y - 2),
+                        ]
+                for grid in self.grid:
+                    for cell in grid:
+                        x ,y = cell.x, cell.y
+                        cor = (x, y)
+                        if cor in map_42:
+                            cell.is_42 = True
 
     def get_neighbors(self, x, y):
         if self.get_cell(x, y) == 0:
@@ -50,7 +86,7 @@ class Maze:
         for n in axis_n:
             r, m = n
             cell = self.get_cell(r, m)
-            if cell != 0 and cell.visited == False:
+            if cell != 0 and cell.visited == False and cell.is_42 == False:
                 axis.append(self.get_cell(r, m))
         return axis
 
@@ -114,7 +150,10 @@ class MazeGenerator:
         file.close()
 
 
+
+
+
 if __name__ == "__main__":
-    maz = Maze(3,3,(0,0),(9,9))
+    maz = Maze(50,50,(0,0),(9,9))
     gene = MazeGenerator(maz)
     gene.write_to_file()
