@@ -72,6 +72,15 @@ class Generator_maze:
         for y in range(img.height):
             for x in range(img.width):
                 img.put_pixel(x, y, 0xbfbfbfff)
+    @staticmethod
+    def put_inside(x, y, cell_dim, cell_b, img, color):
+        start_h = y * cell_dim
+        start_w = x * cell_dim 
+        cell_width = cell_dim * (x + 1)
+        for y in range(start_h + cell_b, cell_dim + start_h + cell_b):
+            for x in range(start_w + cell_b, cell_width + cell_b):
+                img.put_pixel(x, y, color)
+
 
 
     
@@ -83,13 +92,12 @@ class Generator_maze:
         min_screen = min(screen_w, screen_h)
         max_cell = max(self.maze.width, self.maze.height)
         cell_dim = int((min_screen / max_cell) * 0.75)
-
         img_height = int(self.maze.height * cell_dim + 5)
         img_width = int(self.maze.width * cell_dim + 5)
         img = Image(mlx, mlx_ptr, img_width, img_height)
 
-        poss_h = int((1900 - self.maze.height * cell_dim) / 2)
-        poss_w = int((2200 - self.maze.width * cell_dim) / 2)
+        poss_h = int((1000 - self.maze.height * cell_dim) / 2)
+        poss_w = int((1000 - self.maze.width * cell_dim) / 2)
 
         Generator_maze.put_img(img)
         grid = self.maze.grid
@@ -98,13 +106,16 @@ class Generator_maze:
             for cell in cells:
                 x, y = cell.x, cell.y
                 if cell.is_42 == True:
-                    color = 0x00000000
+                    color = 0x0000000
+                    Generator_maze.put_inside(x, y, cell_dim, cell_b, img, color)
+
                 else:
                     color = 0xFADDD4FF
-                Generator_maze.put_north(x, y, cell_dim, cell_b, img, color)
-                Generator_maze.put_west(x, y, cell_dim, cell_b, img, color)
-
-        
+                    Generator_maze.put_north(x, y, cell_dim, cell_b, img, color)
+                    Generator_maze.put_east(x, y, cell_dim, cell_b, img, color)
+                    Generator_maze.put_west(x, y, cell_dim, cell_b, img, color)
+                    Generator_maze.put_south(x, y, cell_dim, cell_b, img, color)
+    
         mlx.mlx_put_image_to_window(mlx_ptr, mlx_wind, img.ptr, poss_w, poss_h)
 
 
@@ -112,11 +123,11 @@ class Generator_maze:
 
 mlx = Mlx()
 mlx_ptr = Mlx.mlx_init(mlx)
-mlx_wind = Mlx.mlx_new_window(mlx, mlx_ptr, 2200, 1900, "kary00s")
+mlx_wind = Mlx.mlx_new_window(mlx, mlx_ptr, 1000, 1000, "kary00s")
 
 
 
-maze = Maze(50, 50, (0,0), (29,29))
+maze = Maze(10, 10, (0,0), (0,0))
 border = Generator_maze(maze, mlx, mlx_ptr)
 
 
