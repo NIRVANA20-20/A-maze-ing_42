@@ -7,10 +7,11 @@ import sys
 import math
 import time
 
-def kill_it(key, _):
+def call_back(key, _):
     if key == 65507 or key == 65307:
         mlx.mlx_loop_exit(mlx_ptr) 
-
+    if key == 99:
+        Image.switch_color()
 
 
 class Image:
@@ -24,13 +25,24 @@ class Image:
     def put_pixel(self, x: int, y: int, color: int):
         offset = int((y * self.sl) + (x * (self.bpp // 8)))
         self.buffer[offset: offset + 4] = color.to_bytes(4, "little")
-        
+
+
+    def create_color(r: int, g: int, b: int) -> int:
+        col = 0xFF000000 | (r << 16) | (g << 8) | b
+        return col
+
+    # def switch_color():
+    #     r = 0
+    #     g = 100
+    #     b = 200
+    #     Image.create_color(r, g, b)
+
 
 class Generator_maze: 
     def __init__(self, maze, mlx, mlx_ptr):
         self.maze = maze
         self.cell_b = 4
-   
+
     @staticmethod
     def put_north(x, y, cell_dim, cell_b, img, color):
         start_h = y * cell_dim
@@ -71,7 +83,7 @@ class Generator_maze:
     def put_img(img):
         for y in range(img.height):
             for x in range(img.width):
-                img.put_pixel(x, y, 0xbfbfbfff)
+                img.put_pixel(x, y, Image.create_color(155, 53, 0))
     @staticmethod
     def put_inside(x, y, cell_dim, cell_b, img, color):
         start_h = y * cell_dim
@@ -86,14 +98,14 @@ class Generator_maze:
     
     def creat_cells(self):
 
-        cell_b = self.cell_b
-        val, screen_w, screen_h = mlx.mlx_get_screen_size(mlx_ptr)
+        _, screen_w, screen_h = mlx.mlx_get_screen_size(mlx_ptr)
 
         min_screen = min(screen_w, screen_h)
         max_cell = max(self.maze.width, self.maze.height)
         cell_dim = int((min_screen / max_cell) * 0.75)
-        img_height = int(self.maze.height * cell_dim + 5)
-        img_width = int(self.maze.width * cell_dim + 5)
+        cell_b = 4
+        img_height = int(self.maze.height * cell_dim + cell_b)
+        img_width = int(self.maze.width * cell_dim + cell_b)
         img = Image(mlx, mlx_ptr, img_width, img_height)
 
         poss_h = int((1000 - self.maze.height * cell_dim) / 2)
@@ -106,11 +118,11 @@ class Generator_maze:
             for cell in cells:
                 x, y = cell.x, cell.y
                 if cell.is_42 == True:
-                    color = 0x0000000
+                    color = Image.create_color(255, 128, 0)
                     Generator_maze.put_inside(x, y, cell_dim, cell_b, img, color)
 
                 else:
-                    color = 0xFADDD4FF
+                    color = Image.create_color(0, 0, 0)
                     Generator_maze.put_north(x, y, cell_dim, cell_b, img, color)
                     Generator_maze.put_east(x, y, cell_dim, cell_b, img, color)
                     Generator_maze.put_west(x, y, cell_dim, cell_b, img, color)
@@ -127,7 +139,7 @@ mlx_wind = Mlx.mlx_new_window(mlx, mlx_ptr, 1000, 1000, "kary00s")
 
 
 
-maze = Maze(10, 10, (0,0), (0,0))
+maze = Maze(24, 24, (0,0), (0,0))
 border = Generator_maze(maze, mlx, mlx_ptr)
 
 
@@ -135,5 +147,5 @@ border = Generator_maze(maze, mlx, mlx_ptr)
 border.creat_cells()
 
 
-mlx.mlx_key_hook(mlx_wind, kill_it, None)
+mlx.mlx_key_hook(mlx_wind, call_back, None)
 mlx.mlx_loop(mlx_ptr)
