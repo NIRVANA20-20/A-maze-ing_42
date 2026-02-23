@@ -7,11 +7,15 @@ import sys
 import math
 import time
 
+import random
+
 def call_back(key, _):
     if key == 65507 or key == 65307:
         mlx.mlx_loop_exit(mlx_ptr) 
     if key == 99:
-        Image.switch_color()
+        redrawing(border)
+        
+
 
 
 class Image:
@@ -31,13 +35,17 @@ class Image:
         col = 0xFF000000 | (r << 16) | (g << 8) | b
         return col
 
-    # def switch_color():
-    #     r = 0
-    #     g = 100
-    #     b = 200
-    #     Image.create_color(r, g, b)
-
-
+    def switch_color():
+        
+        list_r = [0, 20]
+        list_g = [204, 255]
+        list_b = [255, 204]
+        r = random.choice(list_r)
+        g = random.choice(list_g)
+        b = random.choice(list_b)
+        color = Image.create_color(r, g, b)
+        return color
+    
 class Generator_maze: 
     def __init__(self, maze, mlx, mlx_ptr):
         self.maze = maze
@@ -80,10 +88,10 @@ class Generator_maze:
                 img.put_pixel(x, y,  color)
 
     @staticmethod
-    def put_img(img):
+    def put_img(img, color):
         for y in range(img.height):
             for x in range(img.width):
-                img.put_pixel(x, y, Image.create_color(155, 53, 0))
+                img.put_pixel(x, y, color)
     @staticmethod
     def put_inside(x, y, cell_dim, cell_b, img, color):
         start_h = y * cell_dim
@@ -93,10 +101,8 @@ class Generator_maze:
             for x in range(start_w + cell_b, cell_width + cell_b):
                 img.put_pixel(x, y, color)
 
-
-
     
-    def creat_cells(self):
+    def creat_cells(self, color):
 
         _, screen_w, screen_h = mlx.mlx_get_screen_size(mlx_ptr)
 
@@ -107,28 +113,27 @@ class Generator_maze:
         img_height = int(self.maze.height * cell_dim + cell_b)
         img_width = int(self.maze.width * cell_dim + cell_b)
         img = Image(mlx, mlx_ptr, img_width, img_height)
-
+        color = Image.switch_color()
         poss_h = int((1000 - self.maze.height * cell_dim) / 2)
         poss_w = int((1000 - self.maze.width * cell_dim) / 2)
-
-        Generator_maze.put_img(img)
+        Generator_maze.put_img(img, color)
         grid = self.maze.grid
 
         for cells in grid:
             for cell in cells:
                 x, y = cell.x, cell.y
                 if cell.is_42 == True:
-                    color = Image.create_color(255, 128, 0)
+                    color = Image.create_color(0, 9, 0)
                     Generator_maze.put_inside(x, y, cell_dim, cell_b, img, color)
 
                 else:
-                    color = Image.create_color(0, 0, 0)
+                    color = Image.create_color(255, 255, 255)
                     Generator_maze.put_north(x, y, cell_dim, cell_b, img, color)
                     Generator_maze.put_east(x, y, cell_dim, cell_b, img, color)
                     Generator_maze.put_west(x, y, cell_dim, cell_b, img, color)
                     Generator_maze.put_south(x, y, cell_dim, cell_b, img, color)
-    
         mlx.mlx_put_image_to_window(mlx_ptr, mlx_wind, img.ptr, poss_w, poss_h)
+    
 
 
 
@@ -136,15 +141,15 @@ class Generator_maze:
 mlx = Mlx()
 mlx_ptr = Mlx.mlx_init(mlx)
 mlx_wind = Mlx.mlx_new_window(mlx, mlx_ptr, 1000, 1000, "kary00s")
-
-
-
-maze = Maze(24, 24, (0,0), (0,0))
+maze = Maze(20, 20, (0,0), (0,0))
 border = Generator_maze(maze, mlx, mlx_ptr)
 
 
+def redrawing(border):
+    color = Image.switch_color()
+    border.creat_cells(color)
 
-border.creat_cells()
+border.creat_cells(Image.switch_color())
 
 
 mlx.mlx_key_hook(mlx_wind, call_back, None)
