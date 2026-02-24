@@ -35,16 +35,29 @@ class Image:
         col = 0xFF000000 | (r << 16) | (g << 8) | b
         return col
 
-    def switch_color():
-        
-        list_r = [0, 20]
-        list_g = [204, 255]
-        list_b = [255, 204]
-        r = random.choice(list_r)
-        g = random.choice(list_g)
-        b = random.choice(list_b)
-        color = Image.create_color(r, g, b)
-        return color
+    def switch_theme():
+        list_thems = [  
+                        [Image.create_color(102, 255, 255),
+                        Image.create_color(0, 153, 153)],
+         
+                        [Image.create_color(255, 204, 255),
+                        Image.create_color(153, 0, 76)],
+         
+                        [Image.create_color(255, 178, 102),
+                        Image.create_color(153, 76, 0)],
+
+                        [Image.create_color(224, 224, 224),
+                        Image.create_color(64, 64, 64)],
+
+                        [Image.create_color(224, 224, 224),
+                        Image.create_color(64, 64, 64)]
+
+                        ]
+         
+        them = random.choice(list_thems)
+        color_bg = them[1]
+        color_42 = them[0]
+        return color_bg ,color_42 
     
 class Generator_maze: 
     def __init__(self, maze, mlx, mlx_ptr):
@@ -102,7 +115,7 @@ class Generator_maze:
                 img.put_pixel(x, y, color)
 
     
-    def creat_cells(self, color):
+    def creat_cells(self):
 
         _, screen_w, screen_h = mlx.mlx_get_screen_size(mlx_ptr)
 
@@ -113,18 +126,17 @@ class Generator_maze:
         img_height = int(self.maze.height * cell_dim + cell_b)
         img_width = int(self.maze.width * cell_dim + cell_b)
         img = Image(mlx, mlx_ptr, img_width, img_height)
-        color = Image.switch_color()
-        poss_h = int((1000 - self.maze.height * cell_dim) / 2)
-        poss_w = int((1000 - self.maze.width * cell_dim) / 2)
-        Generator_maze.put_img(img, color)
-        grid = self.maze.grid
+        color_bg, color_42 = Image.switch_theme()
 
+        poss_h = int((window_height - self.maze.height * cell_dim) / 2)
+        poss_w = int((window_width - self.maze.width * cell_dim) / 2)
+        Generator_maze.put_img(img, color_bg)
+        grid = self.maze.grid
         for cells in grid:
             for cell in cells:
                 x, y = cell.x, cell.y
                 if cell.is_42 == True:
-                    color = Image.create_color(0, 9, 0)
-                    Generator_maze.put_inside(x, y, cell_dim, cell_b, img, color)
+                    Generator_maze.put_inside(x, y, cell_dim, cell_b, img, color_42)
 
                 else:
                     color = Image.create_color(255, 255, 255)
@@ -140,16 +152,18 @@ class Generator_maze:
 
 mlx = Mlx()
 mlx_ptr = Mlx.mlx_init(mlx)
-mlx_wind = Mlx.mlx_new_window(mlx, mlx_ptr, 1000, 1000, "kary00s")
+window_height = 2000
+window_width = 2000
+mlx_wind = Mlx.mlx_new_window(mlx, mlx_ptr, window_height, window_width, "kary00s")
 maze = Maze(20, 20, (0,0), (0,0))
 border = Generator_maze(maze, mlx, mlx_ptr)
 
+color_bg, color_42 = Image.switch_theme()
 
 def redrawing(border):
-    color = Image.switch_color()
-    border.creat_cells(color)
+    border.creat_cells()
 
-border.creat_cells(Image.switch_color())
+border.creat_cells()
 
 
 mlx.mlx_key_hook(mlx_wind, call_back, None)
