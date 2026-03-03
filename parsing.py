@@ -1,6 +1,11 @@
 class DimensionsError(Exception):
     pass
 
+class FileNameError(Exception):
+    pass
+
+class PerfectWayError(Exception):
+    pass
 
 class EntryExitError(Exception):
     pass
@@ -10,7 +15,6 @@ def read_config():
     file = open('config.txt', "r")
     f = file.read()
     lst = f.split("\n")
-    print(lst)
     values = []
 
     for element in lst:
@@ -21,10 +25,23 @@ def read_config():
         width, height = check_dimensions(values[0], values[1])
         check_entry(values[2], width, height)
         check_exit(values[3], width, height)
-    except (DimensionsError, EntryExitError) as error:
+        check_file(values[4])
+        check_perfect(values[5])
+    except (DimensionsError, EntryExitError, FileNameError, PerfectWayError) as error:
         print(error)
-    print(values)
 
+def check_perfect(answer):
+    if answer == "True":
+        pass ############## put the perfect way
+    elif answer == "False":
+        pass ############    put the unperfect way
+    else:
+        raise PerfectWayError("PERFECT = (the answer should be 'True' or 'False') ")
+def check_file(file_name):
+    if len(file_name) > 0:
+        pass
+    else:
+        raise FileNameError("File name cant be empty")
 
 def check_entry(entry, width, height):
     entry_splited = entry.split(",")
