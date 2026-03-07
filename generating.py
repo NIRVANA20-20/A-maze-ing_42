@@ -1,7 +1,7 @@
 import random
 
+import parsing
 import curses
-
 class Cell:
     def __init__(self, x, y):
         self.x = x
@@ -24,6 +24,7 @@ class Cell:
 
     def __repr__(self):
         return f"Cell({self.x},{self.y})"
+
 
 class Maze:
     def __init__(self, width, height, entry, exit_m):
@@ -89,7 +90,14 @@ class Maze:
             if cell != 0 and cell.visited == False and cell.is_42 == False:
                 axis.append(self.get_cell(r, m))
         return axis
-
+    
+    def convertor(self):
+        try:
+            entry = str(f"{x_entry} , {y_entry}")
+            exit = str(f"{x_exit} , {y_exit}")
+            return entry, exit
+        except Exception as e:
+            print(e)
 
 class MazeGenerator:
     def __init__(self, maze_m):
@@ -136,7 +144,7 @@ class MazeGenerator:
                 stack_cell.append(cell_r)
 
 
-    def write_to_file(self):
+    def write_to_file(self, entry, exit):
         maze = self.maze
         list_grid = maze.grid
         self.dfs_generator()
@@ -147,13 +155,18 @@ class MazeGenerator:
                 column += hex(wall.to_hex())[2:]
             column += '\n'
             file.write(column)
+        file.write(f"\n{entry}\n")
+        file.write(exit)
         file.close()
-
-
-
-
-
+        
+    
 if __name__ == "__main__":
-    maz = Maze(50,50,(0,0),(9,9))
-    gene = MazeGenerator(maz)
-    gene.write_to_file()
+    try:
+        width, height, (x_entry, y_entry), (x_exit, y_exit), file_name = parsing.read_config()
+        maz = Maze(width, height, (x_entry, y_entry), (x_exit, y_exit))
+        generator = MazeGenerator(maz)
+        entry, exit = maz.convertor()
+        generator.write_to_file(entry, exit)
+
+    except Exception as e :
+        print(e)

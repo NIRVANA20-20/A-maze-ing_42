@@ -1,12 +1,8 @@
 
 from mlx.mlx import Mlx
 
-from cell import Cell, Maze
-
-import sys
-import math
-import time
-
+from generating import Cell, Maze
+import parsing
 import random
 
 def call_back(key, _):
@@ -149,22 +145,27 @@ class Generator_maze:
 
 
 
+def read_from_file(height, width):
+    file = open("output_maze.txt", 'r')
+    readed = file.read()
+    i =0 
+    while i < height:
+        print(readed.split("\n")[i])
+        i += 1
+    file.close()
 
+height ,width , entry, exit, file_name = parsing.read_config()
+read_from_file(height, width)
 mlx = Mlx()
 mlx_ptr = Mlx.mlx_init(mlx)
 window_height = 2000
 window_width = 2000
 mlx_wind = Mlx.mlx_new_window(mlx, mlx_ptr, window_height, window_width, "kary00s")
-maze = Maze(20, 20, (0,0), (0,0))
+maze = Maze(width, height, entry, exit)
 border = Generator_maze(maze, mlx, mlx_ptr)
-
 color_bg, color_42 = Image.switch_theme()
-
 def redrawing(border):
     border.creat_cells()
-
 border.creat_cells()
-
-
 mlx.mlx_key_hook(mlx_wind, call_back, None)
 mlx.mlx_loop(mlx_ptr)

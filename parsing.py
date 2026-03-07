@@ -16,17 +16,19 @@ def read_config():
     f = file.read()
     lst = f.split("\n")
     values = []
-
+    file_elements = ["WIDTH", "HEIGHT", "ENTRY", "EXIT", "OUTPUT_FILE", "PERFECT"]
     for element in lst:
         if '#' in element:
             continue
-        values.append(element.split("=")[1])
+        if element.split("=")[0] in file_elements:
+            values.append(element.split("=")[1])
     try:
         width, height = check_dimensions(values[0], values[1])
-        check_entry(values[2], width, height)
-        check_exit(values[3], width, height)
-        check_file(values[4])
+        x_entry, y_entry = check_entry(values[2], width, height)
+        x_exit, y_exit = check_exit(values[3], width, height)
+        file_name = check_file(values[4])
         check_perfect(values[5])
+        return width, height, (x_entry, y_entry), (x_exit, y_exit), file_name
     except (DimensionsError, EntryExitError, FileNameError, PerfectWayError) as error:
         print(error)
 
@@ -39,9 +41,11 @@ def check_perfect(answer):
         raise PerfectWayError("PERFECT = (the answer should be 'True' or 'False') ")
 def check_file(file_name):
     if len(file_name) > 0:
-        pass
+        return file_name
+        
     else:
         raise FileNameError("File name cant be empty")
+
 
 def check_entry(entry, width, height):
     entry_splited = entry.split(",")
@@ -65,6 +69,7 @@ def check_entry(entry, width, height):
     if y > height or y < 0:
         raise EntryExitError(f"The entery y can`t be : {y}"
               f"  => (max : {height}) and (min : 1)")
+    return x, y
 
 
 def check_exit(exit, width, height):
@@ -89,7 +94,7 @@ def check_exit(exit, width, height):
     if y > height or y < 0:
         raise EntryExitError(f"The exit y can`t be : {y}"
               f"  => (max : {height}) and (min : 1)")
-
+    return x, y
 
 def check_dimensions(w, h):
     try:
@@ -108,5 +113,3 @@ def check_dimensions(w, h):
         raise DimensionsError(f"The height can`t be : {height}"
                               " => (max : 200) and (min : 1)")
     return width, height
-
-read_config()
