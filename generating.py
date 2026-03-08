@@ -2,11 +2,13 @@ import random
 
 import parsing
 import curses
+
+
 class Cell:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.walls = {'N': True, 'E': True, 'S': True, 'W': True}
+        self.walls = {"N": True, "E": True, "S": True, "W": True}
         self.visited = False
         self.is_42 = False
 
@@ -14,12 +16,12 @@ class Cell:
         if derection in self.walls:
             self.walls[derection] = False
 
-    def to_hex(self) :
-        bit_map = ['W', 'S', 'E', 'N']
+    def to_hex(self):
+        bit_map = ["W", "S", "E", "N"]
         value = 0
-        for i, dir in enumerate(bit_map):
-            if self.walls[dir] == True:
-                value |= (1 << i)
+        for i, pos in enumerate(bit_map):
+            if self.walls[pos] == True:
+                value |= 1 << i
         return value
 
     def __repr__(self):
@@ -31,58 +33,52 @@ class Maze:
         self.width = width
         self.height = height
         self.grid: List[List[Cell]] = [
-            [Cell(x, y) for y in range(height)]
-            for x in range(width)]
+            [Cell(x, y) for y in range(height)] for x in range(width)
+        ]
         self.entry = entry
         self.exit = exit_m
         self.is_42_map()
 
     def get_cell(self, x, y):
-        if 0 <= x < self.width and  0 <= y < self.height:
+        if 0 <= x < self.width and 0 <= y < self.height:
             return self.grid[x][y]
         return 0
+
     def is_42_map(self):
 
-            if self.width >= 9 and self.height >= 7:
-                c_x, c_y = int(self.width / 2), int(self.height / 2)
-                map_42 = [
-                        (c_x - 1, c_y),
-                        (c_x - 2, c_y),
-                        (c_x - 3, c_y),
-
-                        (c_x + 1, c_y),
-                        (c_x + 2, c_y),
-                        (c_x + 3, c_y),
-
-                        (c_x - 1, c_y + 1),
-                        (c_x - 1, c_y + 2),
-
-                        (c_x + 1, c_y + 1),
-                        (c_x + 1, c_y + 2),
-
-                        (c_x + 2, c_y + 2),
-                        (c_x + 3, c_y + 2),
-
-                        (c_x - 3, c_y - 1),
-                        (c_x - 3, c_y - 2),
-
-                        (c_x + 3, c_y - 1),
-                        (c_x + 3, c_y - 2),
-
-                        (c_x + 1, c_y - 2),
-                        (c_x + 2, c_y - 2),
-                        ]
-                for grid in self.grid:
-                    for cell in grid:
-                        x ,y = cell.x, cell.y
-                        cor = (x, y)
-                        if cor in map_42:
-                            cell.is_42 = True
+        if self.width >= 9 and self.height >= 7:
+            c_x, c_y = int(self.width / 2), int(self.height / 2)
+            map_42 = [
+                (c_x - 1, c_y),
+                (c_x - 2, c_y),
+                (c_x - 3, c_y),
+                (c_x + 1, c_y),
+                (c_x + 2, c_y),
+                (c_x + 3, c_y),
+                (c_x - 1, c_y + 1),
+                (c_x - 1, c_y + 2),
+                (c_x + 1, c_y + 1),
+                (c_x + 1, c_y + 2),
+                (c_x + 2, c_y + 2),
+                (c_x + 3, c_y + 2),
+                (c_x - 3, c_y - 1),
+                (c_x - 3, c_y - 2),
+                (c_x + 3, c_y - 1),
+                (c_x + 3, c_y - 2),
+                (c_x + 1, c_y - 2),
+                (c_x + 2, c_y - 2),
+            ]
+            for grid in self.grid:
+                for cell in grid:
+                    x, y = cell.x, cell.y
+                    cor = (x, y)
+                    if cor in map_42:
+                        cell.is_42 = True
 
     def get_neighbors(self, x, y):
         if self.get_cell(x, y) == 0:
             return 0
-        axis_n = [(x, y-1), (x+1, y), (x, y+1), (x-1, y)]
+        axis_n = [(x, y - 1), (x + 1, y), (x, y + 1), (x - 1, y)]
         axis = []
         for n in axis_n:
             r, m = n
@@ -90,7 +86,7 @@ class Maze:
             if cell != 0 and cell.visited == False and cell.is_42 == False:
                 axis.append(self.get_cell(r, m))
         return axis
-    
+
     def convertor(self):
         try:
             entry = str(f"{x_entry} , {y_entry}")
@@ -98,6 +94,7 @@ class Maze:
             return entry, exit
         except Exception as e:
             print(e)
+
 
 class MazeGenerator:
     def __init__(self, maze_m):
@@ -110,25 +107,24 @@ class MazeGenerator:
         x1, y1 = random_cell.x, random_cell.y
         if y == y1:
             if x > x1:
-                random_cell.open_wall('E')
-                cell.open_wall('W')
+                random_cell.open_wall("E")
+                cell.open_wall("W")
             else:
-                random_cell.open_wall('W')
-                cell.open_wall('E')
+                random_cell.open_wall("W")
+                cell.open_wall("E")
         if x == x1:
             if y > y1:
-                random_cell.open_wall('S')
-                cell.open_wall('N')
+                random_cell.open_wall("S")
+                cell.open_wall("N")
             else:
-                random_cell.open_wall('N')
-                cell.open_wall('S') 
-
+                random_cell.open_wall("N")
+                cell.open_wall("S")
 
     def dfs_generator(self):
         x = 0
-        y = 0 
-        stack_cell,  maze_generate  = self.stack, self.maze
-        start = maze_generate.get_cell(x,y)
+        y = 0
+        stack_cell, maze_generate = self.stack, self.maze
+        start = maze_generate.get_cell(x, y)
         start.visited = True
         stack_cell.append(start)
         while stack_cell:
@@ -143,30 +139,31 @@ class MazeGenerator:
                 MazeGenerator.dfs_open_wall(cell, cell_r)
                 stack_cell.append(cell_r)
 
-
     def write_to_file(self, entry, exit):
         maze = self.maze
         list_grid = maze.grid
         self.dfs_generator()
-        file = open("output_maze.txt", 'w')
+        file = open("output_maze.txt", "w")
         for cell in list_grid:
             column = ""
             for wall in cell:
                 column += hex(wall.to_hex())[2:]
-            column += '\n'
+            column += "\n"
             file.write(column)
         file.write(f"\n{entry}\n")
         file.write(exit)
         file.close()
-        
-    
+
+
 if __name__ == "__main__":
     try:
-        width, height, (x_entry, y_entry), (x_exit, y_exit), file_name = parsing.read_config()
+        width, height, (x_entry, y_entry), (x_exit, y_exit), file_name = (
+            parsing.read_config()
+        )
         maz = Maze(width, height, (x_entry, y_entry), (x_exit, y_exit))
         generator = MazeGenerator(maz)
         entry, exit = maz.convertor()
         generator.write_to_file(entry, exit)
 
-    except Exception as e :
-        print(e)
+    except Exception as e:
+        print("Error", e)

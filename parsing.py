@@ -1,24 +1,27 @@
 class DimensionsError(Exception):
     pass
 
+
 class FileNameError(Exception):
     pass
 
+
 class PerfectWayError(Exception):
     pass
+
 
 class EntryExitError(Exception):
     pass
 
 
 def read_config():
-    file = open('config.txt', "r")
+    file = open("config.txt", "r")
     f = file.read()
     lst = f.split("\n")
     values = []
     file_elements = ["WIDTH", "HEIGHT", "ENTRY", "EXIT", "OUTPUT_FILE", "PERFECT"]
     for element in lst:
-        if '#' in element:
+        if "#" in element:
             continue
         if element.split("=")[0] in file_elements:
             values.append(element.split("=")[1])
@@ -32,17 +35,20 @@ def read_config():
     except (DimensionsError, EntryExitError, FileNameError, PerfectWayError) as error:
         print(error)
 
+
 def check_perfect(answer):
     if answer == "True":
-        pass ############## put the perfect way
+        pass  ############## put the perfect way
     elif answer == "False":
-        pass ############    put the unperfect way
+        pass  ############    put the unperfect way
     else:
         raise PerfectWayError("PERFECT = (the answer should be 'True' or 'False') ")
+
+
 def check_file(file_name):
     if len(file_name) > 0:
         return file_name
-        
+
     else:
         raise FileNameError("File name cant be empty")
 
@@ -64,11 +70,13 @@ def check_entry(entry, width, height):
         raise EntryExitError(f"The entry y must be a number: not {y_height}")
 
     if x > width or x < 0:
-        raise EntryExitError(f"The entery x can`t be : {x}"
-              f"  => (max : {width}) and (min : 1)")
+        raise EntryExitError(
+            f"The entery x can`t be : {x}" f"  => (max : {width}) and (min : 1)"
+        )
     if y > height or y < 0:
-        raise EntryExitError(f"The entery y can`t be : {y}"
-              f"  => (max : {height}) and (min : 1)")
+        raise EntryExitError(
+            f"The entery y can`t be : {y}" f"  => (max : {height}) and (min : 1)"
+        )
     return x, y
 
 
@@ -89,12 +97,15 @@ def check_exit(exit, width, height):
         raise EntryExitError(f"The exit y must be a number: not {y_height}")
 
     if x > width or x < 0:
-        raise EntryExitError(f"The exit x can`t be : {x}"
-              f"  => (max : {width}) and (min : 1)")
+        raise EntryExitError(
+            f"The exit x can`t be : {x}" f"  => (max : {width}) and (min : 1)"
+        )
     if y > height or y < 0:
-        raise EntryExitError(f"The exit y can`t be : {y}"
-              f"  => (max : {height}) and (min : 1)")
+        raise EntryExitError(
+            f"The exit y can`t be : {y}" f"  => (max : {height}) and (min : 1)"
+        )
     return x, y
+
 
 def check_dimensions(w, h):
     try:
@@ -107,9 +118,11 @@ def check_dimensions(w, h):
         raise DimensionsError(f"The height must be a number not: {h})")
 
     if width > 200 or width < 1:
-        raise DimensionsError(f"The width can`t be : {width}"
-                              "  => (max : 200) and (min : 1)")
+        raise DimensionsError(
+            f"The width can`t be : {width}" "  => (max : 200) and (min : 1)"
+        )
     elif height > 200 or height < 1:
-        raise DimensionsError(f"The height can`t be : {height}"
-                              " => (max : 200) and (min : 1)")
+        raise DimensionsError(
+            f"The height can`t be : {height}" " => (max : 200) and (min : 1)"
+        )
     return width, height
