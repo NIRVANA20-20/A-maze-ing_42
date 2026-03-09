@@ -141,7 +141,6 @@ class GeneratorMaze:
     def read_from_file(y, flage):
         with open("output_maze.txt", "r") as file:
             rows = file.read().split("\n")
-            print(rows)
             return rows[y]
 
     def remove_wall(self, img, cell_b, cell_dim, color, poss_h, poss_w):
@@ -149,20 +148,17 @@ class GeneratorMaze:
         y = 0
         width = self.maze.width
         height = self.maze.height
-        print("qweewerreegrtwert", width, height)
-        bit_map = ["N", "E", "S", "W"]
-        bytes_0 = "0000"
+        bit_map = ["W", "S", "E", "N"]
         while y < height:
             row = GeneratorMaze.read_from_file(y, 1)
+            print(row)
             x = 0
             while x < width:
-                print("xxX", width)
-                value_bin = bin(int(row[x], 16))[2:]
-                value = value_bin + bytes_0
-                value_final = value[:4]
-                print(value_final)
+                value_final = format(int(row[x], 16), "04b")
                 for i, pos in enumerate(bit_map):
                     if value_final[i] == "0":
+
+                        print(value_final, int(row[x], 16), pos)
                         GeneratorMaze.remove_wall_helper(
                             x, y, pos, img, cell_b, cell_dim, color, poss_h, poss_w
                         )
