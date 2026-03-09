@@ -26,7 +26,7 @@ def read_config():
         if element.split("=")[0] in file_elements:
             values.append(element.split("=")[1])
     try:
-        width, height = check_dimensions(values[0], values[1])
+        height, width = check_dimensions(values[0], values[1])
         x_entry, y_entry = check_entry(values[2], width, height)
         x_exit, y_exit = check_exit(values[3], width, height)
         file_name = check_file(values[4])

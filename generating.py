@@ -1,7 +1,7 @@
 import random
 
 import parsing
-import curses
+import sys
 
 
 class Cell:
@@ -17,11 +17,14 @@ class Cell:
             self.walls[derection] = False
 
     def to_hex(self):
-        bit_map = ["W", "S", "E", "N"]
+        bit_map = ["N", "E", "S", "W"]
         value = 0
         for i, pos in enumerate(bit_map):
             if self.walls[pos] == True:
                 value |= 1 << i
+        # if self.is_42 == True:
+        # print(self.walls)
+        # print(value , f"({self.x}, {self.y})")
         return value
 
     def __repr__(self):
@@ -32,21 +35,20 @@ class Maze:
     def __init__(self, width, height, entry, exit_m):
         self.width = width
         self.height = height
-        self.grid: List[List[Cell]] = [
-            [Cell(x, y) for y in range(height)] for x in range(width)
-        ]
+        print("zxcvbn", self.width, self.height)
+        self.grid = [[Cell(x, y) for x in range(width)] for y in range(height)]
         self.entry = entry
         self.exit = exit_m
         self.is_42_map()
 
     def get_cell(self, x, y):
         if 0 <= x < self.width and 0 <= y < self.height:
-            return self.grid[x][y]
+            return self.grid[y][x]
         return 0
 
     def is_42_map(self):
 
-        if self.width >= 9 and self.height >= 7:
+        if self.width >= 10 and self.height >= 8:
             c_x, c_y = int(self.width / 2), int(self.height / 2)
             map_42 = [
                 (c_x - 1, c_y),
@@ -76,15 +78,15 @@ class Maze:
                         cell.is_42 = True
 
     def get_neighbors(self, x, y):
-        if self.get_cell(x, y) == 0:
-            return 0
+
         axis_n = [(x, y - 1), (x + 1, y), (x, y + 1), (x - 1, y)]
+
         axis = []
         for n in axis_n:
-            r, m = n
-            cell = self.get_cell(r, m)
+            r, c = n
+            cell = self.get_cell(r, c)
             if cell != 0 and cell.visited == False and cell.is_42 == False:
-                axis.append(self.get_cell(r, m))
+                axis.append(cell)
         return axis
 
     def convertor(self):
@@ -105,6 +107,15 @@ class MazeGenerator:
     def dfs_open_wall(cell, random_cell):
         x, y = cell.x, cell.y
         x1, y1 = random_cell.x, random_cell.y
+
+        if x == x1:
+            if y > y1:
+                random_cell.open_wall("S")
+                cell.open_wall("N")
+
+            else:
+                random_cell.open_wall("N")
+                cell.open_wall("S")
         if y == y1:
             if x > x1:
                 random_cell.open_wall("E")
@@ -112,13 +123,6 @@ class MazeGenerator:
             else:
                 random_cell.open_wall("W")
                 cell.open_wall("E")
-        if x == x1:
-            if y > y1:
-                random_cell.open_wall("S")
-                cell.open_wall("N")
-            else:
-                random_cell.open_wall("N")
-                cell.open_wall("S")
 
     def dfs_generator(self):
         x = 0
@@ -144,10 +148,11 @@ class MazeGenerator:
         list_grid = maze.grid
         self.dfs_generator()
         file = open("output_maze.txt", "w")
-        for cell in list_grid:
+        for grid in list_grid:
             column = ""
-            for wall in cell:
-                column += hex(wall.to_hex())[2:]
+            for cell in grid:
+                column += hex(cell.to_hex())[2:]
+
             column += "\n"
             file.write(column)
         file.write(f"\n{entry}\n")
@@ -156,14 +161,10 @@ class MazeGenerator:
 
 
 if __name__ == "__main__":
-    try:
-        width, height, (x_entry, y_entry), (x_exit, y_exit), file_name = (
-            parsing.read_config()
-        )
-        maz = Maze(width, height, (x_entry, y_entry), (x_exit, y_exit))
-        generator = MazeGenerator(maz)
-        entry, exit = maz.convertor()
-        generator.write_to_file(entry, exit)
-
-    except Exception as e:
-        print("Error", e)
+    width, height, (x_entry, y_entry), (x_exit, y_exit), file_name = (
+        parsing.read_config()
+    )
+    maz = Maze(width, height, (x_entry, y_entry), (x_exit, y_exit))
+    generator = MazeGenerator(maz)
+    entry, exit = maz.convertor()
+    generator.write_to_file(entry, exit)
