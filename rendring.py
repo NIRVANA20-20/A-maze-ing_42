@@ -52,39 +52,39 @@ class GeneratorMaze:
         self.cell_b = 4
 
     @staticmethod
-    def put_north(x, y, cell_dim, cell_b, img, color):
+    def put_north(x, y, cell_dim, cell_b, cell_br, img, color):
         start_h = y * cell_dim
         start_w = x * cell_dim
         cell_width = cell_dim * (x + 1)
         for y in range(start_h, cell_b + start_h):
-            for x in range(start_w, cell_width + cell_b):
+            for x in range(start_w + cell_br, cell_width + cell_b - cell_br):
                 img.put_pixel(x, y, color)
 
     @staticmethod
-    def put_west(x, y, cell_dim, cell_b, img, color):
+    def put_west(x, y, cell_dim, cell_b, cell_br, img, color):
         start_h = y * cell_dim
         start_w = x * cell_dim
         cell_height = cell_dim * (y + 1)
         for x in range(start_w, start_w + cell_b):
-            for y in range(start_h, cell_height):
+            for y in range(start_h + cell_br, cell_height + cell_b - cell_br):
                 img.put_pixel(x, y, color)
 
     @staticmethod
-    def put_south(x, y, cell_dim, cell_b, img, color):
+    def put_south(x, y, cell_dim, cell_b, cell_br, img, color):
         start_h = y * cell_dim
         start_w = cell_dim * x
         cell_width = cell_dim * (x + 1)
-        for x in range(start_w, cell_width):
+        for x in range(start_w + cell_br, cell_width + cell_b - cell_br):
             for y in range(start_h + cell_dim, cell_b + cell_dim + start_h):
                 img.put_pixel(x, y, color)
 
     @staticmethod
-    def put_east(x, y, cell_dim, cell_b, img, color):
+    def put_east(x, y, cell_dim, cell_b, cell_br, img, color):
         start_h = y * cell_dim
         start_w = cell_dim * (x + 1)
         cell_height = cell_dim * (y + 1)
         for x in range(start_w, start_w + cell_b):
-            for y in range(start_h, cell_height + cell_b):
+            for y in range(start_h + cell_br, cell_height + cell_b - cell_br):
                 img.put_pixel(x, y, color)
 
     @staticmethod
@@ -113,29 +113,25 @@ class GeneratorMaze:
                 x, y = cell.x, cell.y
                 if cell.is_42 == True:
                     GeneratorMaze.put_inside(x, y, cell_dim, cell_b, img, color_42)
-                    GeneratorMaze.put_north(x, y, cell_dim, cell_b, img, color_42)
-                    GeneratorMaze.put_east(x, y, cell_dim, cell_b, img, color_42)
-                    GeneratorMaze.put_west(x, y, cell_dim, cell_b, img, color_42)
-                    GeneratorMaze.put_south(x, y, cell_dim, cell_b, img, color_42)
 
                 else:
                     color = Image.create_color(255, 255, 255)
-                    GeneratorMaze.put_north(x, y, cell_dim, cell_b, img, color)
-                    GeneratorMaze.put_east(x, y, cell_dim, cell_b, img, color)
-                    GeneratorMaze.put_west(x, y, cell_dim, cell_b, img, color)
-                    GeneratorMaze.put_south(x, y, cell_dim, cell_b, img, color)
+                    GeneratorMaze.put_north(x, y, cell_dim, cell_b, 0, img, color)
+                    GeneratorMaze.put_east(x, y, cell_dim, cell_b, 0, img, color)
+                    GeneratorMaze.put_west(x, y, cell_dim, cell_b, 0, img, color)
+                    GeneratorMaze.put_south(x, y, cell_dim, cell_b, 0, img, color)
         mlx.mlx_put_image_to_window(mlx_ptr, mlx_wind, img.ptr, poss_w, poss_h)
 
     @staticmethod
     def remove_wall_helper(x, y, pos, img, cell_b, cell_dim, color, poss_h, poss_w):
         if pos == "N":
-            GeneratorMaze.put_north(x, y, cell_dim, cell_b, img, color)
+            GeneratorMaze.put_north(x, y, cell_dim, cell_b, cell_b, img, color)
         elif pos == "E":
-            GeneratorMaze.put_east(x, y, cell_dim, cell_b, img, color)
+            GeneratorMaze.put_east(x, y, cell_dim, cell_b, cell_b, img, color)
         elif pos == "W":
-            GeneratorMaze.put_west(x, y, cell_dim, cell_b, img, color)
+            GeneratorMaze.put_west(x, y, cell_dim, cell_b, cell_b, img, color)
         elif pos == "S":
-            GeneratorMaze.put_south(x, y, cell_dim, cell_b, img, color)
+            GeneratorMaze.put_south(x, y, cell_dim, cell_b, cell_b, img, color)
 
     @staticmethod
     def read_from_file(y, flage):

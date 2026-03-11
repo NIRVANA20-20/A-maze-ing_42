@@ -22,9 +22,6 @@ class Cell:
         for i, pos in enumerate(bit_map):
             if self.walls[pos] == True:
                 value |= 1 << i
-        # if self.is_42 == True:
-        # print(self.walls)
-        # print(value , f"({self.x}, {self.y})")
         return value
 
     def __repr__(self):

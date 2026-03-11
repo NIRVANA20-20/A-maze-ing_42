@@ -117,11 +117,11 @@ def check_dimensions(w, h):
     except ValueError:
         raise DimensionsError(f"The height must be a number not: {h})")
 
-    if width > 200 or width < 1:
+    if width > 1200 or width < 1:
         raise DimensionsError(
             f"The width can`t be : {width}" "  => (max : 200) and (min : 1)"
         )
-    elif height > 200 or height < 1:
+    elif height > 1200 or height < 1:
         raise DimensionsError(
             f"The height can`t be : {height}" " => (max : 200) and (min : 1)"
         )
