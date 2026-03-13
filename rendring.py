@@ -8,9 +8,11 @@ import sys
 def call_back(key, _):
     if key == 65507 or key == 65307:
         mlx.mlx_loop_exit(mlx_ptr)
-    if key == 99:
+    if key == 65293:
+        color_bg, color_42 =  Image.switch_theme()
         redrawing(border, maze, 0, color_bg, color_42)
     if key == 97:
+
         redrawing(border, maze, 1, color_bg, color_42)
     print(key)
 
@@ -22,15 +24,25 @@ class Image:
         self.mlx_ptr = mlx_ptr
         self.ptr = mlx.mlx_new_image(mlx_ptr, width, height)
         self.buffer, self.bpp, self.sl, self.format = mlx.mlx_get_data_addr(self.ptr)
+    
+    @staticmethod
+    def put_first_affiche():
+        img, _, _ = mlx.mlx_png_file_to_image(mlx_ptr, "maze_affiche.png")
+        mlx.mlx_put_image_to_window(mlx_ptr, mlx_wind, img, 0, 200)
 
     def put_pixel(self, x: int, y: int, color: int):
         offset = int((y * self.sl) + (x * (self.bpp // 8)))
-        self.buffer[offset : offset + 4] = color.to_bytes(4, "little")
-
+        self.buffer[offset: offset + 4] = color.to_bytes(4, "little")
+    
+    @staticmethod
     def create_color(r: int, g: int, b: int) -> int:
         col = 0xFF000000 | (r << 16) | (g << 8) | b
         return col
 
+    # @staticmethod
+    # def get_bg_image():
+
+    @staticmethod
     def switch_theme():
         list_thems = [
             [Image.create_color(102, 255, 255), Image.create_color(0, 153, 153)],
@@ -43,7 +55,7 @@ class Image:
         them = random.choice(list_thems)
         color_bg = them[1]
         color_42 = them[0]
-        return color_bg, color_42
+        return color_bg, color_42 
 
 
 class GeneratorMaze:
@@ -103,7 +115,7 @@ class GeneratorMaze:
                 img.put_pixel(x, y, color)
 
     def creat_cells(self, img, cell_b, cell_dim, color_42, color_bg):
-        poss_h = int((window_height - self.maze.height * cell_dim) / 2)
+        poss_h = 5
         poss_w = int((window_width - self.maze.width * cell_dim) / 2)
         grid = self.maze.grid
 
@@ -111,7 +123,7 @@ class GeneratorMaze:
         for cells in grid:
             for cell in cells:
                 x, y = cell.x, cell.y
-                if cell.is_42 == True:
+                if cell.is_42 is True:
                     GeneratorMaze.put_inside(x, y, cell_dim, cell_b, img, color_42)
 
                 else:
@@ -123,7 +135,7 @@ class GeneratorMaze:
         mlx.mlx_put_image_to_window(mlx_ptr, mlx_wind, img.ptr, poss_w, poss_h)
 
     @staticmethod
-    def remove_wall_helper(x, y, pos, img, cell_b, cell_dim, color, poss_h, poss_w):
+    def remove_wall_helper(x, y, pos, img, cell_b, cell_dim, color):
         if pos == "N":
             GeneratorMaze.put_north(x, y, cell_dim, cell_b, cell_b, img, color)
         elif pos == "E":
@@ -156,7 +168,7 @@ class GeneratorMaze:
 
                         print(value_final, int(row[x], 16), pos)
                         GeneratorMaze.remove_wall_helper(
-                            x, y, pos, img, cell_b, cell_dim, color, poss_h, poss_w
+                            x, y, pos, img, cell_b, cell_dim, color
                         )
                 x += 1
             y += 1
@@ -173,7 +185,7 @@ def redrawing(border, maze, flage, color_bg, color_42):
     cell_b = 4
     img_height = int(maze.height * cell_dim + cell_b)
     img_width = int(maze.width * cell_dim + cell_b)
-    poss_h = int((window_height - maze.height * cell_dim) / 2)
+    poss_h = 5
     poss_w = int((window_width - maze.width * cell_dim) / 2)
 
     img = Image(mlx, mlx_ptr, img_width, img_height)
@@ -181,8 +193,6 @@ def redrawing(border, maze, flage, color_bg, color_42):
         border.creat_cells(img, cell_b, cell_dim, color_42, color_bg)
     if flage == 1:
         border.remove_wall(img, cell_b, cell_dim, color_bg, poss_h, poss_w)
-
-
 color_bg, color_42 = Image.switch_theme()
 width, height, entry, exit, file_name = parsing.read_config()
 # read_from_file(height, width)
@@ -190,11 +200,12 @@ mlx = Mlx()
 mlx_ptr = Mlx.mlx_init(mlx)
 window_height = 2000
 window_width = 2000
-mlx_wind = Mlx.mlx_new_window(mlx, mlx_ptr, window_height, window_width, "kary00s")
+mlx_wind = Mlx.mlx_new_window(mlx, mlx_ptr, window_width, window_height, "kary00s")
 maze = Maze(width, height, entry, exit)
 maze.is_42_map()
 border = GeneratorMaze(maze, mlx, mlx_ptr)
 color_bg, color_42 = Image.switch_theme()
 
+Image.put_first_affiche()
 mlx.mlx_key_hook(mlx_wind, call_back, None)
 mlx.mlx_loop(mlx_ptr)
