@@ -20,29 +20,25 @@ def call_back(key, _):
     if key == 65293:
         Theme.switch_theme()
         redrawing(border, maze, 0, Theme.color_bg, Theme.color_42)
-    if key == 97:
-        Theme.switch_theme()
+    if key == 99:
         redrawing(border, maze, 0, Theme.color_bg, Theme.color_42)
         redrawing(border, maze, 1, Theme.color_bg, Theme.color_42)
+        Theme.switch_theme()
     if key == 32:
         generate_ouput_file()
         redrawing(border, maze, 0, Theme.color_bg, Theme.color_42)
         redrawing(border, maze, 1, Theme.color_bg, Theme.color_42)
 
 
-    print(key)
-
-
-
 class Image:
-    
+
     def __init__(self, mlx: Mlx, mlx_ptr, width, height):
         self.width = width
         self.height = height
         self.mlx_ptr = mlx_ptr
         self.ptr = mlx.mlx_new_image(mlx_ptr, width, height)
         self.buffer, self.bpp, self.sl, self.format = mlx.mlx_get_data_addr(self.ptr)
-    
+
     @staticmethod
     def put_first_affiche(file_name):
         abs_path = os.path.abspath(".") + "/images/" + file_name
@@ -52,20 +48,26 @@ class Image:
     def put_pixel(self, x: int, y: int, color: int):
         offset = int((y * self.sl) + (x * (self.bpp // 8)))
         self.buffer[offset: offset + 4] = color.to_bytes(4, "little")
-    
+
     @staticmethod
     def create_color(r: int, g: int, b: int) -> int:
         col = 0xFF000000 | (r << 16) | (g << 8) | b
         return col
 
+
 class Theme:
     themes = [
-            (Image.create_color(102, 255, 255), Image.create_color(0, 153, 153)),
-            (Image.create_color(255, 204, 255), Image.create_color(153, 0, 76)), 
-            (Image.create_color(255, 178, 102), Image.create_color(153, 76, 0)), 
-            (Image.create_color(224, 224, 224), Image.create_color(64, 64, 64)),
-            (Image.create_color(224, 224, 224), Image.create_color(64, 64, 64))
-        ] 
+            (Image.create_color(102, 255, 255),
+             Image.create_color(0, 153, 153)),
+            (Image.create_color(255, 204, 255),
+             Image.create_color(153, 0, 76)),
+            (Image.create_color(255, 178, 102),
+             Image.create_color(153, 76, 0)),
+            (Image.create_color(224, 224, 224),
+             Image.create_color(64, 64, 64)),
+            (Image.create_color(224, 224, 224),
+             Image.create_color(64, 64, 64))
+        ]
     theme_index = 0
     color_bg, color_42 = themes[theme_index]
 

@@ -1,4 +1,4 @@
-# This script does not check for errors or malformed files.
+4# This script does not check for errors or malformed files.
 # It only validates that neighbooring cells sharing a wall have
 #  both the correct encoding.
 # Usage: python3 output_validator.py output_maze.txt
