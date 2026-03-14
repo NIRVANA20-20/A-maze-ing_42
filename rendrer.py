@@ -2,15 +2,17 @@ import parser
 from mlx.mlx import Mlx
 import random
 import os
-from generater import Maze, MazeGenerator
+from generater import Maze, MazeGenerator, MazeSolver
 
 
 def generate_ouput_file():
-    width, height, (x_entry, y_entry), (x_exit, y_exit), file_name = (
+    width, height, entry, exit, file_name = (
         parser.read_config()
     )
-    maz = Maze(width, height, (x_entry, y_entry), (x_exit, y_exit))
+    maz = Maze(width, height, entry, exit)
     generator = MazeGenerator(maz)
+    solve = MazeSolver(maz)
+    print(solve.solve(entry, exit))
     generator.write_to_file()
 
 
@@ -79,7 +81,7 @@ class Theme:
         cls.color_bg, cls.color_42 = cls.themes[cls.theme_index]
 
 
-class GeneratorMaze:
+class MazeCreator:
     def __init__(self, maze, mlx, mlx_ptr):
         self.maze = maze
         self.cell_b = 4
@@ -140,31 +142,31 @@ class GeneratorMaze:
         poss_w = int((window_width - self.maze.width * cell_dim) / 2)
         grid = self.maze.grid
 
-        GeneratorMaze.put_img(img, color_bg)
+        MazeCreator.put_img(img, color_bg)
         for cells in grid:
             for cell in cells:
                 x, y = cell.x, cell.y
                 if cell.is_42 is True:
-                    GeneratorMaze.put_inside(x, y, cell_dim, cell_b, img, color_42)
+                    MazeCreator.put_inside(x, y, cell_dim, cell_b, img, color_42)
 
                 else:
                     color = Image.create_color(255, 255, 255)
-                    GeneratorMaze.put_north(x, y, cell_dim, cell_b, 0, img, color)
-                    GeneratorMaze.put_east(x, y, cell_dim, cell_b, 0, img, color)
-                    GeneratorMaze.put_west(x, y, cell_dim, cell_b, 0, img, color)
-                    GeneratorMaze.put_south(x, y, cell_dim, cell_b, 0, img, color)
+                    MazeCreator.put_north(x, y, cell_dim, cell_b, 0, img, color)
+                    MazeCreator.put_east(x, y, cell_dim, cell_b, 0, img, color)
+                    MazeCreator.put_west(x, y, cell_dim, cell_b, 0, img, color)
+                    MazeCreator.put_south(x, y, cell_dim, cell_b, 0, img, color)
         mlx.mlx_put_image_to_window(mlx_ptr, mlx_wind, img.ptr, poss_w, poss_h)
 
     @staticmethod
     def remove_wall_helper(x, y, pos, img, cell_b, cell_dim, color):
         if pos == "N":
-            GeneratorMaze.put_north(x, y, cell_dim, cell_b, cell_b, img, color)
+            MazeCreator.put_north(x, y, cell_dim, cell_b, cell_b, img, color)
         elif pos == "E":
-            GeneratorMaze.put_east(x, y, cell_dim, cell_b, cell_b, img, color)
+            MazeCreator.put_east(x, y, cell_dim, cell_b, cell_b, img, color)
         elif pos == "W":
-            GeneratorMaze.put_west(x, y, cell_dim, cell_b, cell_b, img, color)
+            MazeCreator.put_west(x, y, cell_dim, cell_b, cell_b, img, color)
         elif pos == "S":
-            GeneratorMaze.put_south(x, y, cell_dim, cell_b, cell_b, img, color)
+            MazeCreator.put_south(x, y, cell_dim, cell_b, cell_b, img, color)
 
     @staticmethod
     def read_from_file(y, flage):
@@ -179,18 +181,18 @@ class GeneratorMaze:
         height = self.maze.height
         bit_map = ["W", "S", "E", "N"]
         while y < height:
-            row = GeneratorMaze.read_from_file(y, 1)
+            row = MazeCreator.read_from_file(y, 1)
             x = 0
             while x < width:
                 value_final = format(int(row[x], 16), "04b")
                 for i, pos in enumerate(bit_map):
                     if value_final[i] == "0":
-                        GeneratorMaze.remove_wall_helper(
+                        MazeCreator.remove_wall_helper(
                             x, y, pos, img, cell_b, cell_dim, color
                         )
                 x += 1
             y += 1
-        GeneratorMaze.read_from_file(0, 0)
+        MazeCreator.read_from_file(0, 0)
         mlx.mlx_put_image_to_window(mlx_ptr, mlx_wind, img.ptr, poss_w, poss_h)
 
 
@@ -222,7 +224,7 @@ if __name__ == "__main__":
     mlx_wind = Mlx.mlx_new_window(mlx, mlx_ptr, window_width, window_height, "kary00s")
     maze = Maze(width, height, entry, exit)
     maze.is_42_map()
-    border = GeneratorMaze(maze, mlx, mlx_ptr)
+    border = MazeCreator(maze, mlx, mlx_ptr)
 
     Image.put_bg_affiche("maze_affiche.png", 0, 200)
     mlx.mlx_key_hook(mlx_wind, call_back, None)
