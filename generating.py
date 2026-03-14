@@ -140,7 +140,7 @@ class MazeGenerator:
                 MazeGenerator.dfs_open_wall(cell, cell_r)
                 stack_cell.append(cell_r)
 
-    def write_to_file(self, entry, exit):
+    def write_to_file(self):
         maze = self.maze
         list_grid = maze.grid
         self.dfs_generator()
@@ -152,8 +152,8 @@ class MazeGenerator:
 
             column += "\n"
             file.write(column)
-        file.write(f"\n{entry}\n")
-        file.write(exit)
+        file.write(f"\n{self.maze.entry}\n")
+        file.write(f"\n{self.maze.exit}\n")
         file.close()
 
 
@@ -163,5 +163,4 @@ if __name__ == "__main__":
     )
     maz = Maze(width, height, (x_entry, y_entry), (x_exit, y_exit))
     generator = MazeGenerator(maz)
-    entry, exit = maz.convertor()
-    generator.write_to_file(entry, exit)
+    generator.write_to_file()
