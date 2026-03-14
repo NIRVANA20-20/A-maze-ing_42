@@ -1,13 +1,13 @@
-import parsing
+import parser
 from mlx.mlx import Mlx
 import random
 import os
-from generating import Maze, MazeGenerator
+from generater import Maze, MazeGenerator
 
 
 def generate_ouput_file():
     width, height, (x_entry, y_entry), (x_exit, y_exit), file_name = (
-        parsing.read_config()
+        parser.read_config()
     )
     maz = Maze(width, height, (x_entry, y_entry), (x_exit, y_exit))
     generator = MazeGenerator(maz)
@@ -19,11 +19,13 @@ def call_back(key, _):
         mlx.mlx_loop_exit(mlx_ptr)
     if key == 65293:
         Theme.switch_theme()
+        Image.put_bg_affiche("affiche_ban.png", 0, 200)
+        # Image.put_bg_affiche("bande.png", 300, 1400)
         redrawing(border, maze, 0, Theme.color_bg, Theme.color_42)
     if key == 99:
+        Theme.switch_theme()
         redrawing(border, maze, 0, Theme.color_bg, Theme.color_42)
         redrawing(border, maze, 1, Theme.color_bg, Theme.color_42)
-        Theme.switch_theme()
     if key == 32:
         generate_ouput_file()
         redrawing(border, maze, 0, Theme.color_bg, Theme.color_42)
@@ -40,10 +42,10 @@ class Image:
         self.buffer, self.bpp, self.sl, self.format = mlx.mlx_get_data_addr(self.ptr)
 
     @staticmethod
-    def put_first_affiche(file_name):
+    def put_bg_affiche(file_name, x, y):
         abs_path = os.path.abspath(".") + "/images/" + file_name
         img, _, _ = mlx.mlx_png_file_to_image(mlx_ptr, abs_path)
-        mlx.mlx_put_image_to_window(mlx_ptr, mlx_wind, img, 0, 200)
+        mlx.mlx_put_image_to_window(mlx_ptr, mlx_wind, img, x, y)
 
     def put_pixel(self, x: int, y: int, color: int):
         offset = int((y * self.sl) + (x * (self.bpp // 8)))
@@ -178,14 +180,11 @@ class GeneratorMaze:
         bit_map = ["W", "S", "E", "N"]
         while y < height:
             row = GeneratorMaze.read_from_file(y, 1)
-            print(row)
             x = 0
             while x < width:
                 value_final = format(int(row[x], 16), "04b")
                 for i, pos in enumerate(bit_map):
                     if value_final[i] == "0":
-
-                        print(value_final, int(row[x], 16), pos)
                         GeneratorMaze.remove_wall_helper(
                             x, y, pos, img, cell_b, cell_dim, color
                         )
@@ -212,18 +211,19 @@ def redrawing(border, maze, flage, color_bg, color_42):
         border.creat_cells(img, cell_b, cell_dim, color_42, color_bg)
     if flage == 1:
         border.remove_wall(img, cell_b, cell_dim, color_bg, poss_h, poss_w)
+
+
 if __name__ == "__main__":
-    width, height, entry, exit, file_name = parsing.read_config()
-    # read_from_file(height, width)
+    width, height, entry, exit, file_name = parser.read_config()
     mlx = Mlx()
     mlx_ptr = Mlx.mlx_init(mlx)
-    window_height = 1000
-    window_width = 1000
+    window_height = 2000
+    window_width = 2000
     mlx_wind = Mlx.mlx_new_window(mlx, mlx_ptr, window_width, window_height, "kary00s")
     maze = Maze(width, height, entry, exit)
     maze.is_42_map()
     border = GeneratorMaze(maze, mlx, mlx_ptr)
-    
-    Image.put_first_affiche("maze_affiche.png")
+
+    Image.put_bg_affiche("maze_affiche.png", 0, 200)
     mlx.mlx_key_hook(mlx_wind, call_back, None)
     mlx.mlx_loop(mlx_ptr)

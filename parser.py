@@ -18,7 +18,6 @@ def read_config():
     file = open("config.txt", "r")
     f = file.read()
     lst = f.split("\n")
-    print(lst)
     values = []
 
     file_elements = ["WIDTH",

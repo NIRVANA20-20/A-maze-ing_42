@@ -1,6 +1,6 @@
 import random
 
-import parsing
+import parser
 import sys
 
 
@@ -32,7 +32,7 @@ class Maze:
     def __init__(self, width, height, entry, exit_m):
         self.width = width
         self.height = height
-        print("zxcvbn", self.width, self.height)
+        # print("zxcvbn", self.width, self.height)
         self.grid = [[Cell(x, y) for x in range(width)] for y in range(height)]
         self.entry = entry
         self.exit = exit_m
@@ -159,7 +159,7 @@ class MazeGenerator:
 
 if __name__ == "__main__":
     width, height, (x_entry, y_entry), (x_exit, y_exit), file_name = (
-        parsing.read_config()
+        parser.read_config()
     )
     maz = Maze(width, height, (x_entry, y_entry), (x_exit, y_exit))
     generator = MazeGenerator(maz)
