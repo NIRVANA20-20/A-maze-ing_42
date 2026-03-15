@@ -2,7 +2,7 @@ import parser
 from mlx.mlx import Mlx
 import os
 from generater import Maze, MazeGenerator, MazeSolver
-
+import time
 
 def generate_ouput_file(flage: int)-> list:
     width, height, entry, exit, file_name = parser.read_config()
@@ -31,12 +31,10 @@ def call_back(key, _):
     if key == 112:
         path = generate_ouput_file(1)
         redrawing(border, maze, 2, Theme.color_bg, Theme.color_42, path)
-        print(path)
     if key == 32:
         generate_ouput_file(0)
         redrawing(border, maze, 0, Theme.color_bg, Theme.color_42, 0)
         redrawing(border, maze, 1, Theme.color_bg, Theme.color_42, 0)
-    print(key)
 
 class Image:
 
@@ -139,34 +137,30 @@ class MazeCreator:
 
 
 
-
-
-
-################################# m workin here on path rendring  ##################
-
     def put_path(x, y, cell_dim, destination, img, color):
+        start_h = y  * cell_dim  + (cell_dim // 3)
+        start_w = x * cell_dim  + (cell_dim // 3)
 
-        if destination == "N" or "S":
-            start_h = y * cell_dim   
-            start_w = x * cell_dim  + (cell_dim // 3)
-            for y in range(start_h, cell_dim):
-                for x in range(start_w , cell_dim - (cell_dim // 3) ):
+        if destination == "N":
+            for y in range(start_h - cell_dim,  start_h):
+                for x in range(start_w, start_w + (cell_dim // 3)):
                     img.put_pixel(x, y, color)
 
-
-
-        elif destination == "E" or "W":
-            start_h = y * cell_dim  + (cell_dim // 3)
-            start_w = x * cell_dim 
-            for y in range(start_h, cell_dim - (cell_dim // 3) ):
-                for x in range(start_w , cell_dim):
+        elif destination == "S":
+            for y in range(start_h ,(cell_dim // 3) + cell_dim + start_h):
+                for x in range(start_w, start_w + (cell_dim // 3)):
                     img.put_pixel(x, y, color)
 
+        elif destination == "E":
+            for y in range(start_h, start_h + cell_dim // 3):
+                for x in range(start_w, start_w + cell_dim + cell_dim // 3):
+                    img.put_pixel(x, y, color)
 
-
-
-
-
+        elif destination == "W":
+            for y in range(start_h, start_h + cell_dim // 3):
+                for x in range(start_w - cell_dim, start_w):
+                    img.put_pixel(x, y, color)
+        
 
 
 
@@ -256,6 +250,7 @@ def redrawing(border, maze, flag, color_bg, color_42, path):
             MazeCreator.put_path(x, y, cell_dim, destination, img, Theme.color_42)
         mlx.mlx_put_image_to_window(mlx_ptr, mlx_wind, img.ptr, poss_w, poss_h)
 
+
 def path_checker(curr_cell , next_cell):
     x ,y = curr_cell
     xn, yn = next_cell
@@ -268,6 +263,7 @@ def path_checker(curr_cell , next_cell):
         return bit_map[0]
     if y - yn < 0:
         return bit_map[2]
+
 
 if __name__ == "__main__":
     width, height, entry, exit, file_name = parser.read_config()
