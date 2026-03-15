@@ -6,13 +6,12 @@ from generater import Maze, MazeGenerator, MazeSolver
 
 
 def generate_ouput_file():
-    width, height, entry, exit, file_name = (
-        parser.read_config()
-    )
+    width, height, entry, exit, file_name = parser.read_config()
     maz = Maze(width, height, entry, exit)
     generator = MazeGenerator(maz)
+    generator.dfs_generator()
     solve = MazeSolver(maz)
-    print(solve.solve(entry, exit))
+    print(solve.bfs_solver(entry, exit))
     generator.write_to_file()
 
 
@@ -51,7 +50,7 @@ class Image:
 
     def put_pixel(self, x: int, y: int, color: int):
         offset = int((y * self.sl) + (x * (self.bpp // 8)))
-        self.buffer[offset: offset + 4] = color.to_bytes(4, "little")
+        self.buffer[offset : offset + 4] = color.to_bytes(4, "little")
 
     @staticmethod
     def create_color(r: int, g: int, b: int) -> int:
@@ -61,17 +60,12 @@ class Image:
 
 class Theme:
     themes = [
-            (Image.create_color(102, 255, 255),
-             Image.create_color(0, 153, 153)),
-            (Image.create_color(255, 204, 255),
-             Image.create_color(153, 0, 76)),
-            (Image.create_color(255, 178, 102),
-             Image.create_color(153, 76, 0)),
-            (Image.create_color(224, 224, 224),
-             Image.create_color(64, 64, 64)),
-            (Image.create_color(224, 224, 224),
-             Image.create_color(64, 64, 64))
-        ]
+        (Image.create_color(102, 255, 255), Image.create_color(0, 153, 153)),
+        (Image.create_color(255, 204, 255), Image.create_color(153, 0, 76)),
+        (Image.create_color(255, 178, 102), Image.create_color(153, 76, 0)),
+        (Image.create_color(224, 224, 224), Image.create_color(64, 64, 64)),
+        (Image.create_color(224, 224, 224), Image.create_color(64, 64, 64)),
+    ]
     theme_index = 0
     color_bg, color_42 = themes[theme_index]
 

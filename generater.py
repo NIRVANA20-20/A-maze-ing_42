@@ -45,7 +45,7 @@ class Maze:
 
     def is_42_map(self):
 
-        if self.width >= 10 and self.height >= 8:
+        if self.width >= 9 and self.height >= 8:
             c_x, c_y = int(self.width / 2), int(self.height / 2)
             map_42 = [
                 (c_x - 1, c_y),
@@ -161,26 +161,31 @@ class MazeSolver:
         self.maze = maze
 
     def bfs_solver(self, start, end):
-
         queue = deque([start])
         visited = {start}
         parent = {}
 
         while queue:
-            pos = queue.popleft()
-            x = int(pos[0])
-            y = int(pos[1])
+            x, y = queue.popleft()
 
             if (x, y) == end:
                 return self.get_path(parent, start, end)
 
-            for cell in self.maze.get_neighbors(x, y):
-                nx = cell.x
-                ny = cell.y
-                if (nx, ny) not in visited:
-                    visited.add((nx, ny))
-                    parent[(nx, ny)] = (x, y)
-                    queue.append((nx, ny))
+            cell = self.maze.get_cell(x, y)
+
+            directions = {
+                "N": (x, y - 1),
+                "E": (x + 1, y),
+                "S": (x, y + 1),
+                "W": (x - 1, y),
+            }
+
+            for d, (nx, ny) in directions.items():
+                if cell.walls[d] == False:
+                    if (nx, ny) not in visited:
+                        visited.add((nx, ny))
+                        parent[(nx, ny)] = (x, y)
+                        queue.append((nx, ny))
 
         return []
 
@@ -199,56 +204,12 @@ class MazeSolver:
         return path
 
 
-class MazeSolver:
-
-    def __init__(self, maze):
-        self.maze = maze
-
-    def solve(self, start, end):
-
-        queue = deque([start])
-        print(queue)
-        visited = {start}
-        parent = {}
-
-        while queue:
-            pos = queue.popleft()
-            x = int(pos[0])
-            y = int(pos[1])
-
-            if (x, y) == end:
-                return self.reconstruct_path(parent, start, end)
-
-            for cell in self.maze.get_neighbors(x, y):
-                nx = cell.x
-                ny = cell.y
-                if (nx, ny) not in visited:
-                    visited.add((nx, ny))
-                    parent[(nx, ny)] = (x, y)
-                    queue.append((nx, ny))
-
-        return []
-
-    def reconstruct_path(self, parent, start, end):
-
-        path = []
-        current = end
-
-        while current != start:
-            path.append(current)
-            current = parent[current]
-
-        path.append(start)
-        path.reverse()
-
-        return path
-
-
 if __name__ == "__main__":
     width, height, entry, exit, file_name = parser.read_config()
     maz = Maze(width, height, entry, exit)
     generator = MazeGenerator(maz)
+    generator.dfs_generator()
     solve = MazeSolver(maz)
+    print(solve.bfs_solver(entry, exit))
     entry_p, exit_p = maz.convertor()
-    print(solve.solve(entry, exit))
     generator.write_to_file()
