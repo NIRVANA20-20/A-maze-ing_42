@@ -1,18 +1,19 @@
 import parser
 from mlx.mlx import Mlx
-import random
 import os
 from generater import Maze, MazeGenerator, MazeSolver
 
 
-def generate_ouput_file():
+def generate_ouput_file(flage: int)-> list:
     width, height, entry, exit, file_name = parser.read_config()
-    maz = Maze(width, height, entry, exit)
-    generator = MazeGenerator(maz)
-    generator.dfs_generator()
-    solve = MazeSolver(maz)
-    print(solve.bfs_solver(entry, exit))
-    generator.write_to_file()
+    if flage == 0:
+        generator = MazeGenerator(maze)
+        generator.dfs_generator()
+        generator.write_to_file() 
+    if flage == 1:
+        solve = MazeSolver(maze)
+        return solve.bfs_solver(entry, exit)
+
 
 
 def call_back(key, _):
@@ -22,16 +23,20 @@ def call_back(key, _):
         Theme.switch_theme()
         Image.put_bg_affiche("affiche_ban.png", 0, 200)
         # Image.put_bg_affiche("bande.png", 300, 1400)
-        redrawing(border, maze, 0, Theme.color_bg, Theme.color_42)
+        redrawing(border, maze, 0, Theme.color_bg, Theme.color_42, 0)
     if key == 99:
         Theme.switch_theme()
-        redrawing(border, maze, 0, Theme.color_bg, Theme.color_42)
-        redrawing(border, maze, 1, Theme.color_bg, Theme.color_42)
+        redrawing(border, maze, 0, Theme.color_bg, Theme.color_42, 0)
+        redrawing(border, maze, 1, Theme.color_bg, Theme.color_42, 0)
+    if key == 112:
+        path = generate_ouput_file(1)
+        redrawing(border, maze, 2, Theme.color_bg, Theme.color_42, path)
+        print(path)
     if key == 32:
-        generate_ouput_file()
-        redrawing(border, maze, 0, Theme.color_bg, Theme.color_42)
-        redrawing(border, maze, 1, Theme.color_bg, Theme.color_42)
-
+        generate_ouput_file(0)
+        redrawing(border, maze, 0, Theme.color_bg, Theme.color_42, 0)
+        redrawing(border, maze, 1, Theme.color_bg, Theme.color_42, 0)
+    print(key)
 
 class Image:
 
@@ -124,12 +129,47 @@ class MazeCreator:
 
     @staticmethod
     def put_inside(x, y, cell_dim, cell_b, img, color):
-        start_h = y * cell_dim
+        start_h = y * cell_dim + cell_b
         start_w = x * cell_dim
         cell_width = cell_dim * (x + 1)
-        for y in range(start_h + cell_b, cell_dim + start_h + cell_b):
+        for y in range(start_h, cell_dim + start_h ):
             for x in range(start_w + cell_b, cell_width + cell_b):
                 img.put_pixel(x, y, color)
+
+
+
+
+
+
+
+################################# m workin here on path rendring  ##################
+
+    def put_path(x, y, cell_dim, destination, img, color):
+
+        if destination == "N" or "S":
+            start_h = y * cell_dim   
+            start_w = x * cell_dim  + (cell_dim // 3)
+            for y in range(start_h, cell_dim):
+                for x in range(start_w , cell_dim - (cell_dim // 3) ):
+                    img.put_pixel(x, y, color)
+
+
+
+        elif destination == "E" or "W":
+            start_h = y * cell_dim  + (cell_dim // 3)
+            start_w = x * cell_dim 
+            for y in range(start_h, cell_dim - (cell_dim // 3) ):
+                for x in range(start_w , cell_dim):
+                    img.put_pixel(x, y, color)
+
+
+
+
+
+
+
+
+
 
     def creat_cells(self, img, cell_b, cell_dim, color_42, color_bg):
         poss_h = 5
@@ -163,7 +203,7 @@ class MazeCreator:
             MazeCreator.put_south(x, y, cell_dim, cell_b, cell_b, img, color)
 
     @staticmethod
-    def read_from_file(y, flage):
+    def read_from_file(y, flag):
         with open("output_maze.txt", "r") as file:
             rows = file.read().split("\n")
             return rows[y]
@@ -190,7 +230,7 @@ class MazeCreator:
         mlx.mlx_put_image_to_window(mlx_ptr, mlx_wind, img.ptr, poss_w, poss_h)
 
 
-def redrawing(border, maze, flage, color_bg, color_42):
+def redrawing(border, maze, flag, color_bg, color_42, path):
 
     _, screen_w, screen_h = mlx.mlx_get_screen_size(mlx_ptr)
     min_screen = min(screen_w, screen_h)
@@ -203,11 +243,31 @@ def redrawing(border, maze, flage, color_bg, color_42):
     poss_w = int((window_width - maze.width * cell_dim) / 2)
 
     img = Image(mlx, mlx_ptr, img_width, img_height)
-    if flage == 0:
+    if flag == 0:
         border.creat_cells(img, cell_b, cell_dim, color_42, color_bg)
-    if flage == 1:
+    if flag == 1:
         border.remove_wall(img, cell_b, cell_dim, color_bg, poss_h, poss_w)
+    if flag == 2:
+        path_list = []
+        for i in range(len(path) - 1):
+            x, y = path[i]
+            destination = path_checker(path[i], path[i+1])
+            path_list.append(destination)
+            MazeCreator.put_path(x, y, cell_dim, destination, img, Theme.color_42)
+        mlx.mlx_put_image_to_window(mlx_ptr, mlx_wind, img.ptr, poss_w, poss_h)
 
+def path_checker(curr_cell , next_cell):
+    x ,y = curr_cell
+    xn, yn = next_cell
+    bit_map = ["N", "E", "S", "W"]
+    if x - xn > 0:    
+        return bit_map[3]
+    if x - xn < 0:
+        return bit_map[1]
+    if y - yn > 0:
+        return bit_map[0]
+    if y - yn < 0:
+        return bit_map[2]
 
 if __name__ == "__main__":
     width, height, entry, exit, file_name = parser.read_config()
@@ -219,6 +279,8 @@ if __name__ == "__main__":
     maze = Maze(width, height, entry, exit)
     maze.is_42_map()
     border = MazeCreator(maze, mlx, mlx_ptr)
+    solver = MazeSolver(maze)
+
 
     Image.put_bg_affiche("maze_affiche.png", 0, 200)
     mlx.mlx_key_hook(mlx_wind, call_back, None)

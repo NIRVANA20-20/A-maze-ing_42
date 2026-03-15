@@ -157,8 +157,10 @@ class MazeGenerator:
 
 class MazeSolver:
 
+    path = []
     def __init__(self, maze):
         self.maze = maze
+
 
     def bfs_solver(self, start, end):
         queue = deque([start])
@@ -203,13 +205,3 @@ class MazeSolver:
 
         return path
 
-
-if __name__ == "__main__":
-    width, height, entry, exit, file_name = parser.read_config()
-    maz = Maze(width, height, entry, exit)
-    generator = MazeGenerator(maz)
-    generator.dfs_generator()
-    solve = MazeSolver(maz)
-    print(solve.bfs_solver(entry, exit))
-    entry_p, exit_p = maz.convertor()
-    generator.write_to_file()
