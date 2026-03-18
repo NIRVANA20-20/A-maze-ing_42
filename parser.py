@@ -1,3 +1,4 @@
+import sys
 class DimensionsError(Exception):
     pass
 
@@ -46,6 +47,7 @@ def read_config():
             FileNameError,
             PerfectWayError) as error:
         print(error)
+        sys.exit(1)
 
 
 def check_perfect(answer):

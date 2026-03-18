@@ -33,7 +33,7 @@ def call_back(key, _):
         redrawing(border, maze, 2, Theme.color_bg, Theme.color_42, path)
     if key == 32:
         generate_ouput_file(0)
-        redrawing(border, maze, 0, Theme.color_bg, Theme.color_42, 0)
+#        redrawing(border, maze, 0, Theme.color_bg, Theme.color_42, 0)
         redrawing(border, maze, 1, Theme.color_bg, Theme.color_42, 0)
 
 class Image:
@@ -44,6 +44,9 @@ class Image:
         self.mlx_ptr = mlx_ptr
         self.ptr = mlx.mlx_new_image(mlx_ptr, width, height)
         self.buffer, self.bpp, self.sl, self.format = mlx.mlx_get_data_addr(self.ptr)
+        for y in range(height):
+            for x in range(width):
+                self.put_pixel(x, y, 0x0000000)
 
     @staticmethod
     def put_bg_affiche(file_name, x, y):
@@ -223,6 +226,31 @@ class MazeCreator:
         MazeCreator.read_from_file(0, 0)
         mlx.mlx_put_image_to_window(mlx_ptr, mlx_wind, img.ptr, poss_w, poss_h)
 
+class DrawAnimation:
+    def __init__(self, mlx_ptr, win_ptr, img, path, width, height, pos_h, pos_w, cell_dim):
+        self.mlx_ptr = mlx_ptr
+        self.win_ptr = win_ptr
+        self.i = 0
+
+        self.path = path
+        self.width = width
+        self.height = height
+        self.pos_w = pos_w
+        self.pos_h = pos_h
+        self.cell_dim = cell_dim
+        self.img = img
+    
+    def draw(self):
+        mlx.mlx_loop_hook(self.mlx_ptr, self.loop_hook, None)
+
+    def loop_hook(self, _):
+        if self.i + 1 == len(self.path):
+            return
+        destination = path_checker(self.path[self.i], self.path[self.i + 1])
+        x, y = self.path[self.i]
+        MazeCreator.put_path(x, y, self.cell_dim, destination, self.img, Theme.color_42)
+        mlx.mlx_put_image_to_window(self.mlx_ptr, self.win_ptr, self.img.ptr, self.pos_w, self.pos_h)
+        self.i += 1
 
 def redrawing(border, maze, flag, color_bg, color_42, path):
 
@@ -247,9 +275,11 @@ def redrawing(border, maze, flag, color_bg, color_42, path):
             x, y = path[i]
             destination = path_checker(path[i], path[i+1])
             path_list.append(destination)
-            MazeCreator.put_path(x, y, cell_dim, destination, img, Theme.color_42)
-        mlx.mlx_put_image_to_window(mlx_ptr, mlx_wind, img.ptr, poss_w, poss_h)
-
+        path_drawer = DrawAnimation(mlx_ptr, mlx_wind, img, path, maze.width, maze.height, poss_h, poss_w, cell_dim)
+        path_drawer.draw()
+            # MazeCreator.put_path(x, y, cell_dim, destination, img, Theme.color_42)
+            # mlx.mlx_put_image_to_window(mlx_ptr, mlx_wind, img.ptr, poss_w, poss_h)
+        
 
 def path_checker(curr_cell , next_cell):
     x ,y = curr_cell
