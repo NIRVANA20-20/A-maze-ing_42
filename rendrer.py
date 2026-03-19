@@ -1,11 +1,11 @@
-import parser
+from parser import Parser
 from mlx.mlx import Mlx
 import os
 from generater import Maze, MazeGenerator, MazeSolver
 import time
 
 def generate_ouput_file(flage: int)-> list:
-    width, height, entry, exit, file_name = parser.read_config()
+    width, height, entry, exit, file_name, seed= Parser.read_config()
     if flage == 0:
         generator = MazeGenerator(maze)
         generator.dfs_generator()
@@ -141,8 +141,8 @@ class MazeCreator:
 
 
     def put_path(x, y, cell_dim, destination, img, color):
-        start_h = y  * cell_dim  + (cell_dim // 3)
-        start_w = x * cell_dim  + (cell_dim // 3)
+        start_h = y * cell_dim + (cell_dim // 3)
+        start_w = x * cell_dim + (cell_dim // 3)
 
         if destination == "N":
             for y in range(start_h - cell_dim,  start_h):
@@ -150,7 +150,7 @@ class MazeCreator:
                     img.put_pixel(x, y, color)
 
         elif destination == "S":
-            for y in range(start_h ,(cell_dim // 3) + cell_dim + start_h):
+            for y in range(start_h, (cell_dim // 3) + cell_dim + start_h):
                 for x in range(start_w, start_w + (cell_dim // 3)):
                     img.put_pixel(x, y, color)
 
@@ -163,9 +163,6 @@ class MazeCreator:
             for y in range(start_h, start_h + cell_dim // 3):
                 for x in range(start_w - cell_dim, start_w):
                     img.put_pixel(x, y, color)
-        
-
-
 
 
     def creat_cells(self, img, cell_b, cell_dim, color_42, color_bg):
@@ -240,17 +237,26 @@ class DrawAnimation:
         self.cell_dim = cell_dim
         self.img = img
     
+    def draw_entry_exit(self, entry, exit):
+        x_entry, y_entry = entry
+        x_exit, y_exit = exit
+        MazeCreator.put_inside(x_entry, y_entry, self.cell_dim, 4, self.img, Theme.color_42)
+        MazeCreator.put_inside(x_exit, y_exit, self.cell_dim, 4, self.img, Theme.color_42)
+
     def draw(self):
         mlx.mlx_loop_hook(self.mlx_ptr, self.loop_hook, None)
 
     def loop_hook(self, _):
-        if self.i + 1 == len(self.path):
-            return
-        destination = path_checker(self.path[self.i], self.path[self.i + 1])
-        x, y = self.path[self.i]
-        MazeCreator.put_path(x, y, self.cell_dim, destination, self.img, Theme.color_42)
-        mlx.mlx_put_image_to_window(self.mlx_ptr, self.win_ptr, self.img.ptr, self.pos_w, self.pos_h)
-        self.i += 1
+        try:
+            if self.i + 1 == len(self.path):
+                return
+            destination = path_checker(self.path[self.i], self.path[self.i + 1])
+            x, y = self.path[self.i]
+            MazeCreator.put_path(x, y, self.cell_dim, destination, self.img, Theme.color_42)
+            mlx.mlx_put_image_to_window(self.mlx_ptr, self.win_ptr, self.img.ptr, self.pos_w, self.pos_h)
+            self.i += 1
+        except Exception as e:
+            print(e)
 
 def redrawing(border, maze, flag, color_bg, color_42, path):
 
@@ -276,6 +282,8 @@ def redrawing(border, maze, flag, color_bg, color_42, path):
             destination = path_checker(path[i], path[i+1])
             path_list.append(destination)
         path_drawer = DrawAnimation(mlx_ptr, mlx_wind, img, path, maze.width, maze.height, poss_h, poss_w, cell_dim)
+        ent_ext = DrawAnimation(mlx_ptr, mlx_wind, img, path, maze.width, maze.height, poss_h, poss_w, cell_dim)
+        ent_ext.draw_entry_exit(entry, exit)
         path_drawer.draw()
             # MazeCreator.put_path(x, y, cell_dim, destination, img, Theme.color_42)
             # mlx.mlx_put_image_to_window(mlx_ptr, mlx_wind, img.ptr, poss_w, poss_h)
@@ -296,7 +304,7 @@ def path_checker(curr_cell , next_cell):
 
 
 if __name__ == "__main__":
-    width, height, entry, exit, file_name = parser.read_config()
+    width, height, entry, exit, file_name, seed= Parser.read_config()
     mlx = Mlx()
     mlx_ptr = Mlx.mlx_init(mlx)
     window_height = 2000
