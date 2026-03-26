@@ -30,13 +30,24 @@ class Cell:
 
 
 class Maze:
+
+    _instance = None
+    _is_ins = 0
+
+    def __new__(cls, width, height, entry, exit):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
     def __init__(self, width, height, entry, exit_m):
-        self.width = width
-        self.height = height
-        self.grid = [[Cell(x, y) for x in range(width)] for y in range(height)]
-        self.entry = entry
-        self.exit = exit_m
-        self.is_42_map()
+        if Maze._is_ins == 0:
+            self.width = width
+            self.height = height
+            self.grid = [[Cell(x, y) for x in range(width)] for y in range(height)]
+            self.entry = entry
+            self.exit = exit_m
+            self.is_42_map()
+            Maze._is_ins = 1
 
     def get_cell(self, x, y):
         if 0 <= x < self.width and 0 <= y < self.height:
@@ -96,9 +107,9 @@ class Maze:
 
 
 class MazeGenerator:
-    def __init__(self, maze_m):
+    def __init__(self, maze):
         self.stack = []
-        self.maze = maze_m
+        self.maze = maze
 
     @staticmethod
     def dfs_open_wall(cell, random_cell):
