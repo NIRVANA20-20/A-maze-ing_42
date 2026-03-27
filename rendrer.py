@@ -14,9 +14,7 @@ def generate_ouput_file(flage: int)-> list:
     if flage == 1:
         solve = MazeSolver(maze)
         return solve.bfs_solver(entry, exit)
-
-
-
+    
 def call_back(key, _):
     if key == 65507 or key == 65307:
         MyMlx.loop_exit()
@@ -87,7 +85,6 @@ class Theme:
         cls.theme_index = (cls.theme_index + 1) % len(cls.themes)
         cls.color_bg, cls.color_42 = cls.themes[cls.theme_index]
 
-
 class MazeCreator:
     def __init__(self, maze, cell_dim):
         self.maze = maze
@@ -156,8 +153,6 @@ class MazeCreator:
             for x in range(start_w + cell_b, cell_width + cell_b):
                 img.put_pixel(x, y, color)
 
-
-
     @staticmethod
     def put_path(x, y, cell_dim, destination, img, color):
         start_h = y * cell_dim + (cell_dim // 3)
@@ -182,7 +177,6 @@ class MazeCreator:
             for y in range(start_h, start_h + cell_dim // 3):
                 for x in range(start_w - cell_dim, start_w):
                     img.put_pixel(x, y, color)
-
 
     def creat_cells(self, cell_b, cell_dim, color_42, color_bg):
         poss_h = 5
@@ -249,9 +243,7 @@ class DrawAnimation:
     def __init__(self, path, maze):
 
         self.cell_dim, self.pos_w, self.pos_h = MazeCreator.get_dim_pos(maze)
-        img_height = int(maze.height * self.cell_dim + 4)
-        img_width = int(maze.width * self.cell_dim + 4)
-        self.img = Image(img_width, img_height)
+        self.img = Image(0, 0)
         self.mlx_ptr = MyMlx.mlx_ptr
         self.win_ptr = MyMlx.win_ptr
         self.path = path

@@ -1,9 +1,5 @@
 import random
-
-import parser
-import sys
 from collections import deque
-
 
 class Cell:
     def __init__(self, x, y):
@@ -215,4 +211,3 @@ class MazeSolver:
         path.reverse()
 
         return path
-
