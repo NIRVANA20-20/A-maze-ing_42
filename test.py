@@ -2,15 +2,6 @@ from parser import Parser
 import os
 from generater import Maze, MazeGenerator, MazeSolver
 from my_mlx import MyMlx
-from enum import Enum
-
-class Keys(Enum):
-    EXIT = 65507
-    CELLS = 65293
-    SWITCH_THEME = 99
-    SOLVE = 112
-    MAZE = 32
-
 
 def generate_ouput_file(flage: int)-> list:
     _, _, entry, exit, _, _= Parser.read_config()
@@ -25,26 +16,22 @@ def generate_ouput_file(flage: int)-> list:
         return solve.bfs_solver(entry, exit)
     
 def call_back(key, _):
-    try:
-        match key:
-            case Keys.EXIT.value:
-                MyMlx.loop_exit()
-            case Keys.CELLS.value:
-                Theme.switch_theme()
-                Image.put_bg_affiche("affiche_ban.png", 0, 200)
-                redrawing(0, Theme.color_bg, Theme.color_42, 0)
-            case Keys.SWITCH_THEME.value:
-                Theme.switch_theme()
-                redrawing(0, Theme.color_bg, Theme.color_42, 0)
-                redrawing(1, Theme.color_bg, Theme.color_42, 0)
-            case Keys.SOLVE.value:
-                path = generate_ouput_file(1)
-                redrawing(2, Theme.color_bg, Theme.color_42, path)
-            case Keys.MAZE.value:
-                generate_ouput_file(0)
-                redrawing(1, Theme.color_bg, Theme.color_42, 0)
-    except Exception as e:
-        print(e)
+    if key == 65507 or key == 65307:
+        MyMlx.loop_exit()
+    if key == 65293:
+        Theme.switch_theme()
+        Image.put_bg_affiche("affiche_ban.png", 0, 200)
+        redrawing(0, Theme.color_bg, Theme.color_42, 0)
+    if key == 99:
+        Theme.switch_theme()
+        redrawing(0, Theme.color_bg, Theme.color_42, 0)
+        redrawing(1, Theme.color_bg, Theme.color_42, 0)
+    if key == 112:
+        path = generate_ouput_file(1)
+        redrawing(2, Theme.color_bg, Theme.color_42, path)
+    if key == 32:
+        generate_ouput_file(0)
+        redrawing(1, Theme.color_bg, Theme.color_42, 0)
 
 class Image:
     _instance = None
@@ -102,7 +89,6 @@ class MazeCreator:
     def __init__(self, maze, cell_dim):
         self.maze = maze
         self.cell_b = 4
-        self.cell_dim = cell_dim
         img_height = int(maze.height * cell_dim + self.cell_b)
         img_width = int(maze.width * cell_dim + self.cell_b)
         self.img = Image(img_width, img_height)
@@ -192,9 +178,9 @@ class MazeCreator:
                 for x in range(start_w - cell_dim, start_w):
                     img.put_pixel(x, y, color)
 
-    def creat_cells(self, color_42, color_bg):
+    def creat_cells(self, cell_b, cell_dim, color_42, color_bg):
         poss_h = 5
-        poss_w = int((2000 - self.maze.width * self.cell_dim) / 2)
+        poss_w = int((2000 - self.maze.width * cell_dim) / 2)
         grid = self.maze.grid
         img = self.img
 
@@ -203,14 +189,14 @@ class MazeCreator:
             for cell in cells:
                 x, y = cell.x, cell.y
                 if cell.is_42 is True:
-                    MazeCreator.put_inside(x, y, self.cell_dim, self.cell_b, img, color_42)
+                    MazeCreator.put_inside(x, y, cell_dim, cell_b, img, color_42)
 
                 else:
                     color = Image.create_color(255, 255, 255)
-                    MazeCreator.put_north(x, y, self.cell_dim, self.cell_b, 0, img, color)
-                    MazeCreator.put_east(x, y, self.cell_dim, self.cell_b, 0, img, color)
-                    MazeCreator.put_west(x, y, self.cell_dim, self.cell_b, 0, img, color)
-                    MazeCreator.put_south(x, y, self.cell_dim, self.cell_b, 0, img, color)
+                    MazeCreator.put_north(x, y, cell_dim, cell_b, 0, img, color)
+                    MazeCreator.put_east(x, y, cell_dim, cell_b, 0, img, color)
+                    MazeCreator.put_west(x, y, cell_dim, cell_b, 0, img, color)
+                    MazeCreator.put_south(x, y, cell_dim, cell_b, 0, img, color)
 
         MyMlx.put_image_to_window(img.ptr, poss_w, poss_h)
 
@@ -226,32 +212,44 @@ class MazeCreator:
             MazeCreator.put_south(x, y, cell_dim, cell_b, cell_b, img, color)
 
     @staticmethod
-    def read_from_file(y):
+    def read_from_file(y, flag):
         with open("output_maze.txt", "r") as file:
             rows = file.read().split("\n")
             return rows[y]
-    
+
     @staticmethod
-    def check_binary(value):
+    def check_binary()
+    def remove_wall(self, cell_b, cell_dim, color, poss_h, poss_w):
+        x = 0
+        y = 0
+        img = self.img
+        width = self.maze.width
+        height = self.maze.height
         bit_map = ["W", "S", "E", "N"]
-        return_pos = []
-        for i, pos in enumerate(bit_map):
-            if value[i] == "0":
-                return_pos.append(pos)
-        return return_pos
+        while y < height:
+            row = MazeCreator.read_from_file(y, 1)
+            x = 0
+            while x < width:
+                value_final = format(int(row[x], 16), "04b")
+                for i, pos in enumerate(bit_map):
+                    if value_final[i] == "0":
+                        MazeCreator.remove_wall_helper(
+                            x, y, pos, img, cell_b, cell_dim, color
+                        )
+                x += 1
+            y += 1
+        MazeCreator.read_from_file(0, 0)
+        MyMlx.put_image_to_window(img.ptr, poss_w, poss_h)
 
 class DrawAnimation:
-    def __init__(self, path, color):
-        self.maze = Maze(0,0,0,0)
-        self.cell_dim, self.pos_w, self.pos_h = MazeCreator.get_dim_pos(self.maze)
+    def __init__(self, path, maze):
+
+        self.cell_dim, self.pos_w, self.pos_h = MazeCreator.get_dim_pos(maze)
         self.img = Image(0, 0)
         self.mlx_ptr = MyMlx.mlx_ptr
         self.win_ptr = MyMlx.win_ptr
         self.path = path
-        self.color = color
         self.i = 0
-        self.x = 0
-        self.y = 0
     
     def draw_entry_exit(self, entry, exit):
         x_entry, y_entry = entry
@@ -262,9 +260,6 @@ class DrawAnimation:
     def draw(self):
         MyMlx.loop_hook(self.loop_hook, None)
     
-    def draw_dfs(self):
-         MyMlx.loop_hook(self.loop_hook2, None)
-
     @staticmethod
     def path_checker(curr_cell , next_cell):
         x ,y = curr_cell
@@ -291,55 +286,26 @@ class DrawAnimation:
         except Exception as e:
             print(e)
 
-    def loop_hook2(self, _):
-        try:
-            width = self.maze.width
-            height = self.maze.height
-            if self.x == width:
-                self.x = 0
-                self.y += 1
-
-            if self.y ==  height:
-                return
-            
-            if self.x < width:
-                row = MazeCreator.read_from_file(self.y)
-                value = format(int(row[self.x], 16), "04b")
-                pos_list = MazeCreator.check_binary(value)
-                for pos in pos_list:
-                    MazeCreator.remove_wall_helper(
-                            self.x, self.y, pos, self.img, 4, self.cell_dim, self.color
-                            )
-                MyMlx.put_image_to_window(self.img.ptr, self.pos_w, self.pos_h)
-            self.x += 1
-        except Exception as e:
-            print(e)
-            print(self.x, row)
-
-
-        
-
-    
 
 def redrawing(flag, color_bg, color_42, path):
 
     width, height, entry, exit, _, _= Parser.read_config()
     maze = Maze(width, height, entry, exit) 
-    cell_dim, _, _ = MazeCreator.get_dim_pos(maze)
-    border = MazeCreator(maze, cell_dim)
-    drawer = DrawAnimation(path, color_bg)
+    cell_dim, pos_w, pos_h = MazeCreator.get_dim_pos(maze)
 
+    border = MazeCreator(maze, cell_dim)
     if flag == 0:
-        border.creat_cells(color_42, color_bg)
+        border.creat_cells(4, cell_dim, color_42, color_bg)
     if flag == 1:
-        drawer.draw_dfs()
+        border.remove_wall(4, cell_dim, color_bg, pos_h, pos_w)
     if flag == 2:
         path_list = []
         for i in range(len(path) - 1):
             destination = DrawAnimation.path_checker(path[i], path[i+1])
             path_list.append(destination)
-        drawer.draw_entry_exit(entry, exit)
-        drawer.draw()
+        path_drawer = DrawAnimation(path, maze)
+        path_drawer.draw_entry_exit(entry, exit)
+        path_drawer.draw()
         
 if __name__ == "__main__":
     Image.put_bg_affiche("maze_affiche.png", 0, 200)
