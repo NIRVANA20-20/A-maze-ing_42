@@ -1,4 +1,5 @@
 import sys
+import os
 class DimensionsError(Exception):
     pass
 
@@ -15,8 +16,20 @@ class EntryExitError(Exception):
     pass
 
 class Parser():
-
-    def read_config():
+    def __init__(self):
+        self.width = None
+        self.height = None
+        self.x_entry = None
+        self.x_exit = None
+        self.y_entry = None
+        self.y_exit = None
+        self.file_name = None
+        self.seed = None
+    
+    def get_infos(self):
+        return  self.width, self.height, (self.x_entry, self.y_entry), (self.x_exit, self.y_exit), self.file_name, self.seed
+    
+    def read_config(self):
         file = open("config.txt", "r")
         f = file.read()
         lst = f.split("\n")
@@ -40,14 +53,13 @@ class Parser():
             print("One of the arguments in (config.txt) is missing")
             sys.exit(0)
         try:
-            height, width = Parser.check_dimensions(values[0], values[1])
-            x_entry, y_entry = Parser.check_entry(values[2], width, height)
-            x_exit, y_exit = Parser.check_exit(values[3], width, height)
-            file_name = Parser.check_file(values[4])
-            Parser.check_perfect(values[5])
-            seed = Parser.check_seed(values[6])
+            self.height, self.width = self.check_dimensions(values[0], values[1])
+            self.x_entry, self.y_entry = self.check_entry(values[2])
+            self.x_exit, self.y_exit = self.check_exit(values[3])
+            self.file_name = self.check_file(values[4])
+            self.seed = self.check_seed(values[6])
+            self.check_perfect(values[5])
 
-            return width, height, (x_entry, y_entry), (x_exit, y_exit), file_name, seed
         except (DimensionsError,
                 EntryExitError,
                 FileNameError,
@@ -55,17 +67,15 @@ class Parser():
             print(error)
             sys.exit(0)
 
-    def check_seed(seed: int):
+    def check_seed(self, seed):
         try:
-            seed = int(seed)
+            self.seed = int(seed)
+            if self.seed < 0:
+                raise ValueError("The seed must be number (positive)")
         except ValueError:
             print("The seed must be number (positive)")
-        if seed > 0:
-            return seed
-        else:
-            raise ValueError("The seed must be number (positive)")
-
-    def check_perfect(answer):
+    
+    def check_perfect(self, answer):
         if answer == "True":
             pass  ############## put the perfect way
         elif answer == "False":
@@ -75,14 +85,20 @@ class Parser():
                                   "'True' or 'False') ")
 
 
-    def check_file(file_name):
-        if len(file_name) > 0:
-            return file_name
+    def check_file(self, file_name):
+        file_checker = file_name.split('.')
+        if len(file_checker) != 2 or file_checker[1] != 'txt':
+            raise FileNameError("only '.txt' files are permitted as maze output file")
+        if os.path.exists(file_name) and not os.access(file_name, os.W_OK):
+            raise FileNameError(f"OUTPUT_FILE '{file_name}' is not writable")
+        parent = os.path.dirname(file_name) or "."
+        if not os.access(parent, os.W_OK):
+            raise ValueError(f"OUTPUT_FILE '{file_name}' directory is not writable") 
         else:
-            raise FileNameError("File name cant be empty")
+            return file_name
 
 
-    def check_entry(entry, width, height):
+    def check_entry(self, entry):
         entr = entry.replace("(", "").replace(")", "")
         entry_splited = entr.split(",")
         if len(entry_splited) != 2:
@@ -99,18 +115,18 @@ class Parser():
         except ValueError:
             raise EntryExitError(f"The entry y must be a number: not {y_height}")
 
-        if x > width or x < 0:
+        if x > self.width or x < 0:
             raise EntryExitError(
-                f"The entery x can't be : {x}" f"  => (max : {width})"
+                f"The entery x can't be : {x}" f"  => (max : {self.width})"
                 "and (min : 1)")
-        if y > height or y < 0:
+        if y > self.height or y < 0:
             raise EntryExitError(
-                f"The entery y can't be : {y}" f"  => (max : {height})"
+                f"The entery y can't be : {y}" f"  => (max : {self.height})"
                 " and (min : 1)")
         return x, y
 
 
-    def check_exit(exit, width, height):
+    def check_exit(self, exit):
         exit = exit.replace("(", "").replace(")", "")
         exit_splited = exit.split(",")
         if len(exit_splited) != 2:
@@ -127,33 +143,33 @@ class Parser():
         except ValueError:
             raise EntryExitError(f"The exit y must be a number: not {y_height}")
 
-        if x > width or x < 0:
+        if x > self.width or x < 0:
             raise EntryExitError(
-                f"The exit x can't be : {x}" f"  => (max : {width}) and (min : 1)"
+                f"The exit x can't be : {x}" f"  => (max : {self.width}) and (min : 1)"
             )
-        if y > height or y < 0:
+        if y > self.height or y < 0:
             raise EntryExitError(
-                f"The exit y can't be : {y}" f"  => (max : {height}) and (min : 1)"
+                f"The exit y can't be : {y}" f"  => (max : {self.height}) and (min : 1)"
                 )
         return x, y
 
 
-    def check_dimensions(w, h):
+    def check_dimensions(self, w, h):
         try:
-            width = int(w)
+            self.width = int(w)
         except ValueError:
             raise DimensionsError(f"The width must be a number not: {w}")
         try:
-            height = int(h)
+            self.height = int(h)
         except ValueError:
             raise DimensionsError(f"The height must be a number not: {h})")
 
-        if width > 1200 or width < 1:
+        if self.width > 1200 or self.width < 1:
             raise DimensionsError(
-                f"The width can`t be : {width}" "  => (max : 200) and (min : 1)"
+                f"The width can`t be : {self.width}" "  => (max : 200) and (min : 1)"
             )
-        elif height > 1200 or height < 1:
+        elif self.height > 1200 or self.height < 1:
             raise DimensionsError(
-                f"The height can`t be : {height}" " => (max : 200) and (min : 1)"
+                f"The height can`t be : {self.height}" " => (max : 200) and (min : 1)"
             )
-        return width, height
+        return self.width, self.height

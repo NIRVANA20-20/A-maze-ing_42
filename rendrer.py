@@ -13,11 +13,13 @@ class Keys(Enum):
 
 
 def generate_ouput_file(flage: int)-> list:
-    _, _, entry, exit, _, _= Parser.read_config()
+    file_parsed = Parser()
+    file_parsed.read_config()
+    _, _, entry, exit, _, _= file_parsed.get_infos()
     maze = Maze(0, 0, 0, 0) 
+    generator = MazeGenerator(maze)
 
     if flage == 0:
-        generator = MazeGenerator(maze)
         generator.dfs_generator()
         generator.write_to_file() 
     if flage == 1:
@@ -42,7 +44,9 @@ def call_back(key, _):
                 redrawing(2, Theme.color_bg, Theme.color_42, path)
             case Keys.MAZE.value:
                 generate_ouput_file(0)
+                redrawing(0, Theme.color_bg, Theme.color_42, 0)
                 redrawing(1, Theme.color_bg, Theme.color_42, 0)
+
     except Exception as e:
         print(e)
 
@@ -227,7 +231,10 @@ class MazeCreator:
 
     @staticmethod
     def read_from_file(y):
-        with open("output_maze.txt", "r") as file:
+        file_parsed = Parser()
+        file_parsed.read_config()
+        
+        with open(file_parsed.file_name, "r") as file:
             rows = file.read().split("\n")
             return rows[y]
     
@@ -323,7 +330,9 @@ class DrawAnimation:
 
 def redrawing(flag, color_bg, color_42, path):
 
-    width, height, entry, exit, _, _= Parser.read_config()
+    file_parsed = Parser()
+    file_parsed.read_config()
+    width ,height ,entry, exit ,_ , _ = file_parsed.get_infos()
     maze = Maze(width, height, entry, exit) 
     cell_dim, _, _ = MazeCreator.get_dim_pos(maze)
     border = MazeCreator(maze, cell_dim)
@@ -332,6 +341,7 @@ def redrawing(flag, color_bg, color_42, path):
     if flag == 0:
         border.creat_cells(color_42, color_bg)
     if flag == 1:
+        # 
         drawer.draw_dfs()
     if flag == 2:
         path_list = []

@@ -1,5 +1,6 @@
 import random
 from collections import deque
+from parser import Parser
 
 class Cell:
     def __init__(self, x, y):
@@ -151,12 +152,14 @@ class MazeGenerator:
         maze = self.maze
         list_grid = maze.grid
         self.dfs_generator()
-        file = open("output_maze.txt", "w")
+        parsed_file = Parser()
+        parsed_file.read_config()
+        file = open(parsed_file.file_name, "w")
+        print(parsed_file.file_name)
         for grid in list_grid:
             column = ""
             for cell in grid:
                 column += hex(cell.to_hex())[2:]
-
             column += "\n"
             file.write(column)
         file.close()
