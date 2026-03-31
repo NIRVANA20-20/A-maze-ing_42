@@ -32,7 +32,6 @@ def call_back(key, _):
             case Keys.EXIT.value:
                 MyMlx.loop_exit()
             case Keys.CELLS.value:
-                Theme.switch_theme()
                 Image.put_bg_affiche("affiche_ban.png", 0, 200)
                 redrawing(0, Theme.color_bg, Theme.color_42, 0)
             case Keys.SWITCH_THEME.value:

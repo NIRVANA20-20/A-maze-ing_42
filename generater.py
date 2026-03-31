@@ -94,14 +94,6 @@ class Maze:
                 axis.append(cell)
         return axis
 
-    def convertor(self):
-        try:
-            entry = str(f"{self.entry}")
-            exit = str(f"{self.exit}")
-            return entry, exit
-        except Exception as e:
-            print(e)
-
 
 class MazeGenerator:
     def __init__(self, maze):
@@ -154,8 +146,8 @@ class MazeGenerator:
         self.dfs_generator()
         parsed_file = Parser()
         parsed_file.read_config()
+        
         file = open(parsed_file.file_name, "w")
-        print(parsed_file.file_name)
         for grid in list_grid:
             column = ""
             for cell in grid:
