@@ -8,8 +8,8 @@ class MyMlx:
     mlx = Mlx()
     mlx_ptr = mlx.mlx_init()
     _, screen_width_temp, screen_height = mlx.mlx_get_screen_size(mlx_ptr)
-    screen_width: int = int(screen_width_temp * 0.8)
-    screen_height = int(screen_height * 0.9)
+    screen_width: int = 1500
+    screen_height = 2000
     win_ptr = mlx.mlx_new_window(
         mlx_ptr, screen_width, screen_height, "A-Maze-ing"
     )

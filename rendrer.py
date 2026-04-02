@@ -41,19 +41,20 @@ class Image:
 
 class Theme:
     themes = [
-        (Image.create_color(102, 255, 255), Image.create_color(0, 153, 153)),
-        (Image.create_color(255, 204, 255), Image.create_color(153, 0, 76)),
-        (Image.create_color(255, 178, 102), Image.create_color(153, 76, 0)),
-        (Image.create_color(224, 224, 224), Image.create_color(64, 64, 64)),
-        (Image.create_color(224, 224, 224), Image.create_color(64, 64, 64)),
+        ("orange_mood.png", Image.create_color(255, 178, 102), Image.create_color(153, 76, 0)),
+        ("pink_mood.png", Image.create_color(255, 204, 255), Image.create_color(153, 0, 76)),
+        ("blue_mood.png", Image.create_color(102, 255, 255), Image.create_color(0, 153, 153)),
+        ("gris_mood.png", Image.create_color(224, 224, 224), Image.create_color(64, 64, 64)),
     ]
     theme_index = 0
-    color_bg, color_42 = themes[theme_index]
+    bg_img, color_bg, color_42 = themes[theme_index]
+
 
     @classmethod
     def switch_theme(cls):
         cls.theme_index = (cls.theme_index + 1) % len(cls.themes)
-        cls.color_bg, cls.color_42 = cls.themes[cls.theme_index]
+        cls.bg_img, cls.color_bg, cls.color_42 = cls.themes[cls.theme_index]
+
 
 class MazeCreator:
     def __init__(self, maze, cell_dim):
@@ -69,8 +70,8 @@ class MazeCreator:
         min_screen = min(MyMlx.screen_width, MyMlx.screen_height)
         max_cell = max(maze.width, maze.height)
         cell_dim = int((min_screen / max_cell) * 0.75)
-        pos_w = int((2000 - maze.width * cell_dim) / 2)
-        pos_h = 5
+        pos_w = int((1500 - maze.width * cell_dim) / 2)
+        pos_h = 200
         return cell_dim, pos_w, pos_h
     
     @staticmethod
@@ -150,8 +151,8 @@ class MazeCreator:
                     img.put_pixel(x, y, color)
 
     def creat_cells(self, color_42, color_bg):
-        poss_h = 5
-        poss_w = int((2000 - self.maze.width * self.cell_dim) / 2)
+        poss_h = 200
+        poss_w = int((1500 - self.maze.width * self.cell_dim) / 2)
         grid = self.maze.grid
         img = self.img
 
@@ -199,6 +200,7 @@ class MazeCreator:
             if value[i] == "0":
                 return_pos.append(pos)
         return return_pos
+
 
 class DrawAnimation:
     def __init__(self, path, color):
@@ -277,29 +279,3 @@ class DrawAnimation:
             print(self.x, row)
 
 
-        
-
-    
-
-def redrawing(flag, color_bg, color_42, path):
-
-    file_parsed = Parser()
-    file_parsed.read_config()
-    width ,height ,entry, exit ,_ , _ = file_parsed.get_infos()
-    maze = Maze(width, height, entry, exit) 
-    cell_dim, _, _ = MazeCreator.get_dim_pos(maze)
-    border = MazeCreator(maze, cell_dim)
-    drawer = DrawAnimation(path, color_bg)
-
-    if flag == 0:
-        border.creat_cells(color_42, color_bg)
-    if flag == 1:
-        # 
-        drawer.draw_dfs()
-    if flag == 2:
-        path_list = []
-        for i in range(len(path) - 1):
-            destination = DrawAnimation.path_checker(path[i], path[i+1])
-            path_list.append(destination)
-        drawer.draw_entry_exit(entry, exit)
-        drawer.draw()
