@@ -1,5 +1,6 @@
 import sys
 import os
+
 class DimensionsError(Exception):
     pass
 
@@ -29,6 +30,16 @@ class Parser():
     def get_infos(self):
         return  self.width, self.height, (self.x_entry, self.y_entry), (self.x_exit, self.y_exit), self.file_name, self.seed
     
+    def controler():
+        args = sys.argv
+        if len(args) != 2:
+            raise Exception("Error = You must run the program: python3 amazing.py config.txt"
+                            "\n PRESS [Control] key to exit")
+        if args[1] != "config.txt":
+            raise Exception("Error = You must run the program: python3 amazing.py config.txt"
+                            "\n PRESS [Control] key to exit")
+        return 1
+
     def read_config(self):
         file = open("config.txt", "r")
         f = file.read()

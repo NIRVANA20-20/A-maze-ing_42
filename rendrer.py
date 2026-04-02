@@ -1,6 +1,6 @@
 from parser import Parser
 import os
-from generater import Maze, MazeGenerator, MazeSolver
+from generater import Maze
 from my_mlx import MyMlx
 
 class Image:

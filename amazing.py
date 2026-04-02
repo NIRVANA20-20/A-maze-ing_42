@@ -3,7 +3,7 @@ from generater import Maze,  MazeGenerator, MazeSolver
 from my_mlx import MyMlx
 from enum import Enum
 from rendrer import Image, DrawAnimation, MazeCreator, Theme
-
+import sys
 
 class Keys(Enum):
     EXIT = 65507
@@ -53,34 +53,41 @@ def generate_ouput_file(flage: int)-> list:
 
 def call_back(key, _):
 
-    match key:
-        case Keys.EXIT.value:
-            MyMlx.loop_exit()
+    try:
+        match key:
+            case Keys.EXIT.value:
+                MyMlx.loop_exit()
 
-        case Keys.CELLS.value:
-            Theme.switch_theme()
-            
-            Image.put_bg_affiche(Theme.bg_img, 0, 0)
-            redrawing(0, Theme.color_bg, Theme.color_42, 0)
+            case Keys.CELLS.value:
+                if Parser.controler() == 1:
+                    Theme.switch_theme()
+                    Image.put_bg_affiche(Theme.bg_img, 0, 0)
+                    redrawing(0, Theme.color_bg, Theme.color_42, 0)
+                else:
+                    MyMlx.loop_exit()
+            case Keys.SWITCH_THEME.value:
+                Theme.switch_theme()
+                Image.put_bg_affiche(Theme.bg_img, 0, 0)
+                redrawing(0, Theme.color_bg, Theme.color_42, 0)
+                redrawing(1, Theme.color_bg, Theme.color_42, 0)
 
-        case Keys.SWITCH_THEME.value:
-            Theme.switch_theme()
-            Image.put_bg_affiche(Theme.bg_img, 0, 0)
-            redrawing(0, Theme.color_bg, Theme.color_42, 0)
-            redrawing(1, Theme.color_bg, Theme.color_42, 0)
+            case Keys.SOLVE.value:
+                path = generate_ouput_file(1)
+                redrawing(2, Theme.color_bg, Theme.color_42, path)
 
-        case Keys.SOLVE.value:
-            path = generate_ouput_file(1)
-            redrawing(2, Theme.color_bg, Theme.color_42, path)
+            case Keys.MAZE.value:
+                generate_ouput_file(0)
+                Image.put_bg_affiche(Theme.bg_img, 0, 0)
+                redrawing(0, Theme.color_bg, Theme.color_42, 0)
+                redrawing(1, Theme.color_bg, Theme.color_42, 0)
+    except Exception as e:
+        print(e)
+        Keys.EXIT
 
-        case Keys.MAZE.value:
-            generate_ouput_file(0)
-            Image.put_bg_affiche(Theme.bg_img, 0, 0)
-            redrawing(0, Theme.color_bg, Theme.color_42, 0)
-            redrawing(1, Theme.color_bg, Theme.color_42, 0)
 
 
 if __name__ == "__main__":
+
     Image.put_bg_affiche("main_affiche.png", 0, 0)
     MyMlx.key_hook(call_back, None)
     MyMlx.loop()
