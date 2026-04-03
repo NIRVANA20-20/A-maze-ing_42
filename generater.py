@@ -1,6 +1,8 @@
 import random
 from collections import deque
+from typing import Any
 from parser import Parser
+
 
 class Cell:
     def __init__(self, x, y):
@@ -29,22 +31,35 @@ class Cell:
 class Maze:
 
     _instance = None
-    _is_ins = 0
+    _is_init = 0
 
-    def __new__(cls, width, height, entry, exit):
+    def __new__(cls):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def __init__(self, width, height, entry, exit_m):
-        if Maze._is_ins == 0:
-            self.width = width
-            self.height = height
-            self.grid = [[Cell(x, y) for x in range(width)] for y in range(height)]
-            self.entry = entry
-            self.exit = exit_m
-            self.is_42_map()
-            Maze._is_ins = 1
+    def dimension_maze(self, width: int, height: int) -> Any:
+        self.width = width
+        self.height = height
+        return self
+
+    def grid_maze(self) -> Any:
+        self.grid = [
+            [Cell(x, y) for x in range(self.width)] for y in range(self.height)
+        ]
+        self.is_42_map()
+        return self
+
+    def entry_exit_maze(self, entry: tuple, exit: tuple):
+        self.entry = entry
+        self.exit = exit
+        return self
+
+    def maze_attribute(self, width, height, entry, exit) -> None:
+        if Maze._is_init == 0:
+            print(Maze._is_init)
+            self.dimension_maze(width, height).grid_maze().entry_exit_maze(entry, exit)
+            Maze._is_init = 1
 
     def get_cell(self, x, y):
         if 0 <= x < self.width and 0 <= y < self.height:
@@ -90,7 +105,7 @@ class Maze:
         for n in axis_n:
             r, c = n
             cell = self.get_cell(r, c)
-            if cell != 0 and cell.visited == False and cell.is_42 == False:
+            if cell != 0 and cell.visited is False and cell.is_42 is False:
                 axis.append(cell)
         return axis
 
@@ -146,7 +161,7 @@ class MazeGenerator:
         self.dfs_generator()
         parsed_file = Parser()
         parsed_file.read_config()
-        
+
         file = open(parsed_file.file_name, "w")
         for grid in list_grid:
             column = ""
@@ -160,9 +175,9 @@ class MazeGenerator:
 class MazeSolver:
 
     path = []
+
     def __init__(self, maze):
         self.maze = maze
-
 
     def bfs_solver(self, start, end):
         queue = deque([start])
@@ -185,7 +200,7 @@ class MazeSolver:
             }
 
             for d, (nx, ny) in directions.items():
-                if cell.walls[d] == False:
+                if cell.walls[d] is False:
                     if (nx, ny) not in visited:
                         visited.add((nx, ny))
                         parent[(nx, ny)] = (x, y)
@@ -206,3 +221,4 @@ class MazeSolver:
         path.reverse()
 
         return path
+

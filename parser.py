@@ -1,6 +1,7 @@
 import sys
 import os
 
+
 class DimensionsError(Exception):
     pass
 
@@ -16,7 +17,8 @@ class PerfectWayError(Exception):
 class EntryExitError(Exception):
     pass
 
-class Parser():
+
+class Parser:
     def __init__(self):
         self.width = None
         self.height = None
@@ -26,18 +28,30 @@ class Parser():
         self.y_exit = None
         self.file_name = None
         self.seed = None
-    
+
     def get_infos(self):
-        return  self.width, self.height, (self.x_entry, self.y_entry), (self.x_exit, self.y_exit), self.file_name, self.seed
-    
+        self.read_config()
+        return (
+            self.width,
+            self.height,
+            (self.x_entry, self.y_entry),
+            (self.x_exit, self.y_exit),
+            self.file_name,
+            self.seed,
+        )
+
     def controler():
         args = sys.argv
         if len(args) != 2:
-            raise Exception("Error = You must run the program: python3 amazing.py config.txt"
-                            "\n PRESS [Control] key to exit")
+            raise Exception(
+                "Error = You must run the program: python3 amazing.py config.txt"
+                "\n PRESS [Control] key to exit"
+            )
         if args[1] != "config.txt":
-            raise Exception("Error = You must run the program: python3 amazing.py config.txt"
-                            "\n PRESS [Control] key to exit")
+            raise Exception(
+                "Error = You must run the program: python3 amazing.py config.txt"
+                "\n PRESS [Control] key to exit"
+            )
         return 1
 
     def read_config(self):
@@ -46,14 +60,15 @@ class Parser():
         lst = f.split("\n")
         values = []
 
-        file_elements = ["WIDTH",
-                         "OUTPUT_FILE",
-                         "HEIGHT",
-                         "SEED",
-                         "ENTRY",
-                         "EXIT",
-                         "PERFECT"
-                         ]
+        file_elements = [
+            "WIDTH",
+            "OUTPUT_FILE",
+            "HEIGHT",
+            "SEED",
+            "ENTRY",
+            "EXIT",
+            "PERFECT",
+        ]
 
         for element in lst:
             if "#" in element:
@@ -71,10 +86,12 @@ class Parser():
             self.seed = self.check_seed(values[6])
             self.check_perfect(values[5])
 
-        except (DimensionsError,
-                EntryExitError,
-                FileNameError,
-                PerfectWayError) as error:
+        except (
+            DimensionsError,
+            EntryExitError,
+            FileNameError,
+            PerfectWayError,
+        ) as error:
             print(error)
             sys.exit(0)
 
@@ -85,29 +102,28 @@ class Parser():
                 raise ValueError("The seed must be number (positive)")
         except ValueError:
             print("The seed must be number (positive)")
-    
+
     def check_perfect(self, answer):
         if answer == "True":
             pass  ############## put the perfect way
         elif answer == "False":
             pass  ##############    put the unperfect way
         else:
-            raise PerfectWayError("PERFECT = (the answer should be "
-                                  "'True' or 'False') ")
-
+            raise PerfectWayError(
+                "PERFECT = (the answer should be " "'True' or 'False') "
+            )
 
     def check_file(self, file_name):
-        file_checker = file_name.split('.')
-        if len(file_checker) != 2 or file_checker[1] != 'txt':
+        file_checker = file_name.split(".")
+        if len(file_checker) != 2 or file_checker[1] != "txt":
             raise FileNameError("only '.txt' files are permitted as maze output file")
         if os.path.exists(file_name) and not os.access(file_name, os.W_OK):
             raise FileNameError(f"OUTPUT_FILE '{file_name}' is not writable")
         parent = os.path.dirname(file_name) or "."
         if not os.access(parent, os.W_OK):
-            raise ValueError(f"OUTPUT_FILE '{file_name}' directory is not writable") 
+            raise ValueError(f"OUTPUT_FILE '{file_name}' directory is not writable")
         else:
             return file_name
-
 
     def check_entry(self, entry):
         entr = entry.replace("(", "").replace(")", "")
@@ -128,14 +144,17 @@ class Parser():
 
         if x > self.width or x < 0:
             raise EntryExitError(
-                f"The entery x can't be : {x}" f"  => (max : {self.width})"
-                "and (min : 1)")
+                f"The entery x can't be : {x}"
+                f"  => (max : {self.width})"
+                "and (min : 1)"
+            )
         if y > self.height or y < 0:
             raise EntryExitError(
-                f"The entery y can't be : {y}" f"  => (max : {self.height})"
-                " and (min : 1)")
+                f"The entery y can't be : {y}"
+                f"  => (max : {self.height})"
+                " and (min : 1)"
+            )
         return x, y
-
 
     def check_exit(self, exit):
         exit = exit.replace("(", "").replace(")", "")
@@ -161,9 +180,8 @@ class Parser():
         if y > self.height or y < 0:
             raise EntryExitError(
                 f"The exit y can't be : {y}" f"  => (max : {self.height}) and (min : 1)"
-                )
+            )
         return x, y
-
 
     def check_dimensions(self, w, h):
         try:
