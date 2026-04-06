@@ -1,5 +1,3 @@
-
-
 from mlx.mlx import Mlx
 from typing import Any
 
@@ -10,9 +8,7 @@ class MyMlx:
     _, screen_width_temp, screen_height = mlx.mlx_get_screen_size(mlx_ptr)
     screen_width: int = 1500
     screen_height = 2000
-    win_ptr = mlx.mlx_new_window(
-        mlx_ptr, screen_width, screen_height, "A-Maze-ing"
-    )
+    win_ptr = mlx.mlx_new_window(mlx_ptr, screen_width, screen_height, "A-Maze-ing")
 
     @classmethod
     def put_string(cls, text: str, x: int, y: int, color: int) -> None:
@@ -20,9 +16,7 @@ class MyMlx:
 
     @classmethod
     def put_image_to_window(cls, img_ptr: Any, x: int, y: int) -> None:
-        cls.mlx.mlx_put_image_to_window(
-            cls.mlx_ptr, cls.win_ptr, img_ptr, x, y
-        )
+        cls.mlx.mlx_put_image_to_window(cls.mlx_ptr, cls.win_ptr, img_ptr, x, y)
 
     @classmethod
     def clear_window(cls) -> None:

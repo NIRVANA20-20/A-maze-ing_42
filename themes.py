@@ -1,0 +1,84 @@
+from my_mlx import MyMlx
+from rendrer import Image
+import os
+
+
+def create_color(r: int, g: int, b: int) -> int:
+    col = 0xFF000000 | (r << 16) | (g << 8) | b
+    return col
+
+
+class Colors:
+    BLACK = create_color(0, 0, 0)
+    WHITE = create_color(255, 255, 255)
+
+    ORANGE_MOOD_BG = create_color(255, 175, 102)
+    ORANGE_MOOD_BR = create_color(153, 76, 0)
+    ORANGE_MOOD_42 = create_color(12, 23, 34)
+
+    PINK_MOOD_BG = create_color(255, 204, 255)
+    PINK_MOOD_BR = create_color(153, 0, 76)
+    PINK_MOOD_42 = create_color(82, 16, 82)
+
+    BLUE_MOOD_BG = create_color(102, 255, 255)
+    BLUE_MOOD_BR = create_color(153, 76, 0)
+    BLUE_MOOD_42 = create_color(10, 75, 75)
+
+    GRIS_MOOD_BG = create_color(224, 224, 224)
+    GRIS_MOOD_BR = create_color(64, 64, 64)
+    GRIS_MOOD_42 = create_color(84, 84, 80)
+
+
+class Mood:
+    def __init__(
+        self, bg_file_name: str, bg_color: int, border_color: int, color_42: int
+    ):
+        abs_path = os.path.abspath(".")
+        self.bg_img_ptr, _, _ = MyMlx.png_file_to_image(abs_path + f"/{bg_file_name}")
+        self.bg_color = bg_color
+        self.border_color = border_color
+        self.color_42 = color_42
+
+
+class Theme:
+    themes = [
+        Mood(
+            bg_file_name="orange_mood.png",
+            bg_color=Colors.ORANGE_MOOD_BG,
+            border_color=Colors.ORANGE_MOOD_BR,
+            color_42=Colors.ORANGE_MOOD_42,
+        ),
+        Mood(
+            bg_file_name="pink_mood.png",
+            bg_color=Colors.PINK_MOOD_BG,
+            border_color=Colors.PINK_MOOD_BR,
+            color_42=Colors.PINK_MOOD_42,
+        ),
+        Mood(
+            bg_file_name="blue_mood.png",
+            bg_color=Colors.BLUE_MOOD_BG,
+            border_color=Colors.BLUE_MOOD_BR,
+            color_42=Colors.BLUE_MOOD_42,
+        ),
+        Mood(
+            bg_file_name="gris_mood.png",
+            bg_color=Colors.GRIS_MOOD_BG,
+            border_color=Colors.GRIS_MOOD_BR,
+            color_42=Colors.GRIS_MOOD_42,
+        ),
+    ]
+    theme_index = 0
+    current_mood = themes[theme_index]
+    bg_img_ptr = current_mood.bg_img_ptr
+    bg_color = current_mood.bg_color
+    border_color = current_mood.border_color
+    color_42 = current_mood.color_42
+
+    @classmethod
+    def switch_theme(cls):
+        theme_index = (cls.theme_index + 1) % len(cls.themes)
+        current_mood = cls.themes[theme_index]
+        cls.bg_img_ptr = current_mood.bg_img_ptr
+        cls.bg_color = current_mood.bg_color
+        cls.border_color = current_mood.border_color
+        cls.color_42 = current_mood.color_42

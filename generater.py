@@ -1,7 +1,6 @@
 import random
 from collections import deque
-from typing import Any
-from parser import Parser
+from typing import Any, Tuple, List
 
 
 class Cell:
@@ -20,7 +19,7 @@ class Cell:
         bit_map = ["N", "E", "S", "W"]
         value = 0
         for i, pos in enumerate(bit_map):
-            if self.walls[pos] == True:
+            if self.walls[pos] is True:
                 value |= 1 << i
         return value
 
@@ -28,45 +27,70 @@ class Cell:
         return f"Cell({self.x},{self.y})"
 
 
-class Maze:
-
-    _instance = None
-    _is_init = 0
-
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-        return cls._instance
-
-    def dimension_maze(self, width: int, height: int) -> Any:
+class DfsGenerator:
+    def __init__(self, width, height, seed, perfect) -> None:
+        self.stack = []
         self.width = width
         self.height = height
-        return self
+        self.seed = seed
+        self.perfect = perfect
 
-    def grid_maze(self) -> Any:
-        self.grid = [
-            [Cell(x, y) for x in range(self.width)] for y in range(self.height)
-        ]
-        self.is_42_map()
-        return self
-
-    def entry_exit_maze(self, entry: tuple, exit: tuple):
-        self.entry = entry
-        self.exit = exit
-        return self
-
-    def maze_attribute(self, width, height, entry, exit) -> None:
-        if Maze._is_init == 0:
-            print(Maze._is_init)
-            self.dimension_maze(width, height).grid_maze().entry_exit_maze(entry, exit)
-            Maze._is_init = 1
-
-    def get_cell(self, x, y):
+    def get_cell(self, x, y, grid):
         if 0 <= x < self.width and 0 <= y < self.height:
-            return self.grid[y][x]
-        return 0
+            return grid[y][x]
+        return None
 
-    def is_42_map(self):
+    def get_neighbors(self, x, y, grid):
+
+        axis_n = [(x, y - 1), (x + 1, y), (x, y + 1), (x - 1, y)]
+
+        axis = []
+        for n in axis_n:
+            r, c = n
+            cell = self.get_cell(r, c, grid)
+            if cell and cell.visited is False and cell.is_42 is False:
+                axis.append(cell)
+        return axis
+
+    def generate(self, grid) -> None:
+        self.is_42_map(grid)
+        x = 0
+        y = 0
+        start = grid[y][x]
+        start.visited = True
+        self.stack.append(start)
+        while self.stack:
+            cell = self.stack[-1]
+            x, y = cell.x, cell.y
+            neighbors = self.get_neighbors(x, y, grid)
+            if len(neighbors) == 0:
+                self.stack.pop()
+            else:
+                cell_r = random.choice(neighbors)
+                cell_r.visited = True
+                self.dfs_open_wall(cell, cell_r)
+                self.stack.append(cell_r)
+
+    def dfs_open_wall(self, cell, random_cell):
+        x, y = cell.x, cell.y
+        x1, y1 = random_cell.x, random_cell.y
+
+        if x == x1:
+            if y > y1:
+                random_cell.open_wall("S")
+                cell.open_wall("N")
+            else:
+                random_cell.open_wall("N")
+                cell.open_wall("S")
+        if y == y1:
+            if x > x1:
+                random_cell.open_wall("E")
+                cell.open_wall("W")
+            else:
+                random_cell.open_wall("W")
+                cell.open_wall("E")
+
+    def is_42_map(self, grid):
 
         if self.width >= 9 and self.height >= 8:
             c_x, c_y = int(self.width / 2), int(self.height / 2)
@@ -90,115 +114,40 @@ class Maze:
                 (c_x + 1, c_y - 2),
                 (c_x + 2, c_y - 2),
             ]
-            for grid in self.grid:
-                for cell in grid:
+            for row in grid:
+                for cell in row:
                     x, y = cell.x, cell.y
                     cor = (x, y)
                     if cor in map_42:
                         cell.is_42 = True
 
-    def get_neighbors(self, x, y):
-
-        axis_n = [(x, y - 1), (x + 1, y), (x, y + 1), (x - 1, y)]
-
-        axis = []
-        for n in axis_n:
-            r, c = n
-            cell = self.get_cell(r, c)
-            if cell != 0 and cell.visited is False and cell.is_42 is False:
-                axis.append(cell)
-        return axis
-
-
-class MazeGenerator:
-    def __init__(self, maze):
-        self.stack = []
-        self.maze = maze
-
-    @staticmethod
-    def dfs_open_wall(cell, random_cell):
-        x, y = cell.x, cell.y
-        x1, y1 = random_cell.x, random_cell.y
-
-        if x == x1:
-            if y > y1:
-                random_cell.open_wall("S")
-                cell.open_wall("N")
-
-            else:
-                random_cell.open_wall("N")
-                cell.open_wall("S")
-        if y == y1:
-            if x > x1:
-                random_cell.open_wall("E")
-                cell.open_wall("W")
-            else:
-                random_cell.open_wall("W")
-                cell.open_wall("E")
-
-    def dfs_generator(self):
-        x = 0
-        y = 0
-        stack_cell, maze_generate = self.stack, self.maze
-        start = maze_generate.get_cell(x, y)
-        start.visited = True
-        stack_cell.append(start)
-        while stack_cell:
-            cell = stack_cell[-1]
-            x, y = cell.x, cell.y
-            neighbors = maze_generate.get_neighbors(x, y)
-            if len(neighbors) == 0:
-                stack_cell.pop()
-            else:
-                cell_r = random.choice(neighbors)
-                cell_r.visited = True
-                MazeGenerator.dfs_open_wall(cell, cell_r)
-                stack_cell.append(cell_r)
-
-    def write_to_file(self):
-        maze = self.maze
-        list_grid = maze.grid
-        self.dfs_generator()
-        parsed_file = Parser()
-        parsed_file.read_config()
-
-        file = open(parsed_file.file_name, "w")
-        for grid in list_grid:
-            column = ""
-            for cell in grid:
-                column += hex(cell.to_hex())[2:]
-            column += "\n"
-            file.write(column)
-        file.close()
-
 
 class MazeSolver:
 
-    path = []
+    def __init__(self, entry: Tuple[int, int], exit: Tuple[int, int], path):
+        self.entry = entry
+        self.exit = exit
+        self.path = path
+        self.queue: deque = deque()
 
-    def __init__(self, maze):
-        self.maze = maze
-
-    def bfs_solver(self, start, end):
-        queue = deque([start])
-        visited = {start}
+    def generate(self, grid) -> None:
+        queue: deque = deque([self.entry])
+        visited = {self.entry}
         parent = {}
 
         while queue:
             x, y = queue.popleft()
 
-            if (x, y) == end:
-                return self.get_path(parent, start, end)
-
-            cell = self.maze.get_cell(x, y)
-
+            if (x, y) == self.exit:
+                self.get_path(parent, self.entry, self.exit)
+                return
+            cell = grid[y][x]
             directions = {
                 "N": (x, y - 1),
                 "E": (x + 1, y),
                 "S": (x, y + 1),
                 "W": (x - 1, y),
             }
-
             for d, (nx, ny) in directions.items():
                 if cell.walls[d] is False:
                     if (nx, ny) not in visited:
@@ -206,19 +155,57 @@ class MazeSolver:
                         parent[(nx, ny)] = (x, y)
                         queue.append((nx, ny))
 
-        return []
-
-    def get_path(self, parent, start, end):
-
-        path = []
+    def get_path(self, parent, start, end) -> Any:
         current = end
-
         while current != start:
-            path.append(current)
+            self.path.append(current)
             current = parent[current]
+        self.path.append(start)
+        self.path.reverse()
 
-        path.append(start)
-        path.reverse()
 
-        return path
+class MazeGenerator:
+    def __init__(
+        self,
+        width: int,
+        height: int,
+        m_entry: Tuple[int, int],
+        m_exit: Tuple[int, int],
+        seed: int,
+        perfect: bool,
+        file_name: str,
+    ):
+        self.width = width
+        self.height = height
+        self.seed = seed
+        self.perfect = perfect
+        self.file_name = file_name
+        self.generator_algo = DfsGenerator(
+            self.width, self.height, self.seed, self.perfect
+        )
+        self.path = []
+        self.entry = m_entry
+        self.exit = m_exit
+        self.solver = MazeSolver(self.entry, self.exit, self.path)
 
+    def set_grid(self):
+        self.grid = [
+            [Cell(x, y) for x in range(self.width)] for y in range(self.height)
+        ]
+        return self
+
+    def generate(self):
+        self.set_grid()
+        self.generator_algo.generate(self.grid)
+        self.solver.generate(self.grid)
+        self.write_to_file()
+
+    def write_to_file(self):
+        file = open(self.file_name, "w")
+        for grid in self.grid:
+            column = ""
+            for cell in grid:
+                column += hex(cell.to_hex())[2:]
+            column += "\n"
+            file.write(column)
+        file.close()

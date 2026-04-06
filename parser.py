@@ -20,47 +20,7 @@ class EntryExitError(Exception):
 
 class Parser:
     def __init__(self):
-        self.width = None
-        self.height = None
-        self.x_entry = None
-        self.x_exit = None
-        self.y_entry = None
-        self.y_exit = None
-        self.file_name = None
-        self.seed = None
-
-    def get_infos(self):
-        self.read_config()
-        return (
-            self.width,
-            self.height,
-            (self.x_entry, self.y_entry),
-            (self.x_exit, self.y_exit),
-            self.file_name,
-            self.seed,
-        )
-
-    def controler():
-        args = sys.argv
-        if len(args) != 2:
-            raise Exception(
-                "Error = You must run the program: python3 amazing.py config.txt"
-                "\n PRESS [Control] key to exit"
-            )
-        if args[1] != "config.txt":
-            raise Exception(
-                "Error = You must run the program: python3 amazing.py config.txt"
-                "\n PRESS [Control] key to exit"
-            )
-        return 1
-
-    def read_config(self):
-        file = open("config.txt", "r")
-        f = file.read()
-        lst = f.split("\n")
-        values = []
-
-        file_elements = [
+        self.file_elements = [
             "WIDTH",
             "OUTPUT_FILE",
             "HEIGHT",
@@ -69,21 +29,38 @@ class Parser:
             "EXIT",
             "PERFECT",
         ]
+        self.args_checker()
+        self.read_config()
+
+    def args_checker(self):
+        args = sys.argv
+        if len(args) != 2 or args[1] != "config.txt":
+            print(
+                "Error = You must run the program: python3 amazing.py config.txt",
+                "\n PRESS [Control] key to exit",
+            )
+            exit(0)
+
+    def read_config(self):
+        file = open("config.txt", "r")
+        f = file.read()
+        lst = f.split("\n")
+        values = []
 
         for element in lst:
             if "#" in element:
                 continue
-            if element.split("=")[0] in file_elements:
+            if element.split("=")[0] in self.file_elements:
                 values.append(element.split("=")[1])
         if len(values) != 7:
             print("One of the arguments in (config.txt) is missing")
             sys.exit(0)
         try:
-            self.height, self.width = self.check_dimensions(values[0], values[1])
-            self.x_entry, self.y_entry = self.check_entry(values[2])
-            self.x_exit, self.y_exit = self.check_exit(values[3])
-            self.file_name = self.check_file(values[4])
-            self.seed = self.check_seed(values[6])
+            self.check_dimensions(values[0], values[1])
+            self.check_entry(values[2])
+            self.check_exit(values[3])
+            self.check_file(values[4])
+            self.check_seed(values[6])
             self.check_perfect(values[5])
 
         except (
@@ -96,18 +73,16 @@ class Parser:
             sys.exit(0)
 
     def check_seed(self, seed):
-        try:
-            self.seed = int(seed)
-            if self.seed < 0:
-                raise ValueError("The seed must be number (positive)")
-        except ValueError:
-            print("The seed must be number (positive)")
+        if int(seed) < 0:
+            print("The seed must be number (positive)", file=sys.stderr)
+            sys.exit(0)
+        self.seed = int(seed)
 
     def check_perfect(self, answer):
         if answer == "True":
-            pass  ############## put the perfect way
+            self.perfect = True
         elif answer == "False":
-            pass  ##############    put the unperfect way
+            self.perfect = False
         else:
             raise PerfectWayError(
                 "PERFECT = (the answer should be " "'True' or 'False') "
@@ -123,7 +98,7 @@ class Parser:
         if not os.access(parent, os.W_OK):
             raise ValueError(f"OUTPUT_FILE '{file_name}' directory is not writable")
         else:
-            return file_name
+            self.file_name = file_name
 
     def check_entry(self, entry):
         entr = entry.replace("(", "").replace(")", "")
@@ -154,7 +129,7 @@ class Parser:
                 f"  => (max : {self.height})"
                 " and (min : 1)"
             )
-        return x, y
+        self.entry = (x, y)
 
     def check_exit(self, exit):
         exit = exit.replace("(", "").replace(")", "")
@@ -175,13 +150,15 @@ class Parser:
 
         if x > self.width or x < 0:
             raise EntryExitError(
-                f"The exit x can't be : {x}" f"  => (max : {self.width}) and (min : 1)"
+                f"The exit x can't be : {x}" f" => (max : {self.width}) and (min : 1)"
             )
         if y > self.height or y < 0:
             raise EntryExitError(
-                f"The exit y can't be : {y}" f"  => (max : {self.height}) and (min : 1)"
+                f"The exit y can't be : {y}"
+                f"  => "
+                f"(max : {self.height}) and (min : 1)"
             )
-        return x, y
+        self.exit = (x, y)
 
     def check_dimensions(self, w, h):
         try:
@@ -201,4 +178,7 @@ class Parser:
             raise DimensionsError(
                 f"The height can`t be : {self.height}" " => (max : 200) and (min : 1)"
             )
-        return self.width, self.height
+
+    # TODO: just for test remember to parse if from config file
+    def set_perfect(self):
+        self.perfect = True
