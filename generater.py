@@ -1,6 +1,6 @@
 import random
 from collections import deque
-from typing import Any, Tuple, List
+from typing import Any, Tuple
 
 
 class Cell:
@@ -180,6 +180,7 @@ class MazeGenerator:
         self.seed = seed
         self.perfect = perfect
         self.file_name = file_name
+        self.set_grid()
         self.generator_algo = DfsGenerator(
             self.width, self.height, self.seed, self.perfect
         )
