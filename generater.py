@@ -192,6 +192,7 @@ class MazeGenerator:
         self.grid = [
             [Cell(x, y) for x in range(self.width)] for y in range(self.height)
         ]
+        self.generator_algo.is_42_map(self.grid)
         return self
 
     def generate(self):

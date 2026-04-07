@@ -1,6 +1,6 @@
 from my_mlx import MyMlx
 from typing import Any
-from generater import Maze
+
 from themes import Theme
 import os
 
@@ -11,18 +11,18 @@ class Image:
 
     def __new__(cls):
         if cls._instance is None:
+            print("wakud")
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def set_dimension(self) -> Any:
-        maze = Maze()
+    def set_dimension(self, width, height) -> Any:
         min_screen = min(MyMlx.screen_height, MyMlx.screen_width)
-        max_cell = max(maze.width, maze.height)
+        max_cell = max(width, height)
         self.cell_dim = int((min_screen / max_cell) * 0.75)
         self.cell_b = int(self.cell_dim * 0.10)
-        self.height = int(maze.height * (self.cell_dim + self.cell_b))
-        self.width = int(maze.width * (self.cell_dim + self.cell_b))
-        self.poss_w = int((MyMlx.screen_width - maze.width * self.cell_dim) / 2)
+        self.height = int(height * (self.cell_dim + self.cell_b))
+        self.width = int(width * (self.cell_dim + self.cell_b))
+        self.poss_w = int((MyMlx.screen_width - width * self.cell_dim) / 2)
         self.poss_h = 200
         return self
 
@@ -37,7 +37,7 @@ class Image:
     def img_put_pixel(self) -> None:
         for y in range(self.height):
             for x in range(self.width):
-                self.put_pixel(x, y, Theme.color_bg)
+                self.put_pixel(x, y, Theme.bg_color)
 
     def put_pixel(self, x: int, y: int, color: int):
         offset = int((y * self.sl) + (x * (self.bpp // 8)))
@@ -48,7 +48,7 @@ class Image:
         start_w = x * self.cell_dim
         cell_width = self.cell_dim * (x + 1)
         for y in range(start_h, self.cell_b + start_h):
-            for x in range(start_w + self.cell_br, cell_width + self.cell_b - cell_br):
+            for x in range(start_w + cell_br, cell_width + self.cell_b - cell_br):
                 self.put_pixel(x, y, Theme.border_color)
 
     def put_west(self, x, y, cell_br=0):
@@ -80,7 +80,7 @@ class Image:
     def put_img(self):
         for y in range(self.height):
             for x in range(self.width):
-                self.put_pixel(x, y, Theme.color_bg)
+                self.put_pixel(x, y, Theme.bg_color)
 
     def put_inside(self, x, y):
         start_h = y * self.cell_dim + self.cell_b

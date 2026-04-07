@@ -2,8 +2,7 @@ from parser import Parser
 from generater import MazeGenerator
 from maze import Maze
 from my_mlx import MyMlx
-
-# from maze_controller import MazeController
+from maze_controller import MazeController
 import sys
 
 
@@ -31,12 +30,11 @@ class Amazing:
             .set_path(self.generater.path)
         )
 
-    # self.maze_controler = MazeController(self.maze_generator)
+        self.maze_controler = MazeController(self.generater)
 
     def run(self):
-        # self.maze_controler.start()
-        # MyMlx.loop()
-        self.generater.generate()
+        self.maze_controler.start()
+        MyMlx.loop()
 
 
 if __name__ == "__main__":

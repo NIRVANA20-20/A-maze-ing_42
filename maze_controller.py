@@ -1,8 +1,10 @@
-from generater import Maze, MazeSolver, MazeGenerator
+from generater import MazeGenerator
+from rendrer import DrawAnimation, MazeCreator
+from CellImage import Image
 from my_mlx import MyMlx
-from rendrer import Image, DrawAnimation, MazeCreator, Theme
-from enum import Enum
+from themes import Theme
 from typing import List
+from enum import Enum
 
 
 class Keys(Enum):
@@ -17,41 +19,42 @@ class MazeController:
 
     def __init__(self, generator: MazeGenerator) -> None:
 
-        self.is_start = False
-        self.maze = Maze()
         self.generator = generator
-        self.drawer = DrawAnimation()
+        self.creator = MazeCreator(generator)
+        self.img = Image()
+        self.drawer = DrawAnimation(generator)
+        self.img.set_dimension(
+            generator.width, generator.height
+        ).img_ptr().img_data_addr()
+        Theme.START.put_image_to_window()
+        self.is_start = False
 
     def start(self):
         MyMlx.key_hook(self.call_back, None)
 
     def maze_cells(self, key: int) -> None:
         if key == Keys.CELLS.value:
+            self.generator.set_grid()
             Theme.switch_theme()
-            Image.put_bg_affiche(Theme.bg_img, 0, 0)
-            self.border.creat_cells(Theme.color_42, Theme.color_bg)
+            Theme.bg_img_ptr.put_image_to_window()
+            self.creator.creat_cells()
             self.is_start = True
 
-    def switch_theme(self, _: int) -> None:
-        Theme.switch_theme()
-        Image.put_bg_affiche(Theme.bg_img, 0, 0)
-        self.drawer.draw_dfs()
+    def switch_theme(self, key: int) -> None:
+        if key == Keys.SWITCH_THEME.value:
+            Theme.switch_theme()
+            Theme.bg_img_ptr.put_image_to_window()
+            self.drawer.draw_dfs()
 
     def put_maze(self, key: int) -> None:
         if key == Keys.MAZE.value:
-            self.maze.grid_maze()
             self.generator.generate()
-            self.generator.write_to_file()
-            Image.put_bg_affiche(Theme.bg_img, 0, 0)
-            self.border.creat_cells(Theme.color_42, Theme.color_bg)
-            self.drawer.get_path(self.solve.bfs_solver(self.entry_m, self.exit_m))
+            Theme.bg_img_ptr.put_image_to_window()
             self.drawer.draw_dfs()
 
     def solve_maze(self, key: int) -> None:
         if key == Keys.SOLVE.value:
-            if MazeGenerator.is_finished:
-                self.drawer.draw_entry_exit(self.entry_m, self.exit_m)
-                self.drawer.draw_dfs()
+            self.drawer.drawer()
 
     def get_path_string(self) -> List[str]:
         path_list = []
@@ -64,6 +67,7 @@ class MazeController:
     def call_back(self, key: int, _) -> None:
 
         self.maze_cells(key)
+        print((key))
         if self.is_start:
             self.solve_maze(key)
             self.switch_theme(key)
