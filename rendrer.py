@@ -12,7 +12,7 @@ class MazeCreator:
 
     def creat_cells(self):
 
-        self.img.put_img()
+        self.img.img_put_pixel()
         for cells in self.maze.grid:
             for cell in cells:
                 x, y = cell.x, cell.y
@@ -58,6 +58,7 @@ class DrawAnimation:
         self.creator = MazeCreator()
         self.img = Image()
         self.color = Theme.bg_color
+        self.is_animation = True
 
     def draw_entry_exit(self):
         x_entry, y_entry = self.entry
@@ -95,7 +96,6 @@ class DrawAnimation:
             destination = DrawAnimation.path_checker(
                 self.path[self.i], self.path[self.i + 1]
             )
-            # print(destination)
             x, y = self.path[self.i]
             self.img.put_path(x, y)
             MyMlx.put_image_to_window(self.img.ptr, self.pos_w, self.pos_h)
@@ -112,17 +112,23 @@ class DrawAnimation:
                 self.y += 1
 
             if self.y == height:
+                if self.is_animation is False:
+                    MyMlx.put_image_to_window(
+                        self.img.ptr, self.img.poss_w, self.img.poss_h
+                    )
                 return
 
             if self.x < width:
                 row = self.creator.read_from_file(self.y)
+                print(row)
                 value = format(int(row[self.x], 16), "04b")
                 pos_list = MazeCreator.check_binary(value)
                 for pos in pos_list:
                     self.creator.remove_wall_helper(self.x, self.y, pos)
-                MyMlx.put_image_to_window(
-                    self.img.ptr, self.img.poss_w, self.img.poss_h
-                )
+                if self.is_animation is True:
+                    MyMlx.put_image_to_window(
+                        self.img.ptr, self.img.poss_w, self.img.poss_h
+                    )
             self.x += 1
         except Exception as e:
             print(e)
