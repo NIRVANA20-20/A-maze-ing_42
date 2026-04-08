@@ -1,8 +1,8 @@
-from parser import Parser
-from generater import MazeGenerator
-from maze import Maze
-from my_mlx import MyMlx
-from maze_controller import MazeController
+from Parsing.parser import Parser
+from Generating.generater import MazeGenerator
+from Generating.maze import Maze
+from my_mlx.my_mlx import MyMlx
+from A_maze_ing.maze_controller import MazeController
 import sys
 
 

@@ -1,8 +1,8 @@
-from generater import MazeGenerator
-from rendrer import DrawAnimation, MazeCreator
-from CellImage import Image
-from my_mlx import MyMlx
-from themes import Theme
+from Generating.generater import MazeGenerator
+from Rendring.rendrer import DrawAnimation, MazeCreator
+from Rendring.CellImage import Image
+from my_mlx.my_mlx import MyMlx
+from themes.themes import Theme
 from typing import List
 from enum import Enum
 

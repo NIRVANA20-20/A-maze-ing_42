@@ -1,4 +1,4 @@
-from mlx.mlx import Mlx
+from my_mlx.mlx.mlx import Mlx
 from typing import Any
 
 

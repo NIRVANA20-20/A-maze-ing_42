@@ -1,8 +1,8 @@
-from my_mlx import MyMlx
+from my_mlx.my_mlx import MyMlx
 from typing import Any
-from themes import Theme
-from CellImage import Image
-from maze import Maze
+from themes.themes import Theme
+from Rendring.CellImage import Image
+from Generating.maze import Maze
 
 
 class MazeCreator:
@@ -145,11 +145,7 @@ class DrawAnimation:
                 pos_list = MazeCreator.check_binary(value)
                 for pos in pos_list:
                     self.creator.remove_wall_helper(x, y, pos)
-        MyMlx.put_image_to_window(
-            self.img.ptr, self.img.poss_w, self.img.poss_h
-        )
-
-
+        MyMlx.put_image_to_window(self.img.ptr, self.img.poss_w, self.img.poss_h)
 
     def draw_path(self, path: Any) -> None:
         pass

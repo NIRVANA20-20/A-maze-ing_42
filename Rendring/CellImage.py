@@ -1,8 +1,6 @@
-from my_mlx import MyMlx
+from my_mlx.my_mlx import MyMlx
 from typing import Any
-
-from themes import Theme
-import os
+from themes.themes import Theme
 
 
 class Image:
@@ -78,19 +76,18 @@ class Image:
 
     def put_inside(self, x, y):
         start_h = y * self.cell_dim + self.cell_b
-        start_w = x * self.cell_dim + self.cell_b 
+        start_w = x * self.cell_dim + self.cell_b
         cell_width = self.cell_dim * (x + 1)
-        for y in range(start_h, self.cell_dim + start_h ):
-            for x in range(start_w , cell_width + self.cell_b):
+        for y in range(start_h, self.cell_dim + start_h):
+            for x in range(start_w, cell_width + self.cell_b):
                 self.put_pixel(x, y, Theme.color_42)
 
     def put_entry_exit(self, x, y):
-        cell_b =  2*self.cell_b
-        start_h = y * self.cell_dim + cell_b
-        start_w = x * self.cell_dim + cell_b 
+        start_h = y * self.cell_dim + (2 * self.cell_b)
+        start_w = x * self.cell_dim + (2 * self.cell_b)
         cell_width = self.cell_dim * (x + 1)
-        for y in range(start_h, self.cell_dim - cell_b ):
-            for x in range(start_w , cell_width - cell_b):
+        for y in range(start_h, self.cell_dim + start_h - (3 * self.cell_b)):
+            for x in range(start_w, cell_width + self.cell_b - (2 * self.cell_b)):
                 self.put_pixel(x, y, Theme.color_42)
 
     def put_path(self, x, y, destination):
