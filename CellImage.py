@@ -33,11 +33,6 @@ class Image:
         self.buffer, self.bpp, self.sl, self.format = MyMlx.get_data_addr(self.ptr)
         return self
 
-    def img_put_pixel(self) -> None:
-        for y in range(self.height):
-            for x in range(self.width):
-                self.put_pixel(x, y, Theme.bg_color)
-
     def put_pixel(self, x: int, y: int, color: int):
         offset = int((y * self.sl) + (x * (self.bpp // 8)))
         self.buffer[offset : offset + 4] = color.to_bytes(4, "little")

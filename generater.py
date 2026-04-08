@@ -54,6 +54,7 @@ class DfsGenerator:
 
     def generate(self, grid) -> None:
         self.is_42_map(grid)
+        random.seed(self.seed)
         x = 0
         y = 0
         start = grid[y][x]

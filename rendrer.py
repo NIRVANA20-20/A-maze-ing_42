@@ -12,7 +12,7 @@ class MazeCreator:
 
     def creat_cells(self):
 
-        self.img.img_put_pixel()
+        self.img.put_img()
         for cells in self.maze.grid:
             for cell in cells:
                 x, y = cell.x, cell.y
@@ -95,6 +95,7 @@ class DrawAnimation:
             destination = DrawAnimation.path_checker(
                 self.path[self.i], self.path[self.i + 1]
             )
+            # print(destination)
             x, y = self.path[self.i]
             self.img.put_path(x, y)
             MyMlx.put_image_to_window(self.img.ptr, self.pos_w, self.pos_h)
@@ -115,7 +116,6 @@ class DrawAnimation:
 
             if self.x < width:
                 row = self.creator.read_from_file(self.y)
-                print(row)
                 value = format(int(row[self.x], 16), "04b")
                 pos_list = MazeCreator.check_binary(value)
                 for pos in pos_list:

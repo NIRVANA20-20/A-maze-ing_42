@@ -20,7 +20,7 @@ class Colors:
     PINK_MOOD_42 = create_color(82, 16, 82)
 
     BLUE_MOOD_BG = create_color(102, 255, 255)
-    BLUE_MOOD_BR = create_color(153, 76, 0)
+    BLUE_MOOD_BR = create_color(10, 75, 75)
     BLUE_MOOD_42 = create_color(10, 75, 75)
 
     GRIS_MOOD_BG = create_color(224, 224, 224)
@@ -94,8 +94,8 @@ class Theme:
 
     @classmethod
     def switch_theme(cls):
-        theme_index = (cls.theme_index + 1) % len(cls.themes)
-        current_mood = cls.themes[theme_index]
+        cls.theme_index = (cls.theme_index + 1) % len(cls.themes)
+        current_mood = cls.themes[cls.theme_index]
         cls.bg_img_ptr = current_mood.background
         cls.bg_color = current_mood.bg_color
         cls.border_color = current_mood.border_color

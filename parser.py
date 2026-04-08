@@ -64,18 +64,18 @@ class Parser:
             self.check_perfect(values[5])
 
         except (
-            DimensionsError,
-            EntryExitError,
-            FileNameError,
-            PerfectWayError,
+            Exception
         ) as error:
             print(error)
             sys.exit(0)
 
     def check_seed(self, seed):
-        if int(seed) < 0:
-            print("The seed must be number (positive)", file=sys.stderr)
-            sys.exit(0)
+     
+        if seed is None:
+            self.seed = 42
+            return
+        elif int(seed) < 0:
+            raise ValueError("The seed must be number (positive)", file=sys.stderr)
         self.seed = int(seed)
 
     def check_perfect(self, answer):
