@@ -76,7 +76,10 @@ class DrawAnimation:
     def draw_dfs(self):
         self.x = 0
         self.y = 0
-        MyMlx.loop_hook(self.dfs_loop_hook, None)
+        if self.is_animation is False:
+            self.draw_dfs_no_animation()
+        else:
+            MyMlx.loop_hook(self.dfs_loop_hook, None)
 
     @staticmethod
     def path_checker(curr_cell, next_cell):
@@ -131,6 +134,22 @@ class DrawAnimation:
             self.x += 1
         except Exception as e:
             print(e)
+
+    def draw_dfs_no_animation(self):
+        width = self.maze.width
+        height = self.maze.height
+        for x in range(width):
+            for y in range(height):
+                row = self.creator.read_from_file(y)
+                value = format(int(row[x], 16), "04b")
+                pos_list = MazeCreator.check_binary(value)
+                for pos in pos_list:
+                    self.creator.remove_wall_helper(x, y, pos)
+        MyMlx.put_image_to_window(
+            self.img.ptr, self.img.poss_w, self.img.poss_h
+        )
+
+
 
     def draw_path(self, path: Any) -> None:
         pass
