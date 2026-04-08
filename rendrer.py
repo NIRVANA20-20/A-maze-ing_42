@@ -9,10 +9,11 @@ class MazeCreator:
     def __init__(self):
         self.maze = Maze()
         self.img = Image()
+        self.is_put = True
 
     def creat_cells(self):
 
-        self.img.img_put_pixel()
+        self.img.put_img()
         for cells in self.maze.grid:
             for cell in cells:
                 x, y = cell.x, cell.y
@@ -24,8 +25,8 @@ class MazeCreator:
                     self.img.put_east(x, y, Theme.border_color)
                     self.img.put_west(x, y, Theme.border_color)
                     self.img.put_south(x, y, Theme.border_color)
-
-        MyMlx.put_image_to_window(self.img.ptr, self.img.poss_w, self.img.poss_h)
+        if self.is_put is True:
+            MyMlx.put_image_to_window(self.img.ptr, self.img.poss_w, self.img.poss_h)
 
     def remove_wall_helper(self, x, y, pos):
         if pos == "N":
@@ -58,6 +59,7 @@ class DrawAnimation:
         self.creator = MazeCreator()
         self.img = Image()
         self.color = Theme.bg_color
+        self.path = self.maze.path
         self.is_animation = True
 
     def draw_entry_exit(self):
