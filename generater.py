@@ -199,6 +199,7 @@ class MazeGenerator:
 
     def generate(self):
         self.set_grid()
+        self.path.clear()
         self.generator_algo.generate(self.grid)
         self.solver.generate(self.grid)
         self.write_to_file()

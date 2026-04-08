@@ -94,13 +94,13 @@ class Image:
                     self.put_pixel(x, y, Theme.color_42)
 
         elif destination == "S":
-            for y in range(start_h, (self.cell_dim // (4 / 3)) + start_h):
+            for y in range(start_h, self.cell_dim + (self.cell_dim // 3) + start_h):
                 for x in range(start_w, start_w + (self.cell_dim // 3)):
                     self.put_pixel(x, y, Theme.color_42)
 
         elif destination == "E":
             for y in range(start_h, start_h + self.cell_dim // 3):
-                for x in range(start_w, start_w + self.cell_dim // (4 / 3)):
+                for x in range(start_w, start_w + self.cell_dim + self.cell_dim // 3):
                     self.put_pixel(x, y, Theme.color_42)
 
         elif destination == "W":

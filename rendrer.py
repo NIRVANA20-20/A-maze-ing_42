@@ -63,19 +63,20 @@ class DrawAnimation:
         self.is_animation = True
 
     def draw_entry_exit(self):
-        x_entry, y_entry = self.entry
-        x_exit, y_exit = exit
+        x_entry, y_entry = self.maze.entry
+        x_exit, y_exit = self.maze.exit
         self.img.put_inside(x_entry, y_entry)
         self.img.put_inside(x_exit, y_exit)
 
     def draw(self):
         self.i = 0
-        MyMlx.loop_hook(self.loop_hook, None)
+        self.draw_entry_exit()
+        MyMlx.loop_hook(self.bfs_loop_hook, None)
 
     def draw_dfs(self):
         self.x = 0
         self.y = 0
-        MyMlx.loop_hook(self.loop_hook2, None)
+        MyMlx.loop_hook(self.dfs_loop_hook, None)
 
     @staticmethod
     def path_checker(curr_cell, next_cell):
@@ -91,21 +92,18 @@ class DrawAnimation:
         if y - yn < 0:
             return bit_map[2]
 
-    def loop_hook(self, _):
-        try:
-            if self.i + 1 == len(self.path):
-                return
-            destination = DrawAnimation.path_checker(
-                self.path[self.i], self.path[self.i + 1]
-            )
-            x, y = self.path[self.i]
-            self.img.put_path(x, y)
-            MyMlx.put_image_to_window(self.img.ptr, self.pos_w, self.pos_h)
-            self.i += 1
-        except Exception as e:
-            print(e)
+    def bfs_loop_hook(self, _):
+        if self.i + 1 == len(self.path):
+            return
+        destination = DrawAnimation.path_checker(
+            self.path[self.i], self.path[self.i + 1]
+        )
+        x, y = self.path[self.i]
+        self.img.put_path(x, y, destination)
+        MyMlx.put_image_to_window(self.img.ptr, self.img.poss_w, self.img.poss_h)
+        self.i += 1
 
-    def loop_hook2(self, _):
+    def dfs_loop_hook(self, _):
         try:
             width = self.maze.width
             height = self.maze.height
@@ -122,7 +120,6 @@ class DrawAnimation:
 
             if self.x < width:
                 row = self.creator.read_from_file(self.y)
-                print(row)
                 value = format(int(row[self.x], 16), "04b")
                 pos_list = MazeCreator.check_binary(value)
                 for pos in pos_list:

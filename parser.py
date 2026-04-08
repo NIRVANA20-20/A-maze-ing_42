@@ -63,16 +63,13 @@ class Parser:
             self.check_seed(values[6])
             self.check_perfect(values[5])
 
-        except (
-            Exception
-        ) as error:
+        except Exception as error:
             print(error)
             sys.exit(0)
 
     def check_seed(self, seed):
-     
-        if seed is None:
-            self.seed = 42
+        if not seed:
+            self.seed = None
             return
         elif int(seed) < 0:
             raise ValueError("The seed must be number (positive)", file=sys.stderr)
