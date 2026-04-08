@@ -34,7 +34,9 @@ class MazeController:
 
     def maze_cells(self, key: int) -> None:
         if key == Keys.CELLS.value:
+            Theme.switch_theme()
             Theme.bg_img_ptr.put_image_to_window()
+
             self.creator.creat_cells()
             self.is_start = True
 
@@ -42,19 +44,20 @@ class MazeController:
         if key == Keys.SWITCH_THEME.value:
             Theme.switch_theme()
             Theme.bg_img_ptr.put_image_to_window()
-            self.creator.creat_cells()
+            self.drawer.is_animation = False
             self.drawer.draw_dfs()
 
     def put_maze(self, key: int) -> None:
         if key == Keys.MAZE.value:
             self.generator.generate()
             Theme.bg_img_ptr.put_image_to_window()
+            self.drawer.is_animation = True
             self.creator.creat_cells()
             self.drawer.draw_dfs()
 
     def solve_maze(self, key: int) -> None:
         if key == Keys.SOLVE.value:
-            self.drawer.draw()
+            self.drawer.drawer()
 
     def get_path_string(self) -> List[str]:
         path_list = []
