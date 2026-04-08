@@ -65,8 +65,8 @@ class DrawAnimation:
     def draw_entry_exit(self):
         x_entry, y_entry = self.maze.entry
         x_exit, y_exit = self.maze.exit
-        self.img.put_inside(x_entry, y_entry)
-        self.img.put_inside(x_exit, y_exit)
+        self.img.put_entry_exit(x_entry, y_entry)
+        # self.img.put_inside(x_exit, y_exit)
 
     def draw(self):
         self.i = 0

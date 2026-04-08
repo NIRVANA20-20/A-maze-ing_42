@@ -81,7 +81,6 @@ class MazeController:
     def call_back(self, key: int, _) -> None:
 
         self.maze_cells(key)
-        print((key))
         if self.is_start:
             self.solve_maze(key)
             self.switch_theme(key)
