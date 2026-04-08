@@ -27,22 +27,20 @@ class MazeController:
             generator.width, generator.height
         ).img_ptr().img_data_addr()
         Theme.START.put_image_to_window()
-        self.is_start = False
-        self.draw = False
-        self.is_soved = False
+        self.is_started = False
+        self.is_generated = False
+        self.is_solved = False
 
     def start(self):
         MyMlx.key_hook(self.call_back, None)
 
     def maze_cells(self, key: int) -> None:
         if key == Keys.CELLS.value:
-            Theme.switch_theme()
             Theme.bg_img_ptr.put_image_to_window()
-            self.creator.is_put = True
             self.creator.creat_cells()
-            self.is_start = True
-            self.draw = False
-            self.is_soved = False
+            self.is_started = True
+            self.is_generated = False
+            self.is_solved = False
 
     def switch_theme(self, key: int) -> None:
         if key == Keys.SWITCH_THEME.value:
@@ -50,25 +48,25 @@ class MazeController:
             Theme.bg_img_ptr.put_image_to_window()
             self.creator.creat_cells()
             self.drawer.is_animation = False
-            if self.draw is True:
+            if self.is_generated is True:
                 self.drawer.draw_dfs()
-            if self.is_soved is True:
+            if self.is_solved is True:
                 self.drawer.draw()
 
     def put_maze(self, key: int) -> None:
-        if key == Keys.MAZE.value:
+        if key == Keys.MAZE.value and self.is_started is True:
             self.generator.generate()
             Theme.bg_img_ptr.put_image_to_window()
             self.drawer.is_animation = True
             self.creator.creat_cells()
             self.drawer.draw_dfs()
-            self.draw = True
-            self.is_soved = False
+            self.is_solved = False
+            self.is_generated = True
 
     def solve_maze(self, key: int) -> None:
-        if key == Keys.SOLVE.value:
+        if key == Keys.SOLVE.value and self.is_generated is True:
             self.drawer.draw()
-            self.is_soved = True
+            self.is_solved = True
 
     def get_path_string(self) -> List[str]:
         path_list = []
@@ -81,7 +79,7 @@ class MazeController:
     def call_back(self, key: int, _) -> None:
 
         self.maze_cells(key)
-        if self.is_start:
+        if self.is_started:
             self.solve_maze(key)
             self.switch_theme(key)
             self.put_maze(key)
