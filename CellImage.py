@@ -11,7 +11,6 @@ class Image:
 
     def __new__(cls):
         if cls._instance is None:
-            print("wakud")
             cls._instance = super().__new__(cls)
         return cls._instance
 
@@ -20,8 +19,8 @@ class Image:
         max_cell = max(width, height)
         self.cell_dim = int((min_screen / max_cell) * 0.75)
         self.cell_b = int(self.cell_dim * 0.10)
-        self.height = int(height * (self.cell_dim + self.cell_b))
-        self.width = int(width * (self.cell_dim + self.cell_b))
+        self.height = int(height * self.cell_dim + self.cell_b)
+        self.width = int(width * self.cell_dim + self.cell_b)
         self.poss_w = int((MyMlx.screen_width - width * self.cell_dim) / 2)
         self.poss_h = 200
         return self
@@ -43,23 +42,23 @@ class Image:
         offset = int((y * self.sl) + (x * (self.bpp // 8)))
         self.buffer[offset : offset + 4] = color.to_bytes(4, "little")
 
-    def put_north(self, x, y, cell_br=0):
+    def put_north(self, x, y, color, cell_br=0):
         start_h = y * self.cell_dim
         start_w = x * self.cell_dim
         cell_width = self.cell_dim * (x + 1)
         for y in range(start_h, self.cell_b + start_h):
             for x in range(start_w + cell_br, cell_width + self.cell_b - cell_br):
-                self.put_pixel(x, y, Theme.border_color)
+                self.put_pixel(x, y, color)
 
-    def put_west(self, x, y, cell_br=0):
+    def put_west(self, x, y, color, cell_br=0):
         start_h = y * self.cell_dim
         start_w = x * self.cell_dim
         cell_height = self.cell_dim * (y + 1)
         for x in range(start_w, start_w + self.cell_b):
             for y in range(start_h + cell_br, cell_height + self.cell_b - cell_br):
-                self.put_pixel(x, y, Theme.border_color)
+                self.put_pixel(x, y, color)
 
-    def put_south(self, x, y, cell_br=0):
+    def put_south(self, x, y, color, cell_br=0):
         start_h = y * self.cell_dim
         start_w = self.cell_dim * x
         cell_width = self.cell_dim * (x + 1)
@@ -67,15 +66,15 @@ class Image:
             for y in range(
                 start_h + self.cell_dim, self.cell_b + self.cell_dim + start_h
             ):
-                self.put_pixel(x, y, Theme.border_color)
+                self.put_pixel(x, y, color)
 
-    def put_east(self, x, y, cell_br=0):
+    def put_east(self, x, y, color, cell_br=0):
         start_h = y * self.cell_dim
         start_w = self.cell_dim * (x + 1)
         cell_height = self.cell_dim * (y + 1)
         for x in range(start_w, start_w + self.cell_b):
             for y in range(start_h + cell_br, cell_height + self.cell_b - cell_br):
-                self.put_pixel(x, y, Theme.border_color)
+                self.put_pixel(x, y, color)
 
     def put_img(self):
         for y in range(self.height):

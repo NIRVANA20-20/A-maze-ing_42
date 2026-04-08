@@ -180,10 +180,10 @@ class MazeGenerator:
         self.seed = seed
         self.perfect = perfect
         self.file_name = file_name
-        self.set_grid()
         self.generator_algo = DfsGenerator(
             self.width, self.height, self.seed, self.perfect
         )
+        self.set_grid()
         self.path = []
         self.entry = m_entry
         self.exit = m_exit

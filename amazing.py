@@ -28,6 +28,7 @@ class Amazing:
             .set_perfect(self.generater.perfect)
             .set_seed(self.generater.seed)
             .set_path(self.generater.path)
+            .set_grid(self.generater.grid)
         )
 
         self.maze_controler = MazeController(self.generater)

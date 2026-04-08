@@ -2,43 +2,43 @@ from my_mlx import MyMlx
 from typing import Any
 from themes import Theme
 from CellImage import Image
-from generater import MazeGenerator
+from maze import Maze
 
 
 class MazeCreator:
-    def __init__(self, generater):
-        self.generater = generater
+    def __init__(self):
+        self.maze = Maze()
         self.img = Image()
 
     def creat_cells(self):
 
         self.img.img_put_pixel()
-        for cells in self.generater.grid:
+        for cells in self.maze.grid:
             for cell in cells:
                 x, y = cell.x, cell.y
                 if cell.is_42 is True:
                     self.img.put_inside(x, y)
 
                 else:
-                    self.img.put_north(x, y)
-                    self.img.put_east(x, y)
-                    self.img.put_west(x, y)
-                    self.img.put_south(x, y)
+                    self.img.put_north(x, y, Theme.border_color)
+                    self.img.put_east(x, y, Theme.border_color)
+                    self.img.put_west(x, y, Theme.border_color)
+                    self.img.put_south(x, y, Theme.border_color)
 
         MyMlx.put_image_to_window(self.img.ptr, self.img.poss_w, self.img.poss_h)
 
     def remove_wall_helper(self, x, y, pos):
         if pos == "N":
-            self.img.put_north(x, y, self.img.cell_b)
+            self.img.put_north(x, y, Theme.bg_color, self.img.cell_b)
         elif pos == "E":
-            self.img.put_east(x, y, self.img.cell_b)
+            self.img.put_east(x, y, Theme.bg_color, self.img.cell_b)
         elif pos == "W":
-            self.img.put_west(x, y, self.img.cell_b)
+            self.img.put_west(x, y, Theme.bg_color, self.img.cell_b)
         elif pos == "S":
-            self.img.put_south(x, y, self.img.cell_b)
+            self.img.put_south(x, y, Theme.bg_color, self.img.cell_b)
 
     def read_from_file(self, y):
-        with open(self.generater.file_name, "r") as file:
+        with open(self.maze.file_name, "r") as file:
             rows = file.read().split("\n")
             return rows[y]
 
@@ -53,14 +53,11 @@ class MazeCreator:
 
 
 class DrawAnimation:
-    def __init__(self, generater):
-        self.generater = generater
-        self.creator = MazeCreator(generater)
+    def __init__(self):
+        self.maze = Maze()
+        self.creator = MazeCreator()
         self.img = Image()
         self.color = Theme.bg_color
-        self.i = 0
-        self.x = 0
-        self.y = 0
 
     def draw_entry_exit(self):
         x_entry, y_entry = self.entry
@@ -69,9 +66,12 @@ class DrawAnimation:
         self.img.put_inside(x_exit, y_exit)
 
     def draw(self):
+        self.i = 0
         MyMlx.loop_hook(self.loop_hook, None)
 
     def draw_dfs(self):
+        self.x = 0
+        self.y = 0
         MyMlx.loop_hook(self.loop_hook2, None)
 
     @staticmethod
@@ -104,8 +104,8 @@ class DrawAnimation:
 
     def loop_hook2(self, _):
         try:
-            width = self.generater.width
-            height = self.generater.height
+            width = self.maze.width
+            height = self.maze.height
             if self.x == width:
                 self.x = 0
                 self.y += 1
@@ -115,6 +115,7 @@ class DrawAnimation:
 
             if self.x < width:
                 row = self.creator.read_from_file(self.y)
+                print(row)
                 value = format(int(row[self.x], 16), "04b")
                 pos_list = MazeCreator.check_binary(value)
                 for pos in pos_list:

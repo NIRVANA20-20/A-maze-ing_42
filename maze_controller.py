@@ -20,9 +20,9 @@ class MazeController:
     def __init__(self, generator: MazeGenerator) -> None:
 
         self.generator = generator
-        self.creator = MazeCreator(generator)
+        self.creator = MazeCreator()
         self.img = Image()
-        self.drawer = DrawAnimation(generator)
+        self.drawer = DrawAnimation()
         self.img.set_dimension(
             generator.width, generator.height
         ).img_ptr().img_data_addr()
@@ -34,9 +34,9 @@ class MazeController:
 
     def maze_cells(self, key: int) -> None:
         if key == Keys.CELLS.value:
-            self.generator.set_grid()
             Theme.switch_theme()
             Theme.bg_img_ptr.put_image_to_window()
+
             self.creator.creat_cells()
             self.is_start = True
 
@@ -50,6 +50,7 @@ class MazeController:
         if key == Keys.MAZE.value:
             self.generator.generate()
             Theme.bg_img_ptr.put_image_to_window()
+            self.creator.creat_cells()
             self.drawer.draw_dfs()
 
     def solve_maze(self, key: int) -> None:
