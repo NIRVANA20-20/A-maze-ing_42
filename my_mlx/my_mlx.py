@@ -4,19 +4,15 @@ from typing import Any
 
 class MyMlx:
     mlx = Mlx()
+    screen_width: int = 1500
+    screen_height: int = 2000
     mlx_ptr = mlx.mlx_init()
     _, screen_width_temp, screen_height = mlx.mlx_get_screen_size(mlx_ptr)
-    screen_width: int = 1500
-    screen_height = 2000
     win_ptr = mlx.mlx_new_window(mlx_ptr, screen_width, screen_height, "A-Maze-ing")
 
     @classmethod
     def put_image_to_window(cls, img_ptr: Any, x: int, y: int) -> None:
         cls.mlx.mlx_put_image_to_window(cls.mlx_ptr, cls.win_ptr, img_ptr, x, y)
-
-    @classmethod
-    def clear_window(cls) -> None:
-        cls.mlx.mlx_clear_window(cls.mlx_ptr, cls.win_ptr)
 
     @classmethod
     def new_image(cls, width: int, height: int) -> Any:
@@ -41,10 +37,6 @@ class MyMlx:
     @classmethod
     def key_hook(cls, callback: Any, data: Any) -> None:
         cls.mlx.mlx_key_hook(cls.win_ptr, callback, data)
-
-    @classmethod
-    def xpm_file_to_image(cls, filename: str) -> Any:
-        return cls.mlx.mlx_xpm_file_to_image(cls.mlx_ptr, filename)
 
     @classmethod
     def png_file_to_image(cls, filename: str) -> Any:
