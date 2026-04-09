@@ -28,7 +28,9 @@ class Image:
         return self
 
     def img_data_addr(self) -> Any:
-        self.buffer, self.bpp, self.sl, self.format = MyMlx.get_data_addr(self.ptr)
+        self.buffer, self.bpp, self.sl, self.format = MyMlx.get_data_addr(
+            self.ptr
+        )
         return self
 
     def put_pixel(self, x: int, y: int, color: int):
@@ -40,7 +42,9 @@ class Image:
         start_w = x * self.cell_dim
         cell_width = self.cell_dim * (x + 1)
         for y in range(start_h, self.cell_b + start_h):
-            for x in range(start_w + cell_br, cell_width + self.cell_b - cell_br):
+            for x in range(
+                start_w + cell_br, cell_width + self.cell_b - cell_br
+            ):
                 self.put_pixel(x, y, color)
 
     def put_west(self, x, y, color, cell_br=0):
@@ -48,7 +52,9 @@ class Image:
         start_w = x * self.cell_dim
         cell_height = self.cell_dim * (y + 1)
         for x in range(start_w, start_w + self.cell_b):
-            for y in range(start_h + cell_br, cell_height + self.cell_b - cell_br):
+            for y in range(
+                start_h + cell_br, cell_height + self.cell_b - cell_br
+            ):
                 self.put_pixel(x, y, color)
 
     def put_south(self, x, y, color, cell_br=0):
@@ -66,7 +72,9 @@ class Image:
         start_w = self.cell_dim * (x + 1)
         cell_height = self.cell_dim * (y + 1)
         for x in range(start_w, start_w + self.cell_b):
-            for y in range(start_h + cell_br, cell_height + self.cell_b - cell_br):
+            for y in range(
+                start_h + cell_br, cell_height + self.cell_b - cell_br
+            ):
                 self.put_pixel(x, y, color)
 
     def put_img(self):
@@ -87,7 +95,9 @@ class Image:
         start_w = x * self.cell_dim + (2 * self.cell_b)
         cell_width = self.cell_dim * (x + 1)
         for y in range(start_h, self.cell_dim + start_h - (3 * self.cell_b)):
-            for x in range(start_w, cell_width + self.cell_b - (2 * self.cell_b)):
+            for x in range(
+                start_w, cell_width + self.cell_b - (2 * self.cell_b)
+            ):
                 self.put_pixel(x, y, Theme.color_42)
 
     def put_path(self, x, y, destination):
@@ -100,13 +110,17 @@ class Image:
                     self.put_pixel(x, y, Theme.color_42)
 
         elif destination == "S":
-            for y in range(start_h, self.cell_dim + (self.cell_dim // 3) + start_h):
+            for y in range(
+                start_h, self.cell_dim + (self.cell_dim // 3) + start_h
+            ):
                 for x in range(start_w, start_w + (self.cell_dim // 3)):
                     self.put_pixel(x, y, Theme.color_42)
 
         elif destination == "E":
             for y in range(start_h, start_h + self.cell_dim // 3):
-                for x in range(start_w, start_w + self.cell_dim + self.cell_dim // 3):
+                for x in range(
+                    start_w, start_w + self.cell_dim + self.cell_dim // 3
+                ):
                     self.put_pixel(x, y, Theme.color_42)
 
         elif destination == "W":

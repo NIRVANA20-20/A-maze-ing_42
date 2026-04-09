@@ -1,6 +1,7 @@
 import random
 from collections import deque
 from typing import Any, Tuple
+import sys
 
 
 class Cell:
@@ -69,13 +70,15 @@ class DfsGenerator:
             else:
                 cell_r = random.choice(neighbors)
                 cell_r.visited = True
-                self.dfs_open_wall(cell, cell_r)
+                if self.perfect:
+                    self.dfs_open_wall(cell, cell_r)
+                else:
+                    self.dfs_open_wall_inperfect(cell, cell_r)
                 self.stack.append(cell_r)
 
     def dfs_open_wall(self, cell, random_cell):
         x, y = cell.x, cell.y
         x1, y1 = random_cell.x, random_cell.y
-
         if x == x1:
             if y > y1:
                 random_cell.open_wall("S")
@@ -88,6 +91,23 @@ class DfsGenerator:
                 random_cell.open_wall("E")
                 cell.open_wall("W")
             else:
+                random_cell.open_wall("W")
+                cell.open_wall("E")
+
+    def dfs_open_wall_inperfect(self, cell, random_cell):
+        x, y = cell.x, cell.y
+        x1, y1 = random_cell.x, random_cell.y
+
+        if x == x1:
+            if y > y1:
+                random_cell.open_wall("S")
+                cell.open_wall("N")
+                random_cell.open_wall("N")
+                cell.open_wall("S")
+        if y == y1:
+            if x > x1:
+                random_cell.open_wall("E")
+                cell.open_wall("W")
                 random_cell.open_wall("W")
                 cell.open_wall("E")
 
@@ -212,4 +232,7 @@ class MazeGenerator:
                 column += hex(cell.to_hex())[2:]
             column += "\n"
             file.write(column)
+        file.write(f"\n\n({self.entry[0]}, {self.entry[1]})")
+        file.write(f"\n\n({self.exit[0]}, {self.exit[1]})")
+
         file.close()

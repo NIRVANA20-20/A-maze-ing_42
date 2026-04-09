@@ -155,6 +155,8 @@ class Parser:
                 f"  => "
                 f"(max : {self.height}) and (min : 1)"
             )
+        if x == self.entry[0] and y == self.entry[1]:
+            raise EntryExitError("the entry must be different than exit")
         self.exit = (x, y)
 
     def check_dimensions(self, w, h):
@@ -175,7 +177,3 @@ class Parser:
             raise DimensionsError(
                 f"The height can`t be : {self.height}" " => (max : 200) and (min : 1)"
             )
-
-    # TODO: just for test remember to parse if from config file
-    def set_perfect(self):
-        self.perfect = True

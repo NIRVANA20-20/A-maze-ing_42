@@ -42,7 +42,12 @@ class Mlx:
 
     # Windows
     def mlx_new_window(self, mlx_ptr, width, height, title):
-        self.mlx_func.mlx_new_window.argtypes = [c_void_p, c_uint, c_uint, c_char_p]
+        self.mlx_func.mlx_new_window.argtypes = [
+            c_void_p,
+            c_uint,
+            c_uint,
+            c_char_p,
+        ]
         self.mlx_func.mlx_new_window.restype = c_void_p
         return self.mlx_func.mlx_new_window(
             mlx_ptr, width, height, title.encode("utf-8")
@@ -94,7 +99,9 @@ class Mlx:
         data = self.mlx_func.mlx_get_data_addr(
             img_ptr, byref(bits_per_pixel), byref(size_line), byref(theformat)
         )
-        data_array = c_char * (self._img_height[str(img_ptr)] * size_line.value)
+        data_array = c_char * (
+            self._img_height[str(img_ptr)] * size_line.value
+        )
         data_view = data_array.from_address(addressof(data.contents))
         return (
             memoryview(data_view).cast("B"),
@@ -112,7 +119,9 @@ class Mlx:
             c_int,
         ]
         self.mlx_func.mlx_put_image_to_window.restype = c_int
-        return self.mlx_func.mlx_put_image_to_window(mlx_ptr, win_ptr, img_ptr, x, y)
+        return self.mlx_func.mlx_put_image_to_window(
+            mlx_ptr, win_ptr, img_ptr, x, y
+        )
 
     def mlx_destroy_image(self, mlx_ptr, img_ptr):
         self._img_height.pop(str(img_ptr))
@@ -139,10 +148,18 @@ class Mlx:
         if not callback:
             self._python_ref_std[str(win_ptr) + "_mouse_f"] = None
             self._python_ref_std[str(win_ptr) + "_mouse_p"] = None
-            self.mlx_func.mlx_mouse_hook.argtypes = [c_void_p, c_void_p, c_void_p]
+            self.mlx_func.mlx_mouse_hook.argtypes = [
+                c_void_p,
+                c_void_p,
+                c_void_p,
+            ]
             return self.mlx_func.mlx_mouse_hook(win_ptr, None, None)
         callback_type = CFUNCTYPE(None, c_uint, c_uint, c_uint, py_object)
-        self.mlx_func.mlx_mouse_hook.argtypes = [c_void_p, callback_type, py_object]
+        self.mlx_func.mlx_mouse_hook.argtypes = [
+            c_void_p,
+            callback_type,
+            py_object,
+        ]
         callback_ref = callback_type(callback)
         self._python_ref_std[str(win_ptr) + "_mouse_f"] = callback_ref
         self._python_ref_std[str(win_ptr) + "_mouse_p"] = param
@@ -153,10 +170,18 @@ class Mlx:
         if not callback:
             self._python_ref_std[str(win_ptr) + "_key_f"] = None
             self._python_ref_std[str(win_ptr) + "_key_p"] = None
-            self.mlx_func.mlx_key_hook.argtypes = [c_void_p, c_void_p, c_void_p]
+            self.mlx_func.mlx_key_hook.argtypes = [
+                c_void_p,
+                c_void_p,
+                c_void_p,
+            ]
             return self.mlx_func.mlx_key_hook(win_ptr, None, None)
         callback_type = CFUNCTYPE(None, c_uint, py_object)
-        self.mlx_func.mlx_key_hook.argtypes = [c_void_p, callback_type, py_object]
+        self.mlx_func.mlx_key_hook.argtypes = [
+            c_void_p,
+            callback_type,
+            py_object,
+        ]
         callback_ref = callback_type(callback)
         self._python_ref_std[str(win_ptr) + "_key_f"] = callback_ref
         self._python_ref_std[str(win_ptr) + "_key_p"] = param
@@ -167,10 +192,18 @@ class Mlx:
         if not callback:
             self._python_ref_std[str(win_ptr) + "_expose_f"] = None
             self._python_ref_std[str(win_ptr) + "_expose_p"] = None
-            self.mlx_func.mlx_expose_hook.argtypes = [c_void_p, c_void_p, c_void_p]
+            self.mlx_func.mlx_expose_hook.argtypes = [
+                c_void_p,
+                c_void_p,
+                c_void_p,
+            ]
             return self.mlx_func.mlx_expose_hook(win_ptr, None, None)
         callback_type = CFUNCTYPE(None, py_object)
-        self.mlx_func.mlx_expose_hook.argtypes = [c_void_p, callback_type, py_object]
+        self.mlx_func.mlx_expose_hook.argtypes = [
+            c_void_p,
+            callback_type,
+            py_object,
+        ]
         callback_ref = callback_type(callback)
         self._python_ref_std[str(win_ptr) + "_expose_f"] = callback_ref
         self._python_ref_std[str(win_ptr) + "_expose_p"] = param
@@ -181,10 +214,18 @@ class Mlx:
         if not callback:
             self._python_ref_std["loop_f"] = None
             self._python_ref_std["loop_p"] = None
-            self.mlx_func.mlx_loop_hook.argtypes = [c_void_p, c_void_p, c_void_p]
+            self.mlx_func.mlx_loop_hook.argtypes = [
+                c_void_p,
+                c_void_p,
+                c_void_p,
+            ]
             return self.mlx_func.mlx_loop_hook(mlx_ptr, None, None)
         callback_type = CFUNCTYPE(None, py_object)
-        self.mlx_func.mlx_loop_hook.argtypes = [c_void_p, callback_type, py_object]
+        self.mlx_func.mlx_loop_hook.argtypes = [
+            c_void_p,
+            callback_type,
+            py_object,
+        ]
         callback_ref = callback_type(callback)
         self._python_ref_std["loop_f"] = callback_ref
         self._python_ref_std["loop_p"] = param
@@ -223,9 +264,13 @@ class Mlx:
             py_object,
         ]
         callback_ref = callback_type(callback)
-        self._python_ref_gen[str(win_ptr) + "_f_" + str(x_event)] = callback_ref
+        self._python_ref_gen[str(win_ptr) + "_f_" + str(x_event)] = (
+            callback_ref
+        )
         self._python_ref_gen[str(win_ptr) + "_p_" + str(x_event)] = param
-        return self.mlx_func.mlx_hook(win_ptr, x_event, x_mask, callback_ref, param)
+        return self.mlx_func.mlx_hook(
+            win_ptr, x_event, x_mask, callback_ref, param
+        )
 
     # Misc.
 
@@ -302,7 +347,11 @@ class Mlx:
     def mlx_mouse_get_pos(self, mlx_ptr):
         x = c_int()
         y = c_int()
-        self.mlx_func.mlx_mouse_get_pos.argtypes = [c_void_p, c_void_p, c_void_p]
+        self.mlx_func.mlx_mouse_get_pos.argtypes = [
+            c_void_p,
+            c_void_p,
+            c_void_p,
+        ]
         self.mlx_func.mlx_mouse_get_pos.restype = c_int
         val = self.mlx_func.mlx_mouse_get_pos(mlx_ptr, byref(x), byref(y))
         return (val, x.value, y.value)

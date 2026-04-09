@@ -82,10 +82,14 @@ def gere_key(key, xvar):
         print(f"current mouse pos is {x} x {y}")
         return 0
     elif key == 105:  # 'i'
-        xvar.mlx.mlx_sync(xvar.mlx_ptr, Mlx.SYNC_IMAGE_WRITABLE, xvar.img_2.img)
+        xvar.mlx.mlx_sync(
+            xvar.mlx_ptr, Mlx.SYNC_IMAGE_WRITABLE, xvar.img_2.img
+        )
         # fill image in white
         for offset in range(0, xvar.img_2.sl * 100, 4):
-            xvar.img_2.data[offset : offset + 4] = (0xFFFFFFFF).to_bytes(4, "little")
+            xvar.img_2.data[offset : offset + 4] = (0xFFFFFFFF).to_bytes(
+                4, "little"
+            )
 
         xvar.mlx.mlx_put_image_to_window(
             xvar.mlx_ptr, xvar.win_1, xvar.img_2.img, 50, 50
@@ -93,7 +97,9 @@ def gere_key(key, xvar):
 
         # update in red
         for offset in range(0, xvar.img_2.sl * 100, 4):
-            xvar.img_2.data[offset : offset + 4] = (0xFFFF0000).to_bytes(4, "little")
+            xvar.img_2.data[offset : offset + 4] = (0xFFFF0000).to_bytes(
+                4, "little"
+            )
 
         xvar.mlx.mlx_put_image_to_window(
             xvar.mlx_ptr, xvar.win_1, xvar.img_2.img, 250, 250
@@ -101,19 +107,27 @@ def gere_key(key, xvar):
         print("update image without sync - most likely 2 red squares")
         return 0
     elif key == 111:  # 'o'
-        xvar.mlx.mlx_sync(xvar.mlx_ptr, Mlx.SYNC_IMAGE_WRITABLE, xvar.img_2.img)
+        xvar.mlx.mlx_sync(
+            xvar.mlx_ptr, Mlx.SYNC_IMAGE_WRITABLE, xvar.img_2.img
+        )
         # fill image in white
         for offset in range(0, xvar.img_2.sl * 100, 4):
-            xvar.img_2.data[offset : offset + 4] = (0xFFFFFFFF).to_bytes(4, "little")
+            xvar.img_2.data[offset : offset + 4] = (0xFFFFFFFF).to_bytes(
+                4, "little"
+            )
 
         xvar.mlx.mlx_put_image_to_window(
             xvar.mlx_ptr, xvar.win_1, xvar.img_2.img, 50, 50
         )
-        xvar.mlx.mlx_sync(xvar.mlx_ptr, Mlx.SYNC_IMAGE_WRITABLE, xvar.img_2.img)
+        xvar.mlx.mlx_sync(
+            xvar.mlx_ptr, Mlx.SYNC_IMAGE_WRITABLE, xvar.img_2.img
+        )
 
         # update in red
         for offset in range(0, xvar.img_2.sl * 100, 4):
-            xvar.img_2.data[offset : offset + 4] = (0xFFFF0000).to_bytes(4, "little")
+            xvar.img_2.data[offset : offset + 4] = (0xFFFF0000).to_bytes(
+                4, "little"
+            )
 
         xvar.mlx.mlx_put_image_to_window(
             xvar.mlx_ptr, xvar.win_1, xvar.img_2.img, 250, 250
@@ -124,27 +138,39 @@ def gere_key(key, xvar):
     # Default
     print("clear and string put")
     xvar.mlx.mlx_clear_window(xvar.mlx_ptr, xvar.win_1)
-    xvar.mlx.mlx_string_put(xvar.mlx_ptr, xvar.win_1, 20, 20, 0xFFFF00FF, "Hello MLX!")
+    xvar.mlx.mlx_string_put(
+        xvar.mlx_ptr, xvar.win_1, 20, 20, 0xFFFF00FF, "Hello MLX!"
+    )
 
 
 def gere_expose(xvar):
     print("Expose !")
-    xvar.mlx.mlx_put_image_to_window(xvar.mlx_ptr, xvar.win_1, xvar.img_1.img, 0, 0)
-    xvar.mlx.mlx_put_image_to_window(xvar.mlx_ptr, xvar.win_1, xvar.img_1.img, 201, 201)
+    xvar.mlx.mlx_put_image_to_window(
+        xvar.mlx_ptr, xvar.win_1, xvar.img_1.img, 0, 0
+    )
+    xvar.mlx.mlx_put_image_to_window(
+        xvar.mlx_ptr, xvar.win_1, xvar.img_1.img, 201, 201
+    )
 
 
 def gere_mouse(button, x, y, xvar, win):
     print(f"Got mouse : {button} at {x}x{y}")
 
     if button == 1:
-        xvar.mlx.mlx_put_image_to_window(xvar.mlx_ptr, win, xvar.img_1.img, 100, 100)
+        xvar.mlx.mlx_put_image_to_window(
+            xvar.mlx_ptr, win, xvar.img_1.img, 100, 100
+        )
         return 0
 
     if button == 3:  # right click
         if xvar.imgidx % 2:
-            xvar.mlx.mlx_put_image_to_window(xvar.mlx_ptr, win, xvar.img_png.img, x, y)
+            xvar.mlx.mlx_put_image_to_window(
+                xvar.mlx_ptr, win, xvar.img_png.img, x, y
+            )
         else:
-            xvar.mlx.mlx_put_image_to_window(xvar.mlx_ptr, win, xvar.img_xpm.img, x, y)
+            xvar.mlx.mlx_put_image_to_window(
+                xvar.mlx_ptr, win, xvar.img_xpm.img, x, y
+            )
         xvar.imgidx += 1
 
 
@@ -176,16 +202,22 @@ def main():
 
     xvar.mlx_ptr = xvar.mlx.mlx_init()
 
-    ret, xvar.screen_w, xvar.screen_h = xvar.mlx.mlx_get_screen_size(xvar.mlx_ptr)
+    ret, xvar.screen_w, xvar.screen_h = xvar.mlx.mlx_get_screen_size(
+        xvar.mlx_ptr
+    )
     print(f"Screen size: {xvar.screen_w} x {xvar.screen_h}")
 
     # Windows creation
     try:
-        xvar.win_1 = xvar.mlx.mlx_new_window(xvar.mlx_ptr, 400, 400, "MLX main win")
+        xvar.win_1 = xvar.mlx.mlx_new_window(
+            xvar.mlx_ptr, 400, 400, "MLX main win"
+        )
         if not xvar.win_1:
             raise Exception("Can't create main window")
 
-        xvar.win_2 = xvar.mlx.mlx_new_window(xvar.mlx_ptr, 150, 150, "Secondary window")
+        xvar.win_2 = xvar.mlx.mlx_new_window(
+            xvar.mlx_ptr, 150, 150, "Secondary window"
+        )
         if not xvar.win_2:
             raise Exception("Can't create secondary window")
     except Exception as e:
@@ -221,7 +253,9 @@ def main():
 
         for pos in pixel_positions:
             if pos < len(xvar.img_1.data) - 3:
-                xvar.img_1.data[pos : pos + 4] = (0xFFFF0000).to_bytes(4, "little")
+                xvar.img_1.data[pos : pos + 4] = (0xFFFF0000).to_bytes(
+                    4, "little"
+                )
     except Exception as e:
         print(f"Error img1: {e}", file=sys.stderr)
         sys.exit(1)
@@ -248,17 +282,23 @@ def main():
     xvar.img_png.img, xvar.img_png.width, xvar.img_png.height = result
     if not xvar.img_png.img:
         raise Exception("Can't create png")
-    xvar.img_png.data, xvar.img_png.bpp, xvar.img_png.sl, xvar.img_png.iformat = (
-        xvar.mlx.mlx_get_data_addr(xvar.img_png.img)
-    )
+    (
+        xvar.img_png.data,
+        xvar.img_png.bpp,
+        xvar.img_png.sl,
+        xvar.img_png.iformat,
+    ) = xvar.mlx.mlx_get_data_addr(xvar.img_png.img)
 
     result = xvar.mlx.mlx_xpm_file_to_image(xvar.mlx_ptr, "Dont_panic.xpm")
     if not result:
         raise Exception("Can't load XPM")
     xvar.img_xpm.img, xvar.img_xpm.width, xvar.img_xpm.height = result
-    xvar.img_xpm.data, xvar.img_xpm.bpp, xvar.img_xpm.sl, xvar.img_xpm.iformat = (
-        xvar.mlx.mlx_get_data_addr(xvar.img_xpm.img)
-    )
+    (
+        xvar.img_xpm.data,
+        xvar.img_xpm.bpp,
+        xvar.img_xpm.sl,
+        xvar.img_xpm.iformat,
+    ) = xvar.mlx.mlx_get_data_addr(xvar.img_xpm.img)
 
     # event hooks
     xvar.mlx.mlx_key_hook(xvar.win_1, gere_key, xvar)
@@ -266,8 +306,12 @@ def main():
     xvar.mlx.mlx_expose_hook(xvar.win_1, gere_expose, xvar)
     xvar.mlx.mlx_mouse_hook(xvar.win_1, gere_mouse_1, xvar)
     xvar.mlx.mlx_mouse_hook(xvar.win_2, gere_mouse_2, xvar)
-    xvar.mlx.mlx_hook(xvar.win_1, 33, 0, gere_close_1, xvar)  # WM_DELETE_WINDOW
-    xvar.mlx.mlx_hook(xvar.win_2, 33, 0, gere_close_2, xvar)  # WM_DELETE_WINDOW
+    xvar.mlx.mlx_hook(
+        xvar.win_1, 33, 0, gere_close_1, xvar
+    )  # WM_DELETE_WINDOW
+    xvar.mlx.mlx_hook(
+        xvar.win_2, 33, 0, gere_close_2, xvar
+    )  # WM_DELETE_WINDOW
 
     # User Instructions
     print("On main window:")

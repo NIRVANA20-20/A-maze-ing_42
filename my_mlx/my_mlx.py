@@ -8,11 +8,15 @@ class MyMlx:
     screen_height: int = 2000
     mlx_ptr = mlx.mlx_init()
     _, screen_width_temp, screen_height = mlx.mlx_get_screen_size(mlx_ptr)
-    win_ptr = mlx.mlx_new_window(mlx_ptr, screen_width, screen_height, "A-Maze-ing")
+    win_ptr = mlx.mlx_new_window(
+        mlx_ptr, screen_width, screen_height, "A-Maze-ing"
+    )
 
     @classmethod
     def put_image_to_window(cls, img_ptr: Any, x: int, y: int) -> None:
-        cls.mlx.mlx_put_image_to_window(cls.mlx_ptr, cls.win_ptr, img_ptr, x, y)
+        cls.mlx.mlx_put_image_to_window(
+            cls.mlx_ptr, cls.win_ptr, img_ptr, x, y
+        )
 
     @classmethod
     def new_image(cls, width: int, height: int) -> Any:
