@@ -1,5 +1,5 @@
 from Parsing.parser import Parser
-from Generating.generater import MazeGenerator
+from Generating.generater import MazeGenerator, DfsGenerator
 from Generating.maze import Maze
 from my_mlx.my_mlx import MyMlx
 from A_maze_ing.maze_controller import MazeController
@@ -36,6 +36,7 @@ class Amazing:
     def run(self):
         self.maze_controler.start()
         MyMlx.loop()
+    
 
 
 if __name__ == "__main__":

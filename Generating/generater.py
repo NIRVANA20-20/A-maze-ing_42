@@ -1,6 +1,7 @@
 import random
 from collections import deque
 from typing import Any, Tuple
+from Parsing.parser import Parser   
 import sys
 
 
@@ -35,6 +36,8 @@ class DfsGenerator:
         self.height = height
         self.seed = seed
         self.perfect = perfect
+        self.is_42_grid = []
+
 
     def get_cell(self, x, y, grid):
         if 0 <= x < self.width and 0 <= y < self.height:
@@ -139,10 +142,10 @@ class DfsGenerator:
                 for cell in row:
                     x, y = cell.x, cell.y
                     cor = (x, y)
-                    if cor in map_42:
+                    if cor in map_42:    
                         cell.is_42 = True
-
-
+        
+       
 class MazeSolver:
 
     def __init__(self, entry: Tuple[int, int], exit: Tuple[int, int], path):

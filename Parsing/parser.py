@@ -36,7 +36,7 @@ class Parser:
         args = sys.argv
         if len(args) != 2 or args[1] != "config.txt":
             print(
-                "Error = You must run the program: python3 amazing.py config.txt",
+                "(ERROR) = You must run the program: python3 amazing.py config.txt",
                 "\n PRESS [Control] key to exit",
             )
             exit(0)
@@ -53,7 +53,7 @@ class Parser:
             if element.split("=")[0] in self.file_elements:
                 values.append(element.split("=")[1])
         if len(values) != 7:
-            print("One of the arguments in (config.txt) is missing")
+            print("(ERROR) = One of the arguments in (config.txt) is missing")
             sys.exit(0)
         try:
             self.check_dimensions(values[0], values[1])
@@ -72,7 +72,7 @@ class Parser:
             self.seed = None
             return
         elif int(seed) < 0:
-            raise ValueError("The seed must be number (positive)", file=sys.stderr)
+            raise ValueError("(ERROR) = The seed must be number (positive)", file=sys.stderr)
         self.seed = int(seed)
 
     def check_perfect(self, answer):
@@ -82,18 +82,18 @@ class Parser:
             self.perfect = False
         else:
             raise PerfectWayError(
-                "PERFECT = (the answer should be " "'True' or 'False') "
+                "(ERROR) = PERFECT(the answer should be " "'True' or 'False') "
             )
 
     def check_file(self, file_name):
         file_checker = file_name.split(".")
         if len(file_checker) != 2 or file_checker[1] != "txt":
-            raise FileNameError("only '.txt' files are permitted as maze output file")
+            raise FileNameError("(ERROR) = only '.txt' files are permitted as maze output file")
         if os.path.exists(file_name) and not os.access(file_name, os.W_OK):
-            raise FileNameError(f"OUTPUT_FILE '{file_name}' is not writable")
+            raise FileNameError(f"(ERROR) = OUTPUT_FILE '{file_name}' is not writable")
         parent = os.path.dirname(file_name) or "."
         if not os.access(parent, os.W_OK):
-            raise ValueError(f"OUTPUT_FILE '{file_name}' directory is not writable")
+            raise ValueError(f"(ERROR) = OUTPUT_FILE '{file_name}' directory is not writable")
         else:
             self.file_name = file_name
 
@@ -101,79 +101,130 @@ class Parser:
         entr = entry.replace("(", "").replace(")", "")
         entry_splited = entr.split(",")
         if len(entry_splited) != 2:
-            raise EntryExitError("Entry cordinates must be (x,y)")
+            raise EntryExitError("(ERROR) = Entry cordinates must be (x,y)")
         x_width = entry_splited[0]
         y_height = entry_splited[1]
         try:
             x = int(x_width)
         except ValueError:
-            raise EntryExitError(f"The entry x must be a number: not {x_width}")
+            raise EntryExitError(f"(ERROR) = The entry x must be a number: not {x_width}")
 
         try:
             y = int(y_height)
         except ValueError:
-            raise EntryExitError(f"The entry y must be a number: not {y_height}")
+            raise EntryExitError(f"(ERROR) = The entry y must be a number: not {y_height}")
 
         if x > self.width or x < 0:
             raise EntryExitError(
-                f"The entery x can't be : {x}"
+                f"(ERROR) = The entery x can't be : {x}"
                 f"  => (max : {self.width})"
                 "and (min : 1)"
             )
         if y > self.height or y < 0:
             raise EntryExitError(
-                f"The entery y can't be : {y}"
+                f"(ERROR) = The entery y can't be : {y}"
                 f"  => (max : {self.height})"
                 " and (min : 1)"
             )
+        c_x, c_y = int(self.width / 2), int(self.height / 2)
+        map_42 = [
+            (c_x - 1, c_y),
+            (c_x - 2, c_y),
+            (c_x - 3, c_y),
+            (c_x + 1, c_y),
+            (c_x + 2, c_y),
+            (c_x + 3, c_y),
+            (c_x - 1, c_y + 1),
+            (c_x - 1, c_y + 2),
+            (c_x + 1, c_y + 1),
+            (c_x + 1, c_y + 2),
+            (c_x + 2, c_y + 2),
+            (c_x + 3, c_y + 2),
+            (c_x - 3, c_y - 1),
+            (c_x - 3, c_y - 2),
+            (c_x + 3, c_y - 1),
+            (c_x + 3, c_y - 2),
+            (c_x + 1, c_y - 2),
+            (c_x + 2, c_y - 2),
+        ]
+        for item in map_42:
+            if item == (x, y):
+                raise Exception("(ERROR) = Entry must be outside the 42 grid")
+
         self.entry = (x, y)
 
     def check_exit(self, exit):
         exit = exit.replace("(", "").replace(")", "")
         exit_splited = exit.split(",")
         if len(exit_splited) != 2:
-            raise EntryExitError("Exit cordinates must be (x,y)")
+            raise EntryExitError("(ERROR) = Exit cordinates must be (x,y)")
         x_width = exit_splited[0]
         y_height = exit_splited[1]
         try:
             x = int(x_width)
         except ValueError:
-            raise EntryExitError(f"The exit x must be a number: not {x_width}")
+            raise EntryExitError(f"(ERROR) = The exit x must be a number: not {x_width}")
 
         try:
             y = int(y_height)
         except ValueError:
-            raise EntryExitError(f"The exit y must be a number: not {y_height}")
+            raise EntryExitError(f"(ERROR) = The exit y must be a number: not {y_height}")
 
         if x > self.width or x < 0:
             raise EntryExitError(
-                f"The exit x can't be : {x}" f" => (max : {self.width}) and (min : 1)"
+                f"(ERROR) = The exit x can't be : {x}" 
+                f" => (max : {self.width}) and (min : 1)"
             )
         if y > self.height or y < 0:
             raise EntryExitError(
-                f"The exit y can't be : {y}"
+                f"(ERROR) = The exit y can't be : {y}"
                 f"  => "
                 f"(max : {self.height}) and (min : 1)"
             )
         if x == self.entry[0] and y == self.entry[1]:
-            raise EntryExitError("the entry must be different than exit")
+            raise EntryExitError("(ERROR) = the entry must be different than exit")
+        
+        c_x, c_y = int(self.width / 2), int(self.height / 2)
+        map_42 = [
+            (c_x - 1, c_y),
+            (c_x - 2, c_y),
+            (c_x - 3, c_y),
+            (c_x + 1, c_y),
+            (c_x + 2, c_y),
+            (c_x + 3, c_y),
+            (c_x - 1, c_y + 1),
+            (c_x - 1, c_y + 2),
+            (c_x + 1, c_y + 1),
+            (c_x + 1, c_y + 2),
+            (c_x + 2, c_y + 2),
+            (c_x + 3, c_y + 2),
+            (c_x - 3, c_y - 1),
+            (c_x - 3, c_y - 2),
+            (c_x + 3, c_y - 1),
+            (c_x + 3, c_y - 2),
+            (c_x + 1, c_y - 2),
+            (c_x + 2, c_y - 2),
+        ]
+        for item in map_42:
+            if item == (x, y):
+                raise Exception("(ERROR) = Exit must be outside the 42 grid")
         self.exit = (x, y)
 
     def check_dimensions(self, w, h):
         try:
             self.width = int(w)
         except ValueError:
-            raise DimensionsError(f"The width must be a number not: {w}")
+            raise DimensionsError(f"(ERROR) = The width must be a number not: {w}")
         try:
             self.height = int(h)
         except ValueError:
-            raise DimensionsError(f"The height must be a number not: {h})")
+            raise DimensionsError(f"(ERROR) = The height must be a number not: {h})")
 
         if self.width > 1200 or self.width < 1:
             raise DimensionsError(
-                f"The width can`t be : {self.width}" "  => (max : 200) and (min : 1)"
+                f"(ERROR) = The width can`t be : {self.width}" "  => (max : 200) and (min : 1)"
             )
         elif self.height > 1200 or self.height < 1:
             raise DimensionsError(
-                f"The height can`t be : {self.height}" " => (max : 200) and (min : 1)"
+                f"(ERROR) = The height can`t be : {self.height}" " => (max : 200) and (min : 1)"
             )
