@@ -104,10 +104,11 @@ class DfsGenerator:
             if y > y1:
                 random_cell.open_wall("S")
                 cell.open_wall("N")
+                
             else:
                 random_cell.open_wall("N")
                 cell.open_wall("S")
-                if y == 0 and x != 0:
+                if y == 0 and x != 0:   #### chi qlwa hna khasha tqad
                     cell.open_wall("E")
 
         if y == y1:
@@ -117,7 +118,7 @@ class DfsGenerator:
             else:
                 random_cell.open_wall("W")
                 cell.open_wall("E")
-                if x == 0 and y != 0:
+                if x == 0 and y != 0:       #### chi qlwa hna khasha tqad
                     cell.open_wall("N")
     def is_42_map(self, grid):
 

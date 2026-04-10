@@ -97,15 +97,14 @@ class DrawAnimation:
             return bit_map[2]
 
     def bfs_loop_hook(self, _):
-        if self.i + 1 == len(self.path):
-            return
-        destination = DrawAnimation.path_checker(
-            self.path[self.i], self.path[self.i + 1]
-        )
-        x, y = self.path[self.i]
-        self.img.put_path(x, y, destination)
-        MyMlx.put_image_to_window(self.img.ptr, self.img.poss_w, self.img.poss_h)
-        self.i += 1
+        if self.i + 1 != len(self.path):
+            destination = DrawAnimation.path_checker(
+                self.path[self.i], self.path[self.i + 1]
+            )
+            x, y = self.path[self.i]
+            self.img.put_path(x, y, destination)
+            MyMlx.put_image_to_window(self.img.ptr, self.img.poss_w, self.img.poss_h)
+            self.i += 1
 
     def dfs_loop_hook(self, _):
 

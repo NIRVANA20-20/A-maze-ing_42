@@ -40,9 +40,9 @@ class Amazing:
 
 
 if __name__ == "__main__":
-    try:
-        amazing = Amazing()
-        amazing.run()
-        sys.exit(0)
-    except (Exception, KeyboardInterrupt) as e:
-        print(e)
+    # try:
+    amazing = Amazing()
+    amazing.run()
+    sys.exit(0)
+    # except (Exception, KeyboardInterrupt) as e:
+        # print(e)
