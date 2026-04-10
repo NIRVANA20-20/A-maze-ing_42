@@ -36,7 +36,6 @@ class DfsGenerator:
         self.height = height
         self.seed = seed
         self.perfect = perfect
-        self.is_42_grid = []
 
 
     def get_cell(self, x, y, grid):
@@ -45,9 +44,7 @@ class DfsGenerator:
         return None
 
     def get_neighbors(self, x, y, grid):
-
         axis_n = [(x, y - 1), (x + 1, y), (x, y + 1), (x - 1, y)]
-
         axis = []
         for n in axis_n:
             r, c = n
@@ -74,18 +71,19 @@ class DfsGenerator:
                 cell_r = random.choice(neighbors)
                 cell_r.visited = True
                 if self.perfect:
-                    self.dfs_open_wall(cell, cell_r)
+                    self.dfs_open_wall_perfect(cell, cell_r)
                 else:
                     self.dfs_open_wall_inperfect(cell, cell_r)
                 self.stack.append(cell_r)
 
-    def dfs_open_wall(self, cell, random_cell):
+    def dfs_open_wall_perfect(self, cell, random_cell):
         x, y = cell.x, cell.y
         x1, y1 = random_cell.x, random_cell.y
         if x == x1:
             if y > y1:
                 random_cell.open_wall("S")
                 cell.open_wall("N")
+                
             else:
                 random_cell.open_wall("N")
                 cell.open_wall("S")
@@ -101,19 +99,26 @@ class DfsGenerator:
         x, y = cell.x, cell.y
         x1, y1 = random_cell.x, random_cell.y
 
+
         if x == x1:
             if y > y1:
                 random_cell.open_wall("S")
                 cell.open_wall("N")
+            else:
                 random_cell.open_wall("N")
                 cell.open_wall("S")
+                if y == 0 and x != 0:
+                    cell.open_wall("E")
+
         if y == y1:
             if x > x1:
                 random_cell.open_wall("E")
                 cell.open_wall("W")
+            else:
                 random_cell.open_wall("W")
                 cell.open_wall("E")
-
+                if x == 0 and y != 0:
+                    cell.open_wall("N")
     def is_42_map(self, grid):
 
         if self.width >= 9 and self.height >= 8:
