@@ -55,7 +55,7 @@ class MazeController:
                 self.drawer.draw()
 
     def put_maze(self, key: int) -> None:
-        if key == Keys.MAZE.value and self.is_started is True:
+        if key == Keys.MAZE.value:
             self.generator.generate()
             Theme.bg_img_ptr.put_image_to_window()
             self.drawer.is_animation = True
@@ -65,7 +65,13 @@ class MazeController:
             self.is_generated = True
 
     def solve_maze(self, key: int) -> None:
-        if key == Keys.SOLVE.value and self.is_generated is True:
+        if (
+            key == Keys.SOLVE.value
+            and self.is_generated is True
+            and self.is_solved is False
+            and self.drawer.is_draw is False
+        ):
+
             self.drawer.draw()
             self.is_solved = True
 
