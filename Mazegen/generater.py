@@ -224,13 +224,14 @@ class MazeGenerator:
     def generate(self):
         self.set_grid()
         self.path.clear()
+        self.path_str.clear()
         self.generator_algo.generate(self.grid)
         self.solver.generate(self.grid)
+        self.path_filler()
         self.write_to_file()
 
     def path_filler(self):
         i = 0
-        self.path_str.clear()
         while i < len(self.path) - 1:
             destination = MazeGenerator.path_checker(
                 self.path[i], self.path[i+1]
@@ -259,11 +260,9 @@ class MazeGenerator:
                 column += hex(cell.to_hex())[2:]
             column += "\n"
             file.write(column)
-        
+
         file.write(f"\n\n{self.entry[0]}, {self.entry[1]}")
         file.write(f"\n{self.exit[0]}, {self.exit[1]}")
-
-        self.path_filler()
         path = ''.join(self.path_str)
         file.write(f"\n{path}")
 

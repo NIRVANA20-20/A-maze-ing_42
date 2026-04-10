@@ -2,7 +2,7 @@ from my_mlx.my_mlx import MyMlx
 from typing import Any
 from themes.themes import Theme
 from Rendring.CellImage import Image
-from Generating.maze import Maze
+from Mazegen.maze import Maze
 
 
 class MazeCreator:
