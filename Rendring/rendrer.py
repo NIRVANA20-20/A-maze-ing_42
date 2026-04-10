@@ -26,9 +26,7 @@ class MazeCreator:
                     self.img.put_west(x, y, Theme.border_color)
                     self.img.put_south(x, y, Theme.border_color)
         if self.is_put is True:
-            MyMlx.put_image_to_window(
-                self.img.ptr, self.img.poss_w, self.img.poss_h
-            )
+            MyMlx.put_image_to_window(self.img.ptr, self.img.poss_w, self.img.poss_h)
 
     def remove_wall_helper(self, x, y, pos):
         if pos == "N":
@@ -63,6 +61,7 @@ class DrawAnimation:
         self.color = Theme.bg_color
         self.path = self.maze.path
         self.is_animation = True
+        self.is_draw = True
 
     def draw_entry_exit(self):
         x_entry, y_entry = self.maze.entry
@@ -74,6 +73,7 @@ class DrawAnimation:
         self.i = 0
         self.draw_entry_exit()
         MyMlx.loop_hook(self.bfs_loop_hook, None)
+        print("walid")
 
     def draw_dfs(self):
         self.x = 0
@@ -105,9 +105,7 @@ class DrawAnimation:
         )
         x, y = self.path[self.i]
         self.img.put_path(x, y, destination)
-        MyMlx.put_image_to_window(
-            self.img.ptr, self.img.poss_w, self.img.poss_h
-        )
+        MyMlx.put_image_to_window(self.img.ptr, self.img.poss_w, self.img.poss_h)
         self.i += 1
 
     def dfs_loop_hook(self, _):
@@ -123,6 +121,7 @@ class DrawAnimation:
                     MyMlx.put_image_to_window(
                         self.img.ptr, self.img.poss_w, self.img.poss_h
                     )
+                self.is_draw = False
                 return
 
             if self.x < width:
@@ -149,9 +148,7 @@ class DrawAnimation:
                 pos_list = MazeCreator.check_binary(value)
                 for pos in pos_list:
                     self.creator.remove_wall_helper(x, y, pos)
-        MyMlx.put_image_to_window(
-            self.img.ptr, self.img.poss_w, self.img.poss_h
-        )
+        MyMlx.put_image_to_window(self.img.ptr, self.img.poss_w, self.img.poss_h)
 
     def draw_path(self, path: Any) -> None:
         pass
