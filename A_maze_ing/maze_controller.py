@@ -70,7 +70,7 @@ class MazeController:
             self.show = True
 
     def solve_maze(self, key: int) -> None:
-        print(self.is_generated, self.drawer.is_draw, self.show)
+        # print(self.is_generated, self.drawer.is_draw, self.show)
         if (
             key == Keys.SOLVE.value
             and self.is_generated is True
@@ -85,7 +85,7 @@ class MazeController:
             self.creator.creat_cells()
             self.drawer.draw_dfs_no_animation()
             self.show = True
-        print(self.is_solved)
+        # print(self.is_solved)
 
     def get_path_string(self) -> List[str]:
         path_list = []

@@ -209,6 +209,7 @@ class MazeGenerator:
         )
         self.set_grid()
         self.path = []
+        self.path_str = []
         self.entry = m_entry
         self.exit = m_exit
         self.solver = MazeSolver(self.entry, self.exit, self.path)
@@ -227,6 +228,29 @@ class MazeGenerator:
         self.solver.generate(self.grid)
         self.write_to_file()
 
+    def path_filler(self):
+        i = 0
+        self.path_str.clear()
+        while i < len(self.path) - 1:
+            destination = MazeGenerator.path_checker(
+                self.path[i], self.path[i+1]
+            )
+            self.path_str.append(destination)
+            i += 1
+
+    def path_checker(curr_cell, next_cell):
+        x, y = curr_cell
+        xn, yn = next_cell
+        bit_map = ["N", "E", "S", "W"]
+        if x - xn > 0:
+            return bit_map[3]
+        if x - xn < 0:
+            return bit_map[1]
+        if y - yn > 0:
+            return bit_map[0]
+        if y - yn < 0:
+            return bit_map[2]
+
     def write_to_file(self):
         file = open(self.file_name, "w")
         for grid in self.grid:
@@ -235,7 +259,12 @@ class MazeGenerator:
                 column += hex(cell.to_hex())[2:]
             column += "\n"
             file.write(column)
-        file.write(f"\n\n({self.entry[0]}, {self.entry[1]})")
-        file.write(f"\n\n({self.exit[0]}, {self.exit[1]})")
+        
+        file.write(f"\n\n{self.entry[0]}, {self.entry[1]}")
+        file.write(f"\n{self.exit[0]}, {self.exit[1]}")
+
+        self.path_filler()
+        path = ''.join(self.path_str)
+        file.write(f"\n{path}")
 
         file.close()
