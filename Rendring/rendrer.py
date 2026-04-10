@@ -73,7 +73,6 @@ class DrawAnimation:
         self.i = 0
         self.draw_entry_exit()
         MyMlx.loop_hook(self.bfs_loop_hook, None)
-        print("walid")
 
     def draw_dfs(self):
         self.x = 0
@@ -109,7 +108,9 @@ class DrawAnimation:
         self.i += 1
 
     def dfs_loop_hook(self, _):
+
         try:
+            self.is_draw = True
             width = self.maze.width
             height = self.maze.height
             if self.x == width:
