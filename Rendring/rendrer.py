@@ -61,7 +61,10 @@ class DrawAnimation:
         self.color = Theme.bg_color
         self.path = self.maze.path
         self.is_animation = True
-        self.is_draw = True
+        self.is_fin_bfs = False
+        self.is_fin_dfs = False
+        self.generate = True
+        self.solve = True
 
     def draw_entry_exit(self):
         x_entry, y_entry = self.maze.entry
@@ -78,6 +81,7 @@ class DrawAnimation:
         self.x = 0
         self.y = 0
         if self.is_animation is False:
+            self.is_fin_dfs = True
             self.draw_dfs_no_animation()
         else:
             MyMlx.loop_hook(self.dfs_loop_hook, None)
@@ -97,44 +101,50 @@ class DrawAnimation:
             return bit_map[2]
 
     def bfs_loop_hook(self, _):
-        if self.i + 1 != len(self.path):
-            destination = DrawAnimation.path_checker(
-                self.path[self.i], self.path[self.i + 1]
-            )
-            x, y = self.path[self.i]
-            self.img.put_path(x, y, destination)
-            MyMlx.put_image_to_window(self.img.ptr, self.img.poss_w, self.img.poss_h)
-            self.i += 1
+        if self.solve:
+            if self.i + 1 != len(self.path):
+                destination = DrawAnimation.path_checker(
+                    self.path[self.i], self.path[self.i + 1]
+                )
+                x, y = self.path[self.i]
+                self.img.put_path(x, y, destination)
+                MyMlx.put_image_to_window(
+                    self.img.ptr, self.img.poss_w, self.img.poss_h
+                )
+                self.i += 1
+            else:
+                self.is_fin_bfs = True
 
     def dfs_loop_hook(self, _):
 
         try:
-            self.is_draw = True
-            width = self.maze.width
-            height = self.maze.height
-            if self.x == width:
-                self.x = 0
-                self.y += 1
+            if self.generate:
+                self.is_fin_dfs = False
+                width = self.maze.width
+                height = self.maze.height
+                if self.x == width:
+                    self.x = 0
+                    self.y += 1
 
-            if self.y == height:
-                if self.is_animation is False:
-                    MyMlx.put_image_to_window(
-                        self.img.ptr, self.img.poss_w, self.img.poss_h
-                    )
-                self.is_draw = False
-                return
+                if self.y == height:
+                    if self.is_animation is False:
+                        MyMlx.put_image_to_window(
+                            self.img.ptr, self.img.poss_w, self.img.poss_h
+                        )
+                    self.is_fin_dfs = True
+                    return
 
-            if self.x < width:
-                row = self.creator.read_from_file(self.y)
-                value = format(int(row[self.x], 16), "04b")
-                pos_list = MazeCreator.check_binary(value)
-                for pos in pos_list:
-                    self.creator.remove_wall_helper(self.x, self.y, pos)
-                if self.is_animation is True:
-                    MyMlx.put_image_to_window(
-                        self.img.ptr, self.img.poss_w, self.img.poss_h
-                    )
-            self.x += 1
+                if self.x < width:
+                    row = self.creator.read_from_file(self.y)
+                    value = format(int(row[self.x], 16), "04b")
+                    pos_list = MazeCreator.check_binary(value)
+                    for pos in pos_list:
+                        self.creator.remove_wall_helper(self.x, self.y, pos)
+                    if self.is_animation is True:
+                        MyMlx.put_image_to_window(
+                            self.img.ptr, self.img.poss_w, self.img.poss_h
+                        )
+                self.x += 1
         except Exception as e:
             print(e)
 
@@ -149,6 +159,7 @@ class DrawAnimation:
                 for pos in pos_list:
                     self.creator.remove_wall_helper(x, y, pos)
         MyMlx.put_image_to_window(self.img.ptr, self.img.poss_w, self.img.poss_h)
+        self.is_fin_dfs = True
 
     def draw_path(self, path: Any) -> None:
         pass

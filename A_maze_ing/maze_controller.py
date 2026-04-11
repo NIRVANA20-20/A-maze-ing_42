@@ -39,52 +39,52 @@ class MazeController:
     def maze_cells(self, key: int) -> None:
         if key == Keys.CELLS.value:
             Theme.bg_img_ptr.put_image_to_window()
-            self.creator.creat_cells()
-            self.is_started = True
+            self.drawer.generate = False
+            self.drawer.is_fin_dfs = False
             self.is_generated = False
             self.is_solved = False
+            self.drawer.solve = False
             self.show = True
+            self.drawer.is_animation = True
+            self.creator.creat_cells()
+            self.is_started = True
 
     def switch_theme(self, key: int) -> None:
         if key == Keys.SWITCH_THEME.value:
             Theme.switch_theme()
             Theme.bg_img_ptr.put_image_to_window()
             self.creator.creat_cells()
-            self.drawer.is_animation = False
-            self.show = True
             if self.is_generated is True:
+                if self.drawer.is_fin_dfs:
+                    self.drawer.is_animation = False
                 self.drawer.draw_dfs()
             if self.is_solved is True:
                 self.drawer.draw()
-                self.show = False
 
     def put_maze(self, key: int) -> None:
         if key == Keys.MAZE.value:
             self.generator.generate()
-            Theme.bg_img_ptr.put_image_to_window()
+            self.drawer.generate = True
             self.drawer.is_animation = True
+            self.is_solved = False
+            Theme.bg_img_ptr.put_image_to_window()
             self.creator.creat_cells()
             self.drawer.draw_dfs()
-            self.is_solved = False
             self.is_generated = True
             self.show = True
 
     def solve_maze(self, key: int) -> None:
-        if (
-            key == Keys.SOLVE.value
-            and self.is_generated is True
-            and self.drawer.is_draw is True
-            and self.show is True
-        ):
-
-            self.drawer.draw()
-            self.is_solved = True
-            self.show = False
-        elif self.show is False:
-            self.creator.creat_cells()
-            self.drawer.draw_dfs_no_animation()
-            self.show = True
-
+        if key == Keys.SOLVE.value and self.drawer.is_fin_dfs:
+            if self.show:
+                self.drawer.solve = True
+                self.drawer.draw()
+                self.is_solved = True
+                self.show = False
+            else:
+                self.drawer.solve = False
+                self.creator.creat_cells()
+                self.drawer.draw_dfs_no_animation()
+                self.show = True
 
     def get_path_string(self) -> List[str]:
         path_list = []
