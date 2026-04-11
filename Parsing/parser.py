@@ -136,31 +136,8 @@ class Parser:
                 f"  => (max : {self.height})"
                 " and (min : 1)"
             )
-        c_x, c_y = int(self.width / 2), int(self.height / 2)
-        map_42 = [
-            (c_x - 1, c_y),
-            (c_x - 2, c_y),
-            (c_x - 3, c_y),
-            (c_x + 1, c_y),
-            (c_x + 2, c_y),
-            (c_x + 3, c_y),
-            (c_x - 1, c_y + 1),
-            (c_x - 1, c_y + 2),
-            (c_x + 1, c_y + 1),
-            (c_x + 1, c_y + 2),
-            (c_x + 2, c_y + 2),
-            (c_x + 3, c_y + 2),
-            (c_x - 3, c_y - 1),
-            (c_x - 3, c_y - 2),
-            (c_x + 3, c_y - 1),
-            (c_x + 3, c_y - 2),
-            (c_x + 1, c_y - 2),
-            (c_x + 2, c_y - 2),
-        ]
-        for item in map_42:
-            if item == (x, y):
-                raise Exception("(ERROR) = Entry must be outside the 42 grid")
-
+        if self.width >= 9 and self.height >= 8:
+            self.grid_checker((x, y))
         self.entry = (x, y)
 
     def check_exit(self, exit):
@@ -197,7 +174,13 @@ class Parser:
             )
         if x == self.entry[0] and y == self.entry[1]:
             raise EntryExitError("(ERROR) = the entry must be different than exit")
-
+        if self.width >= 9 and self.height >= 8:
+            self.grid_checker((x, y))
+    
+        self.exit = (x, y)
+    
+    def grid_checker(self, tpl):
+        x, y = tpl[0], tpl[1] 
         c_x, c_y = int(self.width / 2), int(self.height / 2)
         map_42 = [
             (c_x - 1, c_y),
@@ -216,14 +199,12 @@ class Parser:
             (c_x - 3, c_y - 2),
             (c_x + 3, c_y - 1),
             (c_x + 3, c_y - 2),
-            (c_x + 1, c_y - 2),
-            (c_x + 2, c_y - 2),
+        (c_x + 1, c_y - 2),
+        (c_x + 2, c_y - 2),
         ]
-        for item in map_42:
-            if item == (x, y):
-                raise Exception("(ERROR) = Exit must be outside the 42 grid")
-        self.exit = (x, y)
-
+        if (x, y) in map_42:
+            raise Exception("(ERROR) = Exit and Entry must be outside the 42 grid")
+    
     def check_dimensions(self, w, h):
         try:
             self.width = int(w)
