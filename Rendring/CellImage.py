@@ -35,7 +35,7 @@ class Image:
 
     def put_pixel(self, x: int, y: int, color: int):
         offset = int((y * self.sl) + (x * (self.bpp // 8)))
-        self.buffer[offset : offset + 4] = color.to_bytes(4, "little")
+        self.buffer[offset: offset + 4] = color.to_bytes(4, "little")
 
     def put_north(self, x, y, color, cell_br=0):
         start_h = y * self.cell_dim

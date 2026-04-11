@@ -5,7 +5,6 @@ from my_mlx.my_mlx import MyMlx
 from themes.themes import Theme
 from typing import List
 from enum import Enum
-import sys
 
 
 class Keys(Enum):

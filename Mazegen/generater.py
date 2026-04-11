@@ -71,12 +71,12 @@ class DfsGenerator:
                     self.dfs_open_wall_perfect(cell, cell_r)
                 else:
                     if x == cell_r.x:
-                        self.dfs_open_wall_inperfect(cell, grid[y][x - 1], cell_r)
+                        self.open_wall_inperfect(cell, grid[y][x - 1], cell_r)
                     else:
-                        self.dfs_open_wall_inperfect(cell, grid[y - 1][x], cell_r)
+                        self.open_wall_inperfect(cell, grid[y - 1][x], cell_r)
                 self.stack.append(cell_r)
 
-    def dfs_open_wall_perfect(self, cell, random_cell):
+    def open_wall_perfect(self, cell, random_cell):
         x, y = cell.x, cell.y
         x1, y1 = random_cell.x, random_cell.y
         if x == x1:
@@ -95,7 +95,7 @@ class DfsGenerator:
                 random_cell.open_wall("W")
                 cell.open_wall("E")
 
-    def dfs_open_wall_inperfect(self, cell, neighbors_cell, random_cell):
+    def open_wall_inperfect(self, cell, neighbors_cell, random_cell):
         x, y = cell.x, cell.y
         x1, y1 = random_cell.x, random_cell.y
 
@@ -238,8 +238,9 @@ class MazeGenerator:
 
     def path_filler(self):
         i = 0
+        path = self.path
         while i < len(self.path) - 1:
-            destination = MazeGenerator.path_checker(self.path[i], self.path[i + 1])
+            destination = MazeGenerator.path_checker(path[i], path[i + 1])
             self.path_str.append(destination)
             i += 1
 

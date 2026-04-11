@@ -36,7 +36,8 @@ class Parser:
         args = sys.argv
         if len(args) != 2 or args[1] != "config.txt":
             print(
-                "(ERROR) = You must run the program: python3 amazing.py config.txt",
+                "(ERROR) = You must run the program:"
+                + "python3 amazing.py config.txt",
                 "\n PRESS [Control] key to exit",
             )
             exit(0)
@@ -94,11 +95,14 @@ class Parser:
                 "(ERROR) = only '.txt' files are permitted as maze output file"
             )
         if os.path.exists(file_name) and not os.access(file_name, os.W_OK):
-            raise FileNameError(f"(ERROR) = OUTPUT_FILE '{file_name}' is not writable")
+            raise FileNameError(
+                f"(ERROR) = OUTPUT_FILE '{file_name}'is not writable"
+            )
         parent = os.path.dirname(file_name) or "."
         if not os.access(parent, os.W_OK):
             raise ValueError(
-                f"(ERROR) = OUTPUT_FILE '{file_name}' directory is not writable"
+                f"(ERROR) = OUTPUT_FILE '{file_name}'"
+                + "directory is not writable"
             )
         else:
             self.file_name = file_name
@@ -173,14 +177,16 @@ class Parser:
                 f"(max : {self.height}) and (min : 1)"
             )
         if x == self.entry[0] and y == self.entry[1]:
-            raise EntryExitError("(ERROR) = the entry must be different than exit")
+            raise EntryExitError(
+                "(ERROR) = the entry must be different than exit"
+            )
         if self.width >= 9 and self.height >= 8:
             self.grid_checker((x, y))
-    
+
         self.exit = (x, y)
-    
+
     def grid_checker(self, tpl):
-        x, y = tpl[0], tpl[1] 
+        x, y = tpl[0], tpl[1]
         c_x, c_y = int(self.width / 2), int(self.height / 2)
         map_42 = [
             (c_x - 1, c_y),
@@ -199,21 +205,27 @@ class Parser:
             (c_x - 3, c_y - 2),
             (c_x + 3, c_y - 1),
             (c_x + 3, c_y - 2),
-        (c_x + 1, c_y - 2),
-        (c_x + 2, c_y - 2),
+            (c_x + 1, c_y - 2),
+            (c_x + 2, c_y - 2),
         ]
         if (x, y) in map_42:
-            raise Exception("(ERROR) = Exit and Entry must be outside the 42 grid")
-    
+            raise Exception(
+                "(ERROR) = Exit and Entry must be outside the 42 grid"
+            )
+
     def check_dimensions(self, w, h):
         try:
             self.width = int(w)
         except ValueError:
-            raise DimensionsError(f"(ERROR) = The width must be a number not: {w}")
+            raise DimensionsError(
+                f"(ERROR) = The width must be a number not: {w}"
+            )
         try:
             self.height = int(h)
         except ValueError:
-            raise DimensionsError(f"(ERROR) = The height must be a number not: {h})")
+            raise DimensionsError(
+                f"(ERROR) = The height must be a number not: {h})"
+            )
 
         if self.width > 1200 or self.width < 1:
             raise DimensionsError(
