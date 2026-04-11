@@ -73,7 +73,7 @@ class MazeController:
         if (
             key == Keys.SOLVE.value
             and self.is_generated is True
-            and self.drawer.is_draw is False
+            and self.drawer.is_draw is True
             and self.show is True
         ):
 
@@ -84,6 +84,7 @@ class MazeController:
             self.creator.creat_cells()
             self.drawer.draw_dfs_no_animation()
             self.show = True
+
 
     def get_path_string(self) -> List[str]:
         path_list = []

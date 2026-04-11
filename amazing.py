@@ -1,6 +1,6 @@
 from Parsing.parser import Parser
 from Mazegen.generater import MazeGenerator
-from Mazegen.maze import Maze
+from A_maze_ing.maze import Maze
 from my_mlx.my_mlx import MyMlx
 from A_maze_ing.maze_controller import MazeController
 import sys

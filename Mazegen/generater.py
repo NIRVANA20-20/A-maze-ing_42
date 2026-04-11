@@ -70,7 +70,10 @@ class DfsGenerator:
                 if self.perfect:
                     self.dfs_open_wall_perfect(cell, cell_r)
                 else:
-                    self.dfs_open_wall_inperfect(cell, grid[y][x - 1], cell_r)
+                    if x == cell_r.x:
+                        self.dfs_open_wall_inperfect(cell, grid[y][x - 1], cell_r)
+                    else:
+                        self.dfs_open_wall_inperfect(cell, grid[y - 1][x], cell_r)
                 self.stack.append(cell_r)
 
     def dfs_open_wall_perfect(self, cell, random_cell):
