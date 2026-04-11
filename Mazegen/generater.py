@@ -1,8 +1,6 @@
 import random
 from collections import deque
 from typing import Any, Tuple
-from Parsing.parser import Parser   
-import sys
 
 
 class Cell:
@@ -36,7 +34,6 @@ class DfsGenerator:
         self.height = height
         self.seed = seed
         self.perfect = perfect
-
 
     def get_cell(self, x, y, grid):
         if 0 <= x < self.width and 0 <= y < self.height:
@@ -73,7 +70,7 @@ class DfsGenerator:
                 if self.perfect:
                     self.dfs_open_wall_perfect(cell, cell_r)
                 else:
-                    self.dfs_open_wall_inperfect(cell, cell_r)
+                    self.dfs_open_wall_inperfect(cell, grid[y][x - 1], cell_r)
                 self.stack.append(cell_r)
 
     def dfs_open_wall_perfect(self, cell, random_cell):
@@ -83,7 +80,7 @@ class DfsGenerator:
             if y > y1:
                 random_cell.open_wall("S")
                 cell.open_wall("N")
-                
+
             else:
                 random_cell.open_wall("N")
                 cell.open_wall("S")
@@ -95,7 +92,7 @@ class DfsGenerator:
                 random_cell.open_wall("W")
                 cell.open_wall("E")
 
-    def dfs_open_wall_inperfect(self, cell, random_cell):
+    def dfs_open_wall_inperfect(self, cell, neighbors_cell, random_cell):
         x, y = cell.x, cell.y
         x1, y1 = random_cell.x, random_cell.y
 
@@ -106,8 +103,9 @@ class DfsGenerator:
             else:
                 random_cell.open_wall("N")
                 cell.open_wall("S")
-                if y == 0 and x != 0: 
+                if y == 0 and x != 0:
                     cell.open_wall("W")
+                    neighbors_cell.open_wall("E")
         if y == y1:
             if x > x1:
                 random_cell.open_wall("E")
@@ -115,9 +113,9 @@ class DfsGenerator:
             else:
                 random_cell.open_wall("W")
                 cell.open_wall("E")
-                if x == 0 and y != 0:    
+                if x == 0 and y != 0:
                     cell.open_wall("N")
-                    print(cell.x, cell.y)
+                    neighbors_cell.open_wall("S")
 
     def is_42_map(self, grid):
 
@@ -147,10 +145,10 @@ class DfsGenerator:
                 for cell in row:
                     x, y = cell.x, cell.y
                     cor = (x, y)
-                    if cor in map_42:    
+                    if cor in map_42:
                         cell.is_42 = True
-        
-       
+
+
 class MazeSolver:
 
     def __init__(self, entry: Tuple[int, int], exit: Tuple[int, int], path):
@@ -238,9 +236,7 @@ class MazeGenerator:
     def path_filler(self):
         i = 0
         while i < len(self.path) - 1:
-            destination = MazeGenerator.path_checker(
-                self.path[i], self.path[i+1]
-            )
+            destination = MazeGenerator.path_checker(self.path[i], self.path[i + 1])
             self.path_str.append(destination)
             i += 1
 
@@ -268,7 +264,7 @@ class MazeGenerator:
 
         file.write(f"\n\n{self.entry[0]}, {self.entry[1]}")
         file.write(f"\n{self.exit[0]}, {self.exit[1]}")
-        path = ''.join(self.path_str)
+        path = "".join(self.path_str)
         file.write(f"\n{path}")
 
         file.close()

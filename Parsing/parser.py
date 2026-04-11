@@ -72,7 +72,9 @@ class Parser:
             self.seed = None
             return
         elif int(seed) < 0:
-            raise ValueError("(ERROR) = The seed must be number (positive)", file=sys.stderr)
+            raise ValueError(
+                "(ERROR) = The seed must be number (positive)", file=sys.stderr
+            )
         self.seed = int(seed)
 
     def check_perfect(self, answer):
@@ -88,12 +90,16 @@ class Parser:
     def check_file(self, file_name):
         file_checker = file_name.split(".")
         if len(file_checker) != 2 or file_checker[1] != "txt":
-            raise FileNameError("(ERROR) = only '.txt' files are permitted as maze output file")
+            raise FileNameError(
+                "(ERROR) = only '.txt' files are permitted as maze output file"
+            )
         if os.path.exists(file_name) and not os.access(file_name, os.W_OK):
             raise FileNameError(f"(ERROR) = OUTPUT_FILE '{file_name}' is not writable")
         parent = os.path.dirname(file_name) or "."
         if not os.access(parent, os.W_OK):
-            raise ValueError(f"(ERROR) = OUTPUT_FILE '{file_name}' directory is not writable")
+            raise ValueError(
+                f"(ERROR) = OUTPUT_FILE '{file_name}' directory is not writable"
+            )
         else:
             self.file_name = file_name
 
@@ -107,12 +113,16 @@ class Parser:
         try:
             x = int(x_width)
         except ValueError:
-            raise EntryExitError(f"(ERROR) = The entry x must be a number: not {x_width}")
+            raise EntryExitError(
+                f"(ERROR) = The entry x must be a number: not {x_width}"
+            )
 
         try:
             y = int(y_height)
         except ValueError:
-            raise EntryExitError(f"(ERROR) = The entry y must be a number: not {y_height}")
+            raise EntryExitError(
+                f"(ERROR) = The entry y must be a number: not {y_height}"
+            )
 
         if x > self.width or x < 0:
             raise EntryExitError(
@@ -163,16 +173,20 @@ class Parser:
         try:
             x = int(x_width)
         except ValueError:
-            raise EntryExitError(f"(ERROR) = The exit x must be a number: not {x_width}")
+            raise EntryExitError(
+                f"(ERROR) = The exit x must be a number: not {x_width}"
+            )
 
         try:
             y = int(y_height)
         except ValueError:
-            raise EntryExitError(f"(ERROR) = The exit y must be a number: not {y_height}")
+            raise EntryExitError(
+                f"(ERROR) = The exit y must be a number: not {y_height}"
+            )
 
         if x > self.width or x < 0:
             raise EntryExitError(
-                f"(ERROR) = The exit x can't be : {x}" 
+                f"(ERROR) = The exit x can't be : {x}"
                 f" => (max : {self.width}) and (min : 1)"
             )
         if y > self.height or y < 0:
@@ -183,7 +197,7 @@ class Parser:
             )
         if x == self.entry[0] and y == self.entry[1]:
             raise EntryExitError("(ERROR) = the entry must be different than exit")
-        
+
         c_x, c_y = int(self.width / 2), int(self.height / 2)
         map_42 = [
             (c_x - 1, c_y),
@@ -222,9 +236,11 @@ class Parser:
 
         if self.width > 1200 or self.width < 1:
             raise DimensionsError(
-                f"(ERROR) = The width can`t be : {self.width}" "  => (max : 200) and (min : 1)"
+                f"(ERROR) = The width can`t be : {self.width}"
+                "  => (max : 200) and (min : 1)"
             )
         elif self.height > 1200 or self.height < 1:
             raise DimensionsError(
-                f"(ERROR) = The height can`t be : {self.height}" " => (max : 200) and (min : 1)"
+                f"(ERROR) = The height can`t be : {self.height}"
+                " => (max : 200) and (min : 1)"
             )
