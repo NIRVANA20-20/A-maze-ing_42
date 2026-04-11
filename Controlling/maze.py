@@ -1,10 +1,12 @@
-from typing import Any, Tuple
+from typing import Any
 
 
 class Maze:
 
     _instance = None
     _is_init = 0
+    entry: tuple[int, int]
+    exit: tuple[int, int]
 
     def __new__(cls) -> Any:
         if cls._instance is None:
@@ -16,19 +18,19 @@ class Maze:
         self.height = height
         return self
 
-    def set_grid(self, grid) -> Any:
+    def set_grid(self, grid: Any) -> Any:
         self.grid = grid
         return self
 
-    def set_entry(self, m_entry: Tuple[int]) -> Any:
-        self.entry = m_entry
+    def set_entry(self, m_entry: Any) -> "Maze":
+        self.entry: int = m_entry
         return self
 
-    def set_exit(self, m_exit: Tuple[int]) -> Any:
+    def set_exit(self, m_exit: Any) -> "Maze":
         self.exit = m_exit
         return self
 
-    def entry_exit_maze(self, entry: tuple, exit: tuple) -> Any:
+    def entry_exit_maze(self, entry: Any, exit: Any) -> Any:
         self.entry = entry
         self.exit = exit
         return self
@@ -49,6 +51,6 @@ class Maze:
         self.seed = seed
         return self
 
-    def set_path(self, path):
+    def set_path(self, path: Any) -> Any:
         self.path = path
         return self

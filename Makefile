@@ -2,29 +2,29 @@ VENV = venv
 PYTHON = $(VENV)/bin/python
 SYS_PYTHON = python3
 PIP = $(VENV)/bin/pip
-FILES = A_maze_ing/maze.py \
-		A_maze_ing/mazecontroller.py \
+FILES = Controlling/maze.py \
+		Controlling/maze_controller.py \
 		Parsing/parser.py \
-		Generating/generater.py\
-		Generating/maze\
-		my_mlx/my_mlx.p\
+		Mazegen/generater.py\
+		my_mlx/my_mlx.py\
 		Rendring/CellImage.py\
 		Rendring/rendrer.py\
-		themes/themes.py\
-		amazing.py\
+		Themes/themes.py\
+		a_maze_ing.py\
 
 install: $(VENV)
 	$(PIP) install flake8
 	$(PIP) install mypy
+	$(PIP) install ./*.whl
 
 run: 
-	$(PYTHON)  amazing.py config.txt
+	$(PYTHON)  a_maze_ing.py config.txt
 	
 $(VENV):
 	$(SYS_PYTHON) -m venv $(VENV)
 clean:
 	rm -rf  __pycache__ */__pycache__ */*/__pycache__
-	rm -rf $(VENV) dist/ *egg-info build *dist-info
+	rm -rf $(VENV)
 
 lint:
 	$(VENV)/bin/flake8 $(FILES) 
@@ -33,5 +33,3 @@ lint:
 
 pdb:
 	$(PYTHON) -m pdb A_maze_ing/amazing.py config.txt
-
-.PHONY: dependecies clean lint install

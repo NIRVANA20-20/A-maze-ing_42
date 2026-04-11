@@ -1,5 +1,6 @@
 from my_mlx.my_mlx import MyMlx
 import os
+from typing import Any
 
 
 def create_color(r: int, g: int, b: int) -> int:
@@ -30,7 +31,7 @@ class Colors:
 
 class Background:
 
-    def __init__(self, file_name):
+    def __init__(self, file_name: str) -> None:
         self.file_name = file_name
         self.abs_path = os.path.abspath(".") + "/Rendring/images/" + file_name
         self.img_ptr, _, _ = MyMlx.png_file_to_image(self.abs_path)
@@ -42,19 +43,19 @@ class Background:
 
 class Mood:
 
-    def set_bg_color(self, bg_color):
+    def set_bg_color(self, bg_color: Any) -> Any:
         self.bg_color = bg_color
         return self
 
-    def set_border_color(self, br_color):
+    def set_border_color(self, br_color: Any) -> Any:
         self.border_color = br_color
         return self
 
-    def set_42_color(self, color_42):
+    def set_42_color(self, color_42: Any) -> Any:
         self.color_42 = color_42
         return self
 
-    def set_background(self, file_name):
+    def set_background(self, file_name: str) -> Any:
         self.background = Background(file_name)
         return self
 
@@ -93,7 +94,7 @@ class Theme:
     color_42 = current_mood.color_42
 
     @classmethod
-    def switch_theme(cls):
+    def switch_theme(cls) -> Any:
         cls.theme_index = (cls.theme_index + 1) % len(cls.themes)
         current_mood = cls.themes[cls.theme_index]
         cls.bg_img_ptr = current_mood.background

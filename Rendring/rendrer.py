@@ -1,17 +1,17 @@
 from my_mlx.my_mlx import MyMlx
 from typing import Any
-from themes.themes import Theme
+from Themes.themes import Theme
 from Rendring.CellImage import Image
-from A_maze_ing.maze import Maze
+from Controlling.maze import Maze
 
 
 class MazeCreator:
-    def __init__(self):
+    def __init__(self) -> None:
         self.maze = Maze()
         self.img = Image()
         self.is_put = True
 
-    def creat_cells(self):
+    def creat_cells(self) -> None:
 
         self.img.put_img()
         for cells in self.maze.grid:
@@ -30,7 +30,7 @@ class MazeCreator:
                 self.img.ptr, self.img.poss_w, self.img.poss_h
             )
 
-    def remove_wall_helper(self, x, y, pos):
+    def remove_wall_helper(self, x: Any, y: Any, pos: Any) -> None:
         if pos == "N":
             self.img.put_north(x, y, Theme.bg_color, self.img.cell_b)
         elif pos == "E":
@@ -40,13 +40,13 @@ class MazeCreator:
         elif pos == "S":
             self.img.put_south(x, y, Theme.bg_color, self.img.cell_b)
 
-    def read_from_file(self, y):
+    def read_from_file(self, y: Any) -> Any:
         with open(self.maze.file_name, "r") as file:
             rows = file.read().split("\n")
             return rows[y]
 
     @staticmethod
-    def check_binary(value):
+    def check_binary(value: Any) -> Any:
         bit_map = ["W", "S", "E", "N"]
         return_pos = []
         for i, pos in enumerate(bit_map):
@@ -56,7 +56,7 @@ class MazeCreator:
 
 
 class DrawAnimation:
-    def __init__(self):
+    def __init__(self) -> None:
         self.maze = Maze()
         self.creator = MazeCreator()
         self.img = Image()
@@ -68,18 +68,18 @@ class DrawAnimation:
         self.generate = True
         self.solve = True
 
-    def draw_entry_exit(self):
+    def draw_entry_exit(self) -> None:
         x_entry, y_entry = self.maze.entry
         x_exit, y_exit = self.maze.exit
         self.img.put_entry_exit(x_entry, y_entry)
         self.img.put_entry_exit(x_exit, y_exit)
 
-    def draw(self):
+    def draw(self) -> None:
         self.i = 0
         self.draw_entry_exit()
         MyMlx.loop_hook(self.bfs_loop_hook, None)
 
-    def draw_dfs(self):
+    def draw_dfs(self) -> None:
         self.x = 0
         self.y = 0
         if self.is_animation is False:
@@ -89,7 +89,7 @@ class DrawAnimation:
             MyMlx.loop_hook(self.dfs_loop_hook, None)
 
     @staticmethod
-    def path_checker(curr_cell, next_cell):
+    def path_checker(curr_cell: Any, next_cell: Any) -> Any:
         x, y = curr_cell
         xn, yn = next_cell
         bit_map = ["N", "E", "S", "W"]
@@ -102,7 +102,7 @@ class DrawAnimation:
         if y - yn < 0:
             return bit_map[2]
 
-    def bfs_loop_hook(self, _):
+    def bfs_loop_hook(self, _: Any) -> None:
         if self.solve:
             if self.i + 1 != len(self.path):
                 destination = DrawAnimation.path_checker(
@@ -117,7 +117,7 @@ class DrawAnimation:
             else:
                 self.is_fin_bfs = True
 
-    def dfs_loop_hook(self, _):
+    def dfs_loop_hook(self, _: Any) -> Any:
 
         try:
             if self.generate:
@@ -150,7 +150,7 @@ class DrawAnimation:
         except Exception as e:
             print(e)
 
-    def draw_dfs_no_animation(self):
+    def draw_dfs_no_animation(self) -> None:
         width = self.maze.width
         height = self.maze.height
         for x in range(width):

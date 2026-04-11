@@ -4,18 +4,18 @@ from typing import Any, Tuple
 
 
 class Cell:
-    def __init__(self, x, y):
+    def __init__(self, x: Any, y: Any) -> None:
         self.x = x
         self.y = y
         self.walls = {"N": True, "E": True, "S": True, "W": True}
         self.visited = False
         self.is_42 = False
 
-    def open_wall(self, derection):
+    def open_wall(self, derection: Any) -> None:
         if derection in self.walls:
             self.walls[derection] = False
 
-    def to_hex(self):
+    def to_hex(self) -> Any:
         bit_map = ["N", "E", "S", "W"]
         value = 0
         for i, pos in enumerate(bit_map):
@@ -23,24 +23,27 @@ class Cell:
                 value |= 1 << i
         return value
 
-    def __repr__(self):
+    def __repr__(self) -> Any:
         return f"Cell({self.x},{self.y})"
 
 
 class DfsGenerator:
-    def __init__(self, width, height, seed, perfect) -> None:
-        self.stack = []
-        self.width = width
-        self.height = height
-        self.seed = seed
-        self.perfect = perfect
+    def __init__(self, width: Any,
+                 height: Any,
+                 seed: Any,
+                 perfect: Any) -> None:
+        self.stack: Any = []
+        self.width: Any = width
+        self.height: Any = height
+        self.seed: Any = seed
+        self.perfect: Any = perfect
 
-    def get_cell(self, x, y, grid):
+    def get_cell(self, x: Any, y: Any, grid: Any) -> Any:
         if 0 <= x < self.width and 0 <= y < self.height:
             return grid[y][x]
         return None
 
-    def get_neighbors(self, x, y, grid):
+    def get_neighbors(self, x: Any, y: Any, grid: Any) -> Any:
         axis_n = [(x, y - 1), (x + 1, y), (x, y + 1), (x - 1, y)]
         axis = []
         for n in axis_n:
@@ -50,7 +53,7 @@ class DfsGenerator:
                 axis.append(cell)
         return axis
 
-    def generate(self, grid) -> None:
+    def generate(self, grid: Any) -> None:
         self.is_42_map(grid)
         random.seed(self.seed)
         x = 0
@@ -68,7 +71,7 @@ class DfsGenerator:
                 cell_r = random.choice(neighbors)
                 cell_r.visited = True
                 if self.perfect:
-                    self.dfs_open_wall_perfect(cell, cell_r)
+                    self.open_wall_perfect(cell, cell_r)
                 else:
                     if x == cell_r.x:
                         self.open_wall_inperfect(cell, grid[y][x - 1], cell_r)
@@ -76,7 +79,7 @@ class DfsGenerator:
                         self.open_wall_inperfect(cell, grid[y - 1][x], cell_r)
                 self.stack.append(cell_r)
 
-    def open_wall_perfect(self, cell, random_cell):
+    def open_wall_perfect(self, cell: Any, random_cell: Any) -> None:
         x, y = cell.x, cell.y
         x1, y1 = random_cell.x, random_cell.y
         if x == x1:
@@ -95,7 +98,9 @@ class DfsGenerator:
                 random_cell.open_wall("W")
                 cell.open_wall("E")
 
-    def open_wall_inperfect(self, cell, neighbors_cell, random_cell):
+    def open_wall_inperfect(self, cell: Any,
+                            neighbors_cell: Any,
+                            random_cell: Any) -> None:
         x, y = cell.x, cell.y
         x1, y1 = random_cell.x, random_cell.y
 
@@ -120,7 +125,7 @@ class DfsGenerator:
                     cell.open_wall("N")
                     neighbors_cell.open_wall("S")
 
-    def is_42_map(self, grid):
+    def is_42_map(self, grid: Any) -> None:
 
         if self.width >= 9 and self.height >= 8:
             c_x, c_y = int(self.width / 2), int(self.height / 2)
@@ -154,16 +159,18 @@ class DfsGenerator:
 
 class MazeSolver:
 
-    def __init__(self, entry: Tuple[int, int], exit: Tuple[int, int], path):
+    def __init__(self, entry: Tuple[int, int],
+                 exit: Tuple[int, int],
+                 path: Any) -> None:
         self.entry = entry
         self.exit = exit
         self.path = path
         self.queue: deque = deque()
 
-    def generate(self, grid) -> None:
+    def generate(self, grid: Any) -> None:
         queue: deque = deque([self.entry])
-        visited = {self.entry}
-        parent = {}
+        visited: Any = {self.entry}
+        parent: Any = {}
 
         while queue:
             x, y = queue.popleft()
@@ -185,7 +192,7 @@ class MazeSolver:
                         parent[(nx, ny)] = (x, y)
                         queue.append((nx, ny))
 
-    def get_path(self, parent, start, end) -> Any:
+    def get_path(self, parent: Any, start: Any, end: Any) -> None:
         current = end
         while current != start:
             self.path.append(current)
@@ -201,7 +208,7 @@ class MazeGenerator:
         height: int,
         m_entry: Tuple[int, int],
         m_exit: Tuple[int, int],
-        seed: int,
+        seed: Any,
         perfect: bool,
         file_name: str,
     ):
@@ -214,20 +221,20 @@ class MazeGenerator:
             self.width, self.height, self.seed, self.perfect
         )
         self.set_grid()
-        self.path = []
-        self.path_str = []
-        self.entry = m_entry
-        self.exit = m_exit
-        self.solver = MazeSolver(self.entry, self.exit, self.path)
+        self.path: Any = []
+        self.path_str: Any = []
+        self.entry: Any = m_entry
+        self.exit: Any = m_exit
+        self.solver: Any = MazeSolver(self.entry, self.exit, self.path)
 
-    def set_grid(self):
+    def set_grid(self) -> Any:
         self.grid = [
             [Cell(x, y) for x in range(self.width)] for y in range(self.height)
         ]
         self.generator_algo.is_42_map(self.grid)
         return self
 
-    def generate(self):
+    def generate(self) -> None:
         self.set_grid()
         self.path.clear()
         self.path_str.clear()
@@ -236,7 +243,7 @@ class MazeGenerator:
         self.path_filler()
         self.write_to_file()
 
-    def path_filler(self):
+    def path_filler(self) -> None:
         i = 0
         path = self.path
         while i < len(self.path) - 1:
@@ -244,7 +251,7 @@ class MazeGenerator:
             self.path_str.append(destination)
             i += 1
 
-    def path_checker(curr_cell, next_cell):
+    def path_checker(curr_cell: Any, next_cell: Any) -> Any:
         x, y = curr_cell
         xn, yn = next_cell
         bit_map = ["N", "E", "S", "W"]
@@ -257,7 +264,7 @@ class MazeGenerator:
         if y - yn < 0:
             return bit_map[2]
 
-    def write_to_file(self):
+    def write_to_file(self) -> None:
         file = open(self.file_name, "w")
         for grid in self.grid:
             column = ""

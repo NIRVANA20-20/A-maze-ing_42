@@ -1,4 +1,4 @@
-from my_mlx.mlx.mlx import Mlx
+from my_mlx.mlx import Mlx
 from typing import Any
 
 
@@ -15,8 +15,11 @@ class MyMlx:
     @classmethod
     def put_image_to_window(cls, img_ptr: Any, x: int, y: int) -> None:
         cls.mlx.mlx_put_image_to_window(
-            cls.mlx_ptr, cls.win_ptr, img_ptr, x, y
-        )
+            cls.mlx_ptr, cls.win_ptr, img_ptr, x, y)
+
+    @classmethod
+    def png_file_to_image(cls, filename: str) -> Any:
+        return cls.mlx.mlx_png_file_to_image(cls.mlx_ptr, filename)
 
     @classmethod
     def new_image(cls, width: int, height: int) -> Any:
@@ -41,7 +44,3 @@ class MyMlx:
     @classmethod
     def key_hook(cls, callback: Any, data: Any) -> None:
         cls.mlx.mlx_key_hook(cls.win_ptr, callback, data)
-
-    @classmethod
-    def png_file_to_image(cls, filename: str) -> Any:
-        return cls.mlx.mlx_png_file_to_image(cls.mlx_ptr, filename)

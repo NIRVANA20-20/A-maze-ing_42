@@ -1,13 +1,13 @@
 from Parsing.parser import Parser
 from Mazegen.generater import MazeGenerator
-from A_maze_ing.maze import Maze
+from Controlling.maze import Maze
 from my_mlx.my_mlx import MyMlx
-from A_maze_ing.maze_controller import MazeController
+from Controlling.maze_controller import MazeController
 import sys
 
 
 class Amazing:
-    def __init__(self):
+    def __init__(self) -> None:
         self.parser = Parser()
 
         self.generater = MazeGenerator(
@@ -35,7 +35,7 @@ class Amazing:
 
         self.maze_controler = MazeController(self.generater)
 
-    def run(self):
+    def run(self) -> None:
         self.maze_controler.start()
         MyMlx.loop()
 

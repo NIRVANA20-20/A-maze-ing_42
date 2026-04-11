@@ -18,30 +18,31 @@
 
 from ctypes import *
 import os
+from typing import Any
 
 
 class Mlx:
 
-    def __init__(self):
+    def __init__(self) -> None:
         module_dir = os.path.dirname(os.path.abspath(__file__))
         self.so_file = os.path.join(module_dir, "libmlx.so")
         self.mlx_func = CDLL(self.so_file)
-        self._python_ref_std = {}
-        self._python_ref_gen = {}
-        self._img_height = {}
+        self._python_ref_std: Any = {}
+        self._python_ref_gen: Any = {}
+        self._img_height: Any = {}
 
     # Initialisation
-    def mlx_init(self):
+    def mlx_init(self) -> Any:
         self.mlx_func.mlx_init.restype = c_void_p
         return self.mlx_func.mlx_init()
 
-    def mlx_release(self, mlx_ptr):
-        self.mlx_func.mlx_release.argtypes = [c_void_p]
-        self.mlx_func.mlx_release.restypes = [c_int]
-        return self.mlx_func.mlx_release(mlx_ptr)
+    # def mlx_release(self, mlx_ptr: Any) -> Any:
+    #     self.mlx_func.mlx_release.argtypes = [c_void_p]
+    #     self.mlx_func.mlx_release.restypes = [c_int]
+    #     return self.mlx_func.mlx_release(mlx_ptr)
 
     # Windows
-    def mlx_new_window(self, mlx_ptr, width, height, title):
+    def mlx_new_window(self, mlx_ptr: Any, width: Any, height: Any, title: Any) -> Any:
         self.mlx_func.mlx_new_window.argtypes = [
             c_void_p,
             c_uint,
@@ -53,12 +54,12 @@ class Mlx:
             mlx_ptr, width, height, title.encode("utf-8")
         )
 
-    def mlx_clear_window(self, mlx_ptr, win_ptr):
+    def mlx_clear_window(self, mlx_ptr: Any, win_ptr: Any)  -> Any:
         self.mlx_func.mlx_clear_window.argtypes = [c_void_p, c_void_p]
         self.mlx_func.mlx_clear_window.restype = c_int
         return self.mlx_func.mlx_clear_window(mlx_ptr, win_ptr)
 
-    def mlx_pixel_put(self, mlx_ptr, win_ptr, x, y, color):
+    def mlx_pixel_put(self, mlx_ptr: Any, win_ptr: Any, x: Any, y: Any, color: Any) -> Any:
         self.mlx_func.mlx_pixel_put.argtypes = [
             c_void_p,
             c_void_p,
@@ -69,13 +70,13 @@ class Mlx:
         self.mlx_func.mlx_pixel_put.restype = c_int
         return self.mlx_func.mlx_pixel_put(mlx_ptr, win_ptr, x, y, color)
 
-    def mlx_destroy_window(self, mlx_ptr, win_ptr):
+    def mlx_destroy_window(self, mlx_ptr: Any, win_ptr: Any) -> Any:
         self.mlx_func.mlx_destroy_window.argtypes = [c_void_p, c_void_p]
         self.mlx_func.mlx_destroy_window.restype = c_int
         return self.mlx_func.mlx_destroy_window(mlx_ptr, win_ptr)
 
     # Images
-    def mlx_new_image(self, mlx_ptr, width, height):
+    def mlx_new_image(self, mlx_ptr: Any, width: Any, height: Any) -> Any:
         self.mlx_func.mlx_new_image.argtypes = [c_void_p, c_uint, c_uint]
         self.mlx_func.mlx_new_image.restype = c_void_p
         ret = self.mlx_func.mlx_new_image(mlx_ptr, width, height)
@@ -84,7 +85,7 @@ class Mlx:
         return ret
 
     # API break, returns tuple
-    def mlx_get_data_addr(self, img_ptr):
+    def mlx_get_data_addr(self, img_ptr: Any) -> Any:
         bits_per_pixel = c_uint()
         size_line = c_uint()
         theformat = c_uint()
@@ -110,7 +111,7 @@ class Mlx:
             theformat.value,
         )
 
-    def mlx_put_image_to_window(self, mlx_ptr, win_ptr, img_ptr, x, y):
+    def mlx_put_image_to_window(self, mlx_ptr: Any, win_ptr: Any, img_ptr: Any, x: Any, y: Any) -> Any:
         self.mlx_func.mlx_put_image_to_window.argtypes = [
             c_void_p,
             c_void_p,
@@ -123,7 +124,7 @@ class Mlx:
             mlx_ptr, win_ptr, img_ptr, x, y
         )
 
-    def mlx_destroy_image(self, mlx_ptr, img_ptr):
+    def mlx_destroy_image(self, mlx_ptr: Any, img_ptr: Any) -> Any:
         self._img_height.pop(str(img_ptr))
         self.mlx_func.mlx_destroy_image.argtypes = [c_void_p, c_void_p]
         self.mlx_func.mlx_destroy_image.restype = c_int
@@ -133,17 +134,17 @@ class Mlx:
     # Note: Python can't catch C^-C from keyboard during mlx_loop execution.
     #  Use C^-\ to kill your program.
 
-    def mlx_loop(self, mlx_ptr):
+    def mlx_loop(self, mlx_ptr: Any) -> Any:
         self.mlx_func.mlx_loop.argtypes = [c_void_p]
         self.mlx_func.mlx_loop.restype = c_int
         return self.mlx_func.mlx_loop(mlx_ptr)
 
-    def mlx_loop_exit(self, mlx_ptr):
+    def mlx_loop_exit(self, mlx_ptr: Any) -> Any:
         self.mlx_func.mlx_loop_exit.argtypes = [c_void_p]
         self.mlx_func.mlx_loop_exit.restype = c_int
         return self.mlx_func.mlx_loop_exit(mlx_ptr)
 
-    def mlx_mouse_hook(self, win_ptr, callback, param):
+    def mlx_mouse_hook(self, win_ptr: Any, callback: Any, param: Any ) -> Any:
         self.mlx_func.mlx_mouse_hook.restype = c_int
         if not callback:
             self._python_ref_std[str(win_ptr) + "_mouse_f"] = None
@@ -165,7 +166,7 @@ class Mlx:
         self._python_ref_std[str(win_ptr) + "_mouse_p"] = param
         return self.mlx_func.mlx_mouse_hook(win_ptr, callback_ref, param)
 
-    def mlx_key_hook(self, win_ptr, callback, param):
+    def mlx_key_hook(self, win_ptr: Any, callback: Any, param: Any) -> Any:
         self.mlx_func.mlx_key_hook.restype = c_int
         if not callback:
             self._python_ref_std[str(win_ptr) + "_key_f"] = None
@@ -187,7 +188,7 @@ class Mlx:
         self._python_ref_std[str(win_ptr) + "_key_p"] = param
         return self.mlx_func.mlx_key_hook(win_ptr, callback_ref, param)
 
-    def mlx_expose_hook(self, win_ptr, callback, param):
+    def mlx_expose_hook(self, win_ptr: Any, callback: Any, param: Any) -> Any:
         self.mlx_func.mlx_expose_hook.restype = c_int
         if not callback:
             self._python_ref_std[str(win_ptr) + "_expose_f"] = None
@@ -209,7 +210,7 @@ class Mlx:
         self._python_ref_std[str(win_ptr) + "_expose_p"] = param
         return self.mlx_func.mlx_expose_hook(win_ptr, callback_ref, param)
 
-    def mlx_loop_hook(self, mlx_ptr, callback, param):
+    def mlx_loop_hook(self, mlx_ptr: Any, callback: Any, param: Any) -> Any:
         self.mlx_func.mlx_loop_hook.restype = c_int
         if not callback:
             self._python_ref_std["loop_f"] = None
@@ -231,7 +232,7 @@ class Mlx:
         self._python_ref_std["loop_p"] = param
         return self.mlx_func.mlx_loop_hook(mlx_ptr, callback_ref, param)
 
-    def mlx_hook(self, win_ptr, x_event, x_mask, callback, param):
+    def mlx_hook(self, win_ptr: Any, x_event: Any, x_mask: Any, callback: Any, param: Any) -> Any:
         x_event_key = [2, 3]
         x_event_mouse = [4, 5]
         x_event_motion = [6]
@@ -274,7 +275,7 @@ class Mlx:
 
     # Misc.
 
-    def mlx_string_put(self, mlx_ptr, win_ptr, x, y, color, string):
+    def mlx_string_put(self, mlx_ptr: Any, win_ptr: Any, x: Any, y: Any, color: Any, string: Any) -> Any:
         self.mlx_func.mlx_string_put.argtypes = [
             c_void_p,
             c_void_p,
@@ -289,7 +290,7 @@ class Mlx:
         )
 
     # API break, returns tuple
-    def mlx_xpm_file_to_image(self, mlx_ptr, filename):
+    def mlx_xpm_file_to_image(self, mlx_ptr: Any, filename: Any) -> Any:
         width = c_uint()
         height = c_uint()
         self.mlx_func.mlx_xpm_file_to_image.argtypes = [
@@ -307,7 +308,7 @@ class Mlx:
         return (img, width.value, height.value)
 
     # API break, returns tuple
-    def mlx_png_file_to_image(self, mlx_ptr, filename):
+    def mlx_png_file_to_image(self, mlx_ptr: Any, filename: Any) -> Any:
         width = c_uint()
         height = c_uint()
         self.mlx_func.mlx_png_file_to_image.argtypes = [
@@ -328,23 +329,23 @@ class Mlx:
     # void	*mlx_xpm_to_image(void *mlx_ptr, const char **xpm_data,
     # 			  unsigned int *width, unsigned int *height);
 
-    def mlx_mouse_hide(self, mlx_ptr):
+    def mlx_mouse_hide(self, mlx_ptr: Any) -> Any:
         self.mlx_func.mlx_mouse_hide.argtypes = [c_void_p]
         self.mlx_func.mlx_mouse_hide.restype = c_int
         return self.mlx_func.mlx_mouse_hide(mlx_ptr)
 
-    def mlx_mouse_show(self, mlx_ptr):
+    def mlx_mouse_show(self, mlx_ptr: Any) -> Any:
         self.mlx_func.mlx_mouse_show.argtypes = [c_void_p]
         self.mlx_func.mlx_mouse_show.restype = c_int
         return self.mlx_func.mlx_mouse_show(mlx_ptr)
 
-    def mlx_mouse_move(self, mlx_ptr, x, y):
+    def mlx_mouse_move(self, mlx_ptr: Any, x: Any, y: Any) -> Any:
         self.mlx_func.mlx_mouse_move.argtypes = [c_void_p, c_int, c_int]
         self.mlx_func.mlx_mouse_move.restype = c_int
         return self.mlx_func.mlx_mouse_move(mlx_ptr, x, y)
 
     # API break, returns tuple
-    def mlx_mouse_get_pos(self, mlx_ptr):
+    def mlx_mouse_get_pos(self, mlx_ptr: Any) -> Any:
         x = c_int()
         y = c_int()
         self.mlx_func.mlx_mouse_get_pos.argtypes = [
@@ -356,18 +357,18 @@ class Mlx:
         val = self.mlx_func.mlx_mouse_get_pos(mlx_ptr, byref(x), byref(y))
         return (val, x.value, y.value)
 
-    def mlx_do_key_autorepeatoff(self, mlx_ptr):
+    def mlx_do_key_autorepeatoff(self, mlx_ptr: Any) -> Any:
         self.mlx_func.mlx_do_key_autorepeatoff.argtypes = [c_void_p]
         self.mlx_func.mlx_do_key_autorepeatoff.restype = c_int
         return self.mlx_func.mlx_do_key_autorepeatoff(mlx_ptr)
 
-    def mlx_do_key_autorepeaton(self, mlx_ptr):
+    def mlx_do_key_autorepeaton(self, mlx_ptr: Any) -> Any:
         self.mlx_func.mlx_do_key_autorepeaton.argtypes = [c_void_p]
         self.mlx_func.mlx_do_key_autorepeaton.restype = c_int
         return self.mlx_func.mlx_do_key_autorepeaton(mlx_ptr)
 
     # API break, returns tuple
-    def mlx_get_screen_size(self, mlx_ptr):
+    def mlx_get_screen_size(self, mlx_ptr: Any) -> Any:
         w = c_uint()
         h = c_uint()
         self.mlx_func.mlx_get_screen_size.argtypes = [
@@ -379,17 +380,18 @@ class Mlx:
         val = self.mlx_func.mlx_get_screen_size(mlx_ptr, byref(w), byref(h))
         return (val, w.value, h.value)
 
-    # Sync funct
-    def mlx_do_sync(self, mlx_ptr):
-        self.mlx_func.mlx_do_sync.argtypes = [c_void_p]
-        self.mlx_func.mlx_do_sync.restype = c_int
-        return self.mlx_func.mlx_do_sync(mlx_ptr)
+    # # Sync funct
+    # def mlx_do_sync(self, mlx_ptr: Any) -> Any:
+    #     self.mlx_func.mlx_do_sync.argtypes = [c_void_p]
+    #     self.mlx_func.mlx_do_sync.restype = c_int
+    #     return self.mlx_func.mlx_do_sync(mlx_ptr)
 
-    def mlx_sync(self, mlx_ptr, cmd, img_or_win_ptr):
-        self.mlx_func.mlx_sync.argtypes = [c_void_p, c_int, c_void_p]
-        self.mlx_func.mlx_sync.restype = c_int
-        return self.mlx_func.mlx_sync(mlx_ptr, cmd, img_or_win_ptr)
+    # def mlx_sync(self, mlx_ptr, cmd, img_or_win_ptr) -> Any:
+    #     self.mlx_func.mlx_sync.argtypes = [c_void_p, c_int, c_void_p]
+    #     self.mlx_func.mlx_sync.restype = c_int
+    #     return self.mlx_func.mlx_sync(mlx_ptr, cmd, img_or_win_ptr)
 
     SYNC_IMAGE_WRITABLE = 1
     SYNC_WIN_FLUSH = 2
     SYNC_WIN_COMPLETED = 3
+    

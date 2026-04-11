@@ -19,7 +19,7 @@ class EntryExitError(Exception):
 
 
 class Parser:
-    def __init__(self):
+    def __init__(self) -> None:
         self.file_elements = [
             "WIDTH",
             "OUTPUT_FILE",
@@ -32,7 +32,7 @@ class Parser:
         self.args_checker()
         self.read_config()
 
-    def args_checker(self):
+    def args_checker(self) -> None:
         args = sys.argv
         if len(args) != 2 or args[1] != "config.txt":
             print(
@@ -42,7 +42,7 @@ class Parser:
             )
             exit(0)
 
-    def read_config(self):
+    def read_config(self) -> None:
         file = open("config.txt", "r")
         f = file.read()
         lst = f.split("\n")
@@ -68,27 +68,26 @@ class Parser:
             print(error)
             sys.exit(0)
 
-    def check_seed(self, seed):
+    def check_seed(self, seed: str) -> None:
         if not seed:
             self.seed = None
             return
         elif int(seed) < 0:
-            raise ValueError(
-                "(ERROR) = The seed must be number (positive)", file=sys.stderr
-            )
+            raise Exception(
+                "(ERROR) = The seed must be number (positive)")
         self.seed = int(seed)
 
-    def check_perfect(self, answer):
-        if answer == "True":
+    def check_perfect(self, answer: str) -> None:
+        if answer == "True" or answer == "true":
             self.perfect = True
-        elif answer == "False":
+        elif answer == "False" or answer == "false":
             self.perfect = False
         else:
             raise PerfectWayError(
                 "(ERROR) = PERFECT(the answer should be " "'True' or 'False') "
             )
 
-    def check_file(self, file_name):
+    def check_file(self, file_name: str) -> None:
         file_checker = file_name.split(".")
         if len(file_checker) != 2 or file_checker[1] != "txt":
             raise FileNameError(
@@ -107,7 +106,7 @@ class Parser:
         else:
             self.file_name = file_name
 
-    def check_entry(self, entry):
+    def check_entry(self, entry: str) -> None:
         entr = entry.replace("(", "").replace(")", "")
         entry_splited = entr.split(",")
         if len(entry_splited) != 2:
@@ -144,7 +143,7 @@ class Parser:
             self.grid_checker((x, y))
         self.entry = (x, y)
 
-    def check_exit(self, exit):
+    def check_exit(self, exit: str) -> None:
         exit = exit.replace("(", "").replace(")", "")
         exit_splited = exit.split(",")
         if len(exit_splited) != 2:
@@ -185,7 +184,7 @@ class Parser:
 
         self.exit = (x, y)
 
-    def grid_checker(self, tpl):
+    def grid_checker(self, tpl: tuple) -> None:
         x, y = tpl[0], tpl[1]
         c_x, c_y = int(self.width / 2), int(self.height / 2)
         map_42 = [
@@ -213,7 +212,7 @@ class Parser:
                 "(ERROR) = Exit and Entry must be outside the 42 grid"
             )
 
-    def check_dimensions(self, w, h):
+    def check_dimensions(self, w: str, h: str) -> None:
         try:
             self.width = int(w)
         except ValueError:

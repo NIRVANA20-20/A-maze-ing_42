@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "Mazegen"
+version = "1.0.0"
+description = "A lightweight and reusable Python maze generator and solver (DFS, BFS)."
+authors = [
+    { name = "kanahiz" },
+    { name = "olaizi" }
+]
+readme = "README.md"
+requires-python = ">=3.8"
+keywords = ["maze", "generator", "dfs", "bfs", "pathfinding"]
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent"
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["Mazegen*"]
+
+[tool.setuptools]
+include-package-data = true

@@ -2,8 +2,8 @@ from Mazegen.generater import MazeGenerator
 from Rendring.rendrer import DrawAnimation, MazeCreator
 from Rendring.CellImage import Image
 from my_mlx.my_mlx import MyMlx
-from themes.themes import Theme
-from typing import List
+from Themes.themes import Theme
+from typing import List, Any
 from enum import Enum
 
 
@@ -32,7 +32,7 @@ class MazeController:
         self.is_solved = False
         self.show = True
 
-    def start(self):
+    def start(self) -> None:
         MyMlx.key_hook(self.call_back, None)
 
     def maze_cells(self, key: int) -> None:
@@ -87,13 +87,13 @@ class MazeController:
 
     def get_path_string(self) -> List[str]:
         path_list = []
-        path = self.solve.path
+        path: Any = self.generator.path
         for i in range(len(path) - 1):
             destination = DrawAnimation.path_checker(path[i], path[i + i])
             path_list.append(destination)
         return path_list
 
-    def call_back(self, key: int, _) -> None:
+    def call_back(self, key: int, _: Any) -> None:
         try:
             self.maze_cells(key)
             if self.is_started:
