@@ -168,23 +168,26 @@ class MazeSolver:
         self.queue: deque = deque()
 
     def generate(self, grid: Any) -> None:
-        queue: deque = deque([self.entry])
-        visited: Any = {self.entry}
+        queue = [self.entry]
+        visited = {self.entry}
         parent: Any = {}
 
         while queue:
-            x, y = queue.popleft()
+            x, y = queue.pop(0)
 
             if (x, y) == self.exit:
                 self.get_path(parent, self.entry, self.exit)
                 return
+
             cell = grid[y][x]
+
             directions = {
                 "N": (x, y - 1),
                 "E": (x + 1, y),
                 "S": (x, y + 1),
                 "W": (x - 1, y),
             }
+
             for d, (nx, ny) in directions.items():
                 if cell.walls[d] is False:
                     if (nx, ny) not in visited:

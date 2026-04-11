@@ -1,3 +1,4 @@
+
 from my_mlx.my_mlx import MyMlx
 import os
 from typing import Any
@@ -34,11 +35,11 @@ class Background:
     def __init__(self, file_name: str) -> None:
         self.file_name = file_name
         self.abs_path = os.path.abspath(".") + "/Rendring/images/" + file_name
-        self.img_ptr, _, _ = MyMlx.png_file_to_image(self.abs_path)
+        self.img_ptr, _, _ = MyMlx.load_png_image(self.abs_path)
 
     def put_image_to_window(self) -> None:
         if self.img_ptr is not None:
-            MyMlx.put_image_to_window(self.img_ptr, 0, 0)
+            MyMlx.draw_image(self.img_ptr, 0, 0)
 
 
 class Mood:

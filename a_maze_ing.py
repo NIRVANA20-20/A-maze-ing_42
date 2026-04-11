@@ -37,7 +37,7 @@ class Amazing:
 
     def run(self) -> None:
         self.maze_controler.start()
-        MyMlx.loop()
+        MyMlx.start_loop()
 
 
 if __name__ == "__main__":

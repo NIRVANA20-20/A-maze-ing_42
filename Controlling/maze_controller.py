@@ -33,7 +33,7 @@ class MazeController:
         self.show = True
 
     def start(self) -> None:
-        MyMlx.key_hook(self.call_back, None)
+        MyMlx.set_key_handler(self.call_back, None)
 
     def maze_cells(self, key: int) -> None:
         if key == Keys.CELLS.value:
@@ -94,14 +94,14 @@ class MazeController:
         return path_list
 
     def call_back(self, key: int, _: Any) -> None:
-        try:
-            self.maze_cells(key)
-            if self.is_started:
-                self.solve_maze(key)
-                self.switch_theme(key)
-                self.put_maze(key)
-            if key == Keys.EXIT.value:
-                MyMlx.loop_exit()
-        except (Exception, KeyboardInterrupt) as e:
-            print(e)
-            return
+        # try:
+        self.maze_cells(key)
+        if self.is_started:
+            self.solve_maze(key)
+            self.switch_theme(key)
+            self.put_maze(key)
+        if key == Keys.EXIT.value:
+            MyMlx.stop_loop()
+        # except (Exception, KeyboardInterrupt) as e:
+            # print(e)
+            # return

@@ -24,11 +24,11 @@ class Image:
         return self
 
     def img_ptr(self) -> Any:
-        self.ptr = MyMlx.new_image(self.width, self.height)
+        self.ptr = MyMlx.create_image(self.width, self.height)
         return self
 
     def img_data_addr(self) -> Any:
-        self.buffer, self.bpp, self.sl, self.format = MyMlx.get_data_addr(
+        self.buffer, self.bpp, self.sl, self.format = MyMlx.get_image_data(
             self.ptr
         )
         return self

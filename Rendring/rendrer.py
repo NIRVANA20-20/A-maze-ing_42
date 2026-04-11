@@ -26,7 +26,7 @@ class MazeCreator:
                     self.img.put_west(x, y, Theme.border_color)
                     self.img.put_south(x, y, Theme.border_color)
         if self.is_put is True:
-            MyMlx.put_image_to_window(
+            MyMlx.draw_image(
                 self.img.ptr, self.img.poss_w, self.img.poss_h
             )
 
@@ -77,7 +77,7 @@ class DrawAnimation:
     def draw(self) -> None:
         self.i = 0
         self.draw_entry_exit()
-        MyMlx.loop_hook(self.bfs_loop_hook, None)
+        MyMlx.set_loop_hook(self.bfs_loop_hook, None)
 
     def draw_dfs(self) -> None:
         self.x = 0
@@ -86,7 +86,7 @@ class DrawAnimation:
             self.is_fin_dfs = True
             self.draw_dfs_no_animation()
         else:
-            MyMlx.loop_hook(self.dfs_loop_hook, None)
+            MyMlx.set_loop_hook(self.dfs_loop_hook, None)
 
     @staticmethod
     def path_checker(curr_cell: Any, next_cell: Any) -> Any:
@@ -110,7 +110,7 @@ class DrawAnimation:
                 )
                 x, y = self.path[self.i]
                 self.img.put_path(x, y, destination)
-                MyMlx.put_image_to_window(
+                MyMlx.draw_image(
                     self.img.ptr, self.img.poss_w, self.img.poss_h
                 )
                 self.i += 1
@@ -130,7 +130,7 @@ class DrawAnimation:
 
                 if self.y == height:
                     if self.is_animation is False:
-                        MyMlx.put_image_to_window(
+                        MyMlx.draw_image(
                             self.img.ptr, self.img.poss_w, self.img.poss_h
                         )
                     self.is_fin_dfs = True
@@ -143,7 +143,7 @@ class DrawAnimation:
                     for pos in pos_list:
                         self.creator.remove_wall_helper(self.x, self.y, pos)
                     if self.is_animation is True:
-                        MyMlx.put_image_to_window(
+                        MyMlx.draw_image(
                             self.img.ptr, self.img.poss_w, self.img.poss_h
                         )
                 self.x += 1
@@ -160,7 +160,7 @@ class DrawAnimation:
                 pos_list = MazeCreator.check_binary(value)
                 for pos in pos_list:
                     self.creator.remove_wall_helper(x, y, pos)
-        MyMlx.put_image_to_window(
+        MyMlx.draw_image(
             self.img.ptr, self.img.poss_w, self.img.poss_h
         )
         self.is_fin_dfs = True

@@ -30,6 +30,5 @@ lint:
 	$(VENV)/bin/flake8 $(FILES) 
 	$(VENV)/bin/mypy $(FILES) --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs	
 
-
 pdb:
 	$(PYTHON) -m pdb A_maze_ing/amazing.py config.txt
