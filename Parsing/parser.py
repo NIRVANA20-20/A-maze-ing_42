@@ -36,8 +36,7 @@ class Parser:
         args = sys.argv
         if len(args) != 2 or args[1] != "config.txt":
             print(
-                "(ERROR) = You must run the program:"
-                + "python3 amazing.py config.txt",
+                "(ERROR) = You must run the program:" + "python3 amazing.py config.txt",
                 "\n PRESS [Control] key to exit",
             )
             exit(0)
@@ -51,8 +50,12 @@ class Parser:
         for element in lst:
             if "#" in element:
                 continue
-            if element.split("=")[0] in self.file_elements:
-                values.append(element.split("=")[1])
+            value = element.split("=")
+
+            print(len(value))
+            if len(value) == 2 and value[0].replace(" ", "") in self.file_elements:
+                values.append(value[1].replace(" ", ""))
+        print(len(values))
         if len(values) != 7:
             print("(ERROR) = One of the arguments in (config.txt) is missing")
             sys.exit(0)
@@ -73,14 +76,13 @@ class Parser:
             self.seed = None
             return
         elif int(seed) < 0:
-            raise Exception(
-                "(ERROR) = The seed must be number (positive)")
+            raise Exception("(ERROR) = The seed must be number (positive)")
         self.seed = int(seed)
 
     def check_perfect(self, answer: str) -> None:
-        if answer == "True" or answer == "true":
+        if answer.upper() == "TRUE":
             self.perfect = True
-        elif answer == "False" or answer == "false":
+        elif answer.upper == "FALSE":
             self.perfect = False
         else:
             raise PerfectWayError(
@@ -94,14 +96,11 @@ class Parser:
                 "(ERROR) = only '.txt' files are permitted as maze output file"
             )
         if os.path.exists(file_name) and not os.access(file_name, os.W_OK):
-            raise FileNameError(
-                f"(ERROR) = OUTPUT_FILE '{file_name}'is not writable"
-            )
+            raise FileNameError(f"(ERROR) = OUTPUT_FILE '{file_name}'is not writable")
         parent = os.path.dirname(file_name) or "."
         if not os.access(parent, os.W_OK):
             raise ValueError(
-                f"(ERROR) = OUTPUT_FILE '{file_name}'"
-                + "directory is not writable"
+                f"(ERROR) = OUTPUT_FILE '{file_name}'" + "directory is not writable"
             )
         else:
             self.file_name = file_name
@@ -176,9 +175,7 @@ class Parser:
                 f"(max : {self.height}) and (min : 1)"
             )
         if x == self.entry[0] and y == self.entry[1]:
-            raise EntryExitError(
-                "(ERROR) = the entry must be different than exit"
-            )
+            raise EntryExitError("(ERROR) = the entry must be different than exit")
         if self.width >= 9 and self.height >= 8:
             self.grid_checker((x, y))
 
@@ -208,30 +205,24 @@ class Parser:
             (c_x + 2, c_y - 2),
         ]
         if (x, y) in map_42:
-            raise Exception(
-                "(ERROR) = Exit and Entry must be outside the 42 grid"
-            )
+            raise Exception("(ERROR) = Exit and Entry must be outside the 42 grid")
 
     def check_dimensions(self, w: str, h: str) -> None:
         try:
             self.width = int(w)
         except ValueError:
-            raise DimensionsError(
-                f"(ERROR) = The width must be a number not: {w}"
-            )
+            raise DimensionsError(f"(ERROR) = The width must be a number not: {w}")
         try:
             self.height = int(h)
         except ValueError:
-            raise DimensionsError(
-                f"(ERROR) = The height must be a number not: {h})"
-            )
+            raise DimensionsError(f"(ERROR) = The height must be a number not: {h})")
 
-        if self.width > 1200 or self.width < 1:
+        if self.width > 200 or self.width < 1:
             raise DimensionsError(
                 f"(ERROR) = The width can`t be : {self.width}"
                 "  => (max : 200) and (min : 1)"
             )
-        elif self.height > 1200 or self.height < 1:
+        elif self.height > 200 or self.height < 1:
             raise DimensionsError(
                 f"(ERROR) = The height can`t be : {self.height}"
                 " => (max : 200) and (min : 1)"
