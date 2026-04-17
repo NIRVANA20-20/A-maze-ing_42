@@ -55,7 +55,6 @@ class Parser:
             print(len(value))
             if len(value) == 2 and value[0].replace(" ", "") in self.file_elements:
                 values.append(value[1].replace(" ", ""))
-        print(len(values))
         if len(values) != 7:
             print("(ERROR) = One of the arguments in (config.txt) is missing")
             sys.exit(0)
@@ -222,7 +221,7 @@ class Parser:
                 f"(ERROR) = The width can`t be : {self.width}"
                 "  => (max : 200) and (min : 1)"
             )
-        elif self.height > 200 or self.height < 1:
+        if self.height > 200 or self.height < 1:
             raise DimensionsError(
                 f"(ERROR) = The height can`t be : {self.height}"
                 " => (max : 200) and (min : 1)"

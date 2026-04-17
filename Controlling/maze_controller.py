@@ -94,14 +94,14 @@ class MazeController:
         return path_list
 
     def call_back(self, key: int, _: Any) -> None:
-        # try:
-        self.maze_cells(key)
-        if self.is_started:
-            self.solve_maze(key)
-            self.switch_theme(key)
-            self.put_maze(key)
-        if key == Keys.EXIT.value:
-            MyMlx.stop_loop()
-        # except (Exception, KeyboardInterrupt) as e:
-            # print(e)
-            # return
+        try:
+            self.maze_cells(key)
+            if self.is_started:
+                self.solve_maze(key)
+                self.switch_theme(key)
+                self.put_maze(key)
+            if key == Keys.EXIT.value:
+                MyMlx.stop_loop()
+        except (Exception, KeyboardInterrupt) as e:
+            print(e)
+            return
