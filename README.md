@@ -107,12 +107,13 @@ mazegen Package
 pip install mazegen-1.0.0-py3-none-any.whl
 #### Team 
 
-olaizi: algorithm implementation, maze generation logic, BFS solver
-Initial phase: basic DFS generator with simple rendering
-Mid-development: integration of BFS solver
+olaizi: 
+        - algorithm implementation, maze generation logic, 
+        - BFS solver Initial phase: basic DFS generator with simple rendering integration of BFS solver
 
-kanahiz: rendering system, MLX integration, Parsnig, visualization
-Planning & Evolution
+kanahiz: 
+        - rendering system, MLX integration, Parsnig
+        - visualization Planning & Evolution
 
 
 - Project Structure
@@ -152,8 +153,8 @@ A-Maze-ing/
 ## Resources
 - I created a summary for this project that includes all the necessary information and the knowledge I gained [click_here](https://www.tldraw.com/f/Fj3Di-nkFnyd3mZdtsP2y?d=v-981.-1358.5842.6228.page)
 - MLX documentation
-- Depth-First Search (DFS) references
-- Breadth-First Search (BFS) tutorials
+- [Depth-First Search (DFS) references](https://www.geeksforgeeks.org/dsa/depth-first-search-or-dfs-for-a-graph/)
+- [Breadth-First Search (BFS) tutorials](https://www.geeksforgeeks.org/dsa/breadth-first-search-or-bfs-for-a-graph/)
 ## AI Usage
 
 - AI tools were used to assist with:
