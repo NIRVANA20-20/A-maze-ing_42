@@ -21,9 +21,7 @@ class Amazing:
         )
         self.maze = Maze()
         (
-            self.maze.set_dimension(
-                self.generater.width, self.generater.height
-            )
+            self.maze.set_dimension(self.generater.width, self.generater.height)
             .set_exit(self.generater.exit)
             .set_entry(self.generater.entry)
             .set_file_name(self.generater.file_name)
